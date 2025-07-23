@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -65,7 +64,7 @@ Future<Uint8List> generatePdf(CVData data) async {
               // عرض قائمة الخبرات
               ...data.experiences
                   .map((exp) => _buildExperienceItem(exp))
-                  .toList(),
+                  ,
             ],
           ),
         );
