@@ -1,7 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_creation/models/cv_data.dart';
 
-// 1. تعريف Notifier لإدارة حالة CVData
+// Enum لتعريف اللغات المتاحة
+enum AppLanguage { arabic, english }
+
+// Provider لتخزين اللغة المختارة حالياً
+// القيمة الافتراضية هي العربية
+final languageProvider =
+    StateProvider<AppLanguage>((ref) => AppLanguage.arabic);
+
+// ==========================================================
+
+// الكود الأصلي يبقى كما هو
 class CvDataNotifier extends StateNotifier<CVData> {
   CvDataNotifier()
       : super(CVData(
@@ -26,7 +36,7 @@ class CvDataNotifier extends StateNotifier<CVData> {
   }
 }
 
-// 2. إنشاء الـ Provider الذي سيمكننا من الوصول للحالة من أي مكان
+// إنشاء الـ Provider الذي سيمكننا من الوصول للحالة من أي مكان
 final cvDataProvider = StateNotifierProvider<CvDataNotifier, CVData>((ref) {
   return CvDataNotifier();
 });

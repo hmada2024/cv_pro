@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_creation/providers/cv_data_provider.dart';
 import 'package:cv_pro/features/pdf_generation/pdf_generator.dart';
 import 'package:printing/printing.dart';
-import 'package:cv_pro/features/cv_creation/models/cv_data.dart'; // استيراد النموذج
+import 'package:cv_pro/features/cv_creation/models/cv_data.dart';
 
 class CvFormScreen extends ConsumerWidget {
   CvFormScreen({super.key});
@@ -15,8 +15,9 @@ class CvFormScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // مراقبة التغييرات في بيانات الـ CV
+    // مراقبة التغييرات في بيانات الـ CV واللغة
     final cvData = ref.watch(cvDataProvider);
+    final selectedLanguage = ref.watch(languageProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -30,6 +31,29 @@ class CvFormScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // قسم اختيار اللغة
+              Text('لغة السيرة الذاتية',
+                  style: Theme.of(context).textTheme.titleMedium),
+              const SizedBox(height: 8),
+              SegmentedButton<AppLanguage>(
+                segments: const <ButtonSegment<AppLanguage>>[
+                  ButtonSegment<AppLanguage>(
+                      value: AppLanguage.arabic,
+                      label: Text('العربية'),
+                      icon: Icon(Icons.language)),
+                  ButtonSegment<AppLanguage>(
+                      value: AppLanguage.english,
+                      label: Text('English'),
+                      icon: Icon(Icons.translate)),
+                ],
+                selected: {selectedLanguage},
+                onSelectionChanged: (Set<AppLanguage> newSelection) {
+                  ref.read(languageProvider.notifier).state =
+                      newSelection.first;
+                },
+              ),
+              const Divider(height: 40),
+
               // قسم المعلومات الشخصية
               Text('المعلومات الشخصية',
                   style: Theme.of(context).textTheme.headlineSmall),
@@ -86,20 +110,18 @@ class CvFormScreen extends ConsumerWidget {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
-                  // إضافة الخبرة إلى الحالة
                   final newExperience = Experience(
                     companyName: _companyController.text,
                     position: _positionController.text,
                     description: _descriptionController.text,
-                    startDate: DateTime.now()
-                        .subtract(const Duration(days: 365)), // تاريخ افتراضي
-                    endDate: DateTime.now(), // تاريخ افتراضي
+                    startDate:
+                        DateTime.now().subtract(const Duration(days: 365)),
+                    endDate: DateTime.now(),
                   );
                   ref
                       .read(cvDataProvider.notifier)
                       .addExperience(newExperience);
 
-                  // مسح الحقول
                   _companyController.clear();
                   _positionController.clear();
                   _descriptionController.clear();
@@ -123,9 +145,8 @@ class CvFormScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          // استدعاء دالة توليد الـ PDF
-          final pdfBytes = await generatePdf(cvData);
-          // عرض شاشة المعاينة
+          final lang = ref.read(languageProvider);
+          final pdfBytes = await generatePdf(cvData, lang);
           await Printing.layoutPdf(onLayout: (format) => pdfBytes);
         },
         label: const Text('إنشاء و معاينة PDF'),
