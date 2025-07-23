@@ -5,22 +5,37 @@ import 'package:cv_pro/features/cv_creation/models/cv_data.dart';
 import 'package:cv_pro/features/cv_creation/providers/cv_data_provider.dart';
 import 'package:intl/intl.dart';
 
+// دالة مساعدة لإنشاء عنوان قسم موحد
+pw.Widget _buildSectionTitle(String title, pw.Font font, AppLanguage language) {
+  return pw.Column(
+    crossAxisAlignment: pw.CrossAxisAlignment.start,
+    children: [
+      pw.Text(
+        title.toUpperCase(),
+        style: pw.TextStyle(
+          font: font,
+          fontWeight: pw.FontWeight.bold,
+          fontSize: 14,
+          color: PdfColors.blueGrey800,
+        ),
+      ),
+      pw.Container(height: 2, width: 40, color: PdfColors.blueGrey800),
+      pw.SizedBox(height: 10),
+    ],
+  );
+}
+
 Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
   final pdf = pw.Document();
-
-  // تحديد الخط والاتجاه بناءً على اللغة
-  final pw.Font font;
+  final pw.Font font, boldFont;
   final pw.TextDirection textDirection;
-  final pw.Font boldFont;
 
   if (language == AppLanguage.arabic) {
     final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
-    // يمكنك تحميل خط Bold إذا أردت دقة أكبر
     font = pw.Font.ttf(fontData);
-    boldFont = pw.Font.ttf(fontData); // استخدام نفس الخط للـ Bold حالياً
+    boldFont = pw.Font.ttf(fontData);
     textDirection = pw.TextDirection.rtl;
   } else {
-    // للغة الإنجليزية، نستخدم خطوط PDF المدمجة
     font = pw.Font.helvetica();
     boldFont = pw.Font.helveticaBold();
     textDirection = pw.TextDirection.ltr;
@@ -30,60 +45,104 @@ Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
     pw.Page(
       theme: pw.ThemeData.withFont(base: font, bold: boldFont),
       pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(30), // تقليل الهوامش
       build: (pw.Context context) {
         return pw.Directionality(
           textDirection: textDirection,
           child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // قسم المعلومات الشخصية
+              // ===== Header =====
               pw.Container(
-                width: double.infinity,
-                padding: const pw.EdgeInsets.all(16),
-                color: PdfColors.blueGrey800,
+                alignment: pw.Alignment.center,
                 child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.center,
                   children: [
                     pw.Text(
                       data.personalInfo.name,
                       style: pw.TextStyle(
-                          fontSize: 24,
-                          color: PdfColors.white,
-                          fontWeight: pw.FontWeight.bold),
+                          fontWeight: pw.FontWeight.bold, fontSize: 26),
                     ),
                     pw.SizedBox(height: 5),
-                    pw.Text(
-                      data.personalInfo.jobTitle,
-                      style: const pw.TextStyle(
-                          fontSize: 16, color: PdfColors.white),
-                    ),
+                    pw.Text(data.personalInfo.jobTitle,
+                        style: const pw.TextStyle(
+                            fontSize: 16, color: PdfColors.grey700)),
                     pw.SizedBox(height: 5),
-                    pw.Text(
-                      data.personalInfo.email,
-                      style: const pw.TextStyle(
-                          fontSize: 12, color: PdfColors.blueGrey200),
-                    ),
+                    pw.Text(data.personalInfo.email,
+                        style: const pw.TextStyle(
+                            fontSize: 12, color: PdfColors.blue700)),
                   ],
                 ),
               ),
               pw.SizedBox(height: 20),
 
-              // قسم الخبرة العملية
-              pw.Text(
-                language == AppLanguage.arabic
-                    ? 'الخبرة العملية'
-                    : 'Work Experience',
-                style: pw.TextStyle(
-                  fontSize: 18,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.blueGrey800,
-                ),
-              ),
-              pw.Divider(color: PdfColors.blueGrey200, thickness: 2),
+              // ===== Body (Two Columns) =====
+              pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  // --- Left Column (Main Content) ---
+                  pw.Expanded(
+                    flex: 2, // يأخذ ثلثي المساحة
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        // Experience Section
+                        _buildSectionTitle(
+                            language == AppLanguage.arabic
+                                ? 'الخبرة العملية'
+                                : 'Work Experience',
+                            font,
+                            language),
+                        ...data.experiences.map(
+                            (exp) => _buildExperienceItem(exp, language, font)),
+                      ],
+                    ),
+                  ),
 
-              // عرض قائمة الخبرات
-              ...data.experiences
-                  .map((exp) => _buildExperienceItem(exp, language, font)),
+                  pw.SizedBox(width: 30),
+
+                  // --- Right Column (Side Bar) ---
+                  pw.Expanded(
+                    flex: 1, // يأخذ ثلث المساحة
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        // Skills Section
+                        _buildSectionTitle(
+                            language == AppLanguage.arabic
+                                ? 'المهارات'
+                                : 'Skills',
+                            font,
+                            language),
+                        ...data.skills.map((skill) => pw.Bullet(
+                            text: skill.name,
+                            style: const pw.TextStyle(fontSize: 11))),
+                        pw.SizedBox(height: 20),
+
+                        // Languages Section
+                        _buildSectionTitle(
+                            language == AppLanguage.arabic
+                                ? 'اللغات'
+                                : 'Languages',
+                            font,
+                            language),
+                        ...data.languages.map((lang) => pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Text(lang.name,
+                                    style: pw.TextStyle(
+                                        fontWeight: pw.FontWeight.bold,
+                                        fontSize: 11)),
+                                pw.Text(lang.proficiency,
+                                    style: const pw.TextStyle(
+                                        color: PdfColors.grey600,
+                                        fontSize: 10)),
+                                pw.SizedBox(height: 5),
+                              ],
+                            )),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
@@ -96,26 +155,8 @@ Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
 
 pw.Widget _buildExperienceItem(
     Experience exp, AppLanguage language, pw.Font font) {
-  // استخدام locale لتنسيق التاريخ بناءً على اللغة
   final locale = language == AppLanguage.english ? 'en_US' : 'ar_EG';
   final formatter = DateFormat('MMM yyyy', locale);
-
-  final positionWidget = pw.Text(
-    exp.position,
-    style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
-  );
-
-  final companyWidget = pw.Text(
-    exp.companyName,
-    style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey700),
-  );
-
-  final dateWidget = pw.Text(
-    '${formatter.format(exp.startDate)} - ${formatter.format(exp.endDate)}',
-    style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey600),
-    textDirection: pw.TextDirection.ltr, // التواريخ دائماً ltr
-  );
-
   return pw.Container(
     margin: const pw.EdgeInsets.only(bottom: 15),
     child: pw.Column(
@@ -124,16 +165,23 @@ pw.Widget _buildExperienceItem(
         pw.Row(
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
-            // الترتيب هنا سيتم عكسه تلقائياً في العربية بفضل Directionality
-            positionWidget,
-            dateWidget,
+            pw.Text(exp.position,
+                style:
+                    pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 13)),
+            pw.Text(
+              '${formatter.format(exp.startDate)} - ${formatter.format(exp.endDate)}',
+              textDirection: pw.TextDirection.ltr,
+              style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey600),
+            ),
           ],
         ),
-        companyWidget,
+        pw.Text(exp.companyName,
+            style: const pw.TextStyle(color: PdfColors.grey700, fontSize: 11)),
         pw.SizedBox(height: 5),
         pw.Text(
           exp.description,
-          style: const pw.TextStyle(fontSize: 12),
+          style: const pw.TextStyle(fontSize: 11, lineSpacing: 2),
+          textAlign: pw.TextAlign.justify,
         ),
       ],
     ),

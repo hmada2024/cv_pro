@@ -1,22 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_creation/models/cv_data.dart';
 
-// Enum لتعريف اللغات المتاحة
 enum AppLanguage { arabic, english }
 
-// Provider لتخزين اللغة المختارة حالياً
-// القيمة الافتراضية هي العربية
 final languageProvider =
     StateProvider<AppLanguage>((ref) => AppLanguage.arabic);
 
-// ==========================================================
-
-// الكود الأصلي يبقى كما هو
 class CvDataNotifier extends StateNotifier<CVData> {
   CvDataNotifier()
       : super(CVData(
           personalInfo: PersonalInfo(),
-          experiences: [], // نبدأ بقائمة خبرات فارغة
+          experiences: [],
+          skills: [],
+          languages: [],
         ));
 
   void updatePersonalInfo({String? name, String? jobTitle, String? email}) {
@@ -30,13 +26,18 @@ class CvDataNotifier extends StateNotifier<CVData> {
   }
 
   void addExperience(Experience exp) {
-    state = state.copyWith(
-      experiences: [...state.experiences, exp],
-    );
+    state = state.copyWith(experiences: [...state.experiences, exp]);
+  }
+
+  void addSkill(Skill skill) {
+    state = state.copyWith(skills: [...state.skills, skill]);
+  }
+
+  void addLanguage(Language lang) {
+    state = state.copyWith(languages: [...state.languages, lang]);
   }
 }
 
-// إنشاء الـ Provider الذي سيمكننا من الوصول للحالة من أي مكان
 final cvDataProvider = StateNotifierProvider<CvDataNotifier, CVData>((ref) {
   return CvDataNotifier();
 });

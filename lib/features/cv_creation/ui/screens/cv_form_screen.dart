@@ -9,13 +9,21 @@ class CvFormScreen extends ConsumerWidget {
   CvFormScreen({super.key});
 
   final _formKey = GlobalKey<FormState>();
+
+  // متحكمات الخبرة
   final _companyController = TextEditingController();
   final _positionController = TextEditingController();
   final _descriptionController = TextEditingController();
 
+  // متحكمات المهارات
+  final _skillController = TextEditingController();
+
+  // متحكمات اللغات
+  final _languageController = TextEditingController();
+  final _proficiencyController = TextEditingController();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // مراقبة التغييرات في بيانات الـ CV واللغة
     final cvData = ref.watch(cvDataProvider);
     final selectedLanguage = ref.watch(languageProvider);
 
@@ -31,7 +39,7 @@ class CvFormScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // قسم اختيار اللغة
+              // ... قسم اللغة والمعلومات الشخصية (لا تغيير هنا) ...
               Text('لغة السيرة الذاتية',
                   style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
@@ -53,75 +61,66 @@ class CvFormScreen extends ConsumerWidget {
                 },
               ),
               const Divider(height: 40),
-
-              // قسم المعلومات الشخصية
               Text('المعلومات الشخصية',
                   style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(
-                    labelText: 'الاسم الكامل', border: OutlineInputBorder()),
-                onChanged: (value) => ref
-                    .read(cvDataProvider.notifier)
-                    .updatePersonalInfo(name: value),
-              ),
+                  decoration: const InputDecoration(
+                      labelText: 'الاسم الكامل', border: OutlineInputBorder()),
+                  onChanged: (value) => ref
+                      .read(cvDataProvider.notifier)
+                      .updatePersonalInfo(name: value)),
               const SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(
-                    labelText: 'المسمى الوظيفي', border: OutlineInputBorder()),
-                onChanged: (value) => ref
-                    .read(cvDataProvider.notifier)
-                    .updatePersonalInfo(jobTitle: value),
-              ),
+                  decoration: const InputDecoration(
+                      labelText: 'المسمى الوظيفي',
+                      border: OutlineInputBorder()),
+                  onChanged: (value) => ref
+                      .read(cvDataProvider.notifier)
+                      .updatePersonalInfo(jobTitle: value)),
               const SizedBox(height: 10),
               TextFormField(
-                decoration: const InputDecoration(
-                    labelText: 'البريد الإلكتروني',
-                    border: OutlineInputBorder()),
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (value) => ref
-                    .read(cvDataProvider.notifier)
-                    .updatePersonalInfo(email: value),
-              ),
-              const Divider(height: 40),
+                  decoration: const InputDecoration(
+                      labelText: 'البريد الإلكتروني',
+                      border: OutlineInputBorder()),
+                  keyboardType: TextInputType.emailAddress,
+                  onChanged: (value) => ref
+                      .read(cvDataProvider.notifier)
+                      .updatePersonalInfo(email: value)),
 
-              // قسم إضافة خبرة
+              // ... قسم الخبرة (لا تغيير هنا) ...
+              const Divider(height: 40),
               Text('إضافة خبرة عملية',
                   style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 10),
               TextFormField(
-                controller: _companyController,
-                decoration: const InputDecoration(
-                    labelText: 'اسم الشركة', border: OutlineInputBorder()),
-              ),
+                  controller: _companyController,
+                  decoration: const InputDecoration(
+                      labelText: 'اسم الشركة', border: OutlineInputBorder())),
               const SizedBox(height: 10),
               TextFormField(
-                controller: _positionController,
-                decoration: const InputDecoration(
-                    labelText: 'المنصب', border: OutlineInputBorder()),
-              ),
+                  controller: _positionController,
+                  decoration: const InputDecoration(
+                      labelText: 'المنصب', border: OutlineInputBorder())),
               const SizedBox(height: 10),
               TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(
-                    labelText: 'الوصف', border: OutlineInputBorder()),
-                maxLines: 3,
-              ),
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                      labelText: 'الوصف', border: OutlineInputBorder()),
+                  maxLines: 3),
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   final newExperience = Experience(
-                    companyName: _companyController.text,
-                    position: _positionController.text,
-                    description: _descriptionController.text,
-                    startDate:
-                        DateTime.now().subtract(const Duration(days: 365)),
-                    endDate: DateTime.now(),
-                  );
+                      companyName: _companyController.text,
+                      position: _positionController.text,
+                      description: _descriptionController.text,
+                      startDate:
+                          DateTime.now().subtract(const Duration(days: 365)),
+                      endDate: DateTime.now());
                   ref
                       .read(cvDataProvider.notifier)
                       .addExperience(newExperience);
-
                   _companyController.clear();
                   _positionController.clear();
                   _descriptionController.clear();
@@ -130,15 +129,80 @@ class CvFormScreen extends ConsumerWidget {
                 },
                 child: const Text('إضافة خبرة'),
               ),
-              const Divider(height: 40),
 
-              // عرض الخبرات المضافة
-              Text('الخبرات المضافة (${cvData.experiences.length})',
-                  style: Theme.of(context).textTheme.titleMedium),
-              ...cvData.experiences.map((exp) => ListTile(
-                    title: Text(exp.position),
-                    subtitle: Text(exp.companyName),
-                  )),
+              // =================== قسم المهارات الجديد ===================
+              const Divider(height: 40),
+              Text('إضافة مهارة',
+                  style: Theme.of(context).textTheme.headlineSmall),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                      child: TextFormField(
+                          controller: _skillController,
+                          decoration: const InputDecoration(
+                              labelText: 'اسم المهارة (مثل: Flutter)',
+                              border: OutlineInputBorder()))),
+                  const SizedBox(width: 8),
+                  IconButton.filled(
+                    icon: const Icon(Icons.add),
+                    onPressed: () {
+                      if (_skillController.text.isNotEmpty) {
+                        ref
+                            .read(cvDataProvider.notifier)
+                            .addSkill(Skill(name: _skillController.text));
+                        _skillController.clear();
+                      }
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              // عرض المهارات المضافة
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: cvData.skills
+                    .map((skill) => Chip(label: Text(skill.name)))
+                    .toList(),
+              ),
+
+              // =================== قسم اللغات الجديد ===================
+              const Divider(height: 40),
+              Text('إضافة لغة',
+                  style: Theme.of(context).textTheme.headlineSmall),
+              const SizedBox(height: 10),
+              TextFormField(
+                  controller: _languageController,
+                  decoration: const InputDecoration(
+                      labelText: 'اللغة (مثل: الإنجليزية)',
+                      border: OutlineInputBorder())),
+              const SizedBox(height: 10),
+              TextFormField(
+                  controller: _proficiencyController,
+                  decoration: const InputDecoration(
+                      labelText: 'مستوى الإتقان (مثل: لغة أم، متقدم)',
+                      border: OutlineInputBorder())),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () {
+                  if (_languageController.text.isNotEmpty &&
+                      _proficiencyController.text.isNotEmpty) {
+                    ref.read(cvDataProvider.notifier).addLanguage(Language(
+                        name: _languageController.text,
+                        proficiency: _proficiencyController.text));
+                    _languageController.clear();
+                    _proficiencyController.clear();
+                  }
+                },
+                child: const Text('إضافة لغة'),
+              ),
+              const SizedBox(height: 10),
+              // عرض اللغات المضافة
+              ...cvData.languages.map((lang) => ListTile(
+                  title: Text(lang.name), subtitle: Text(lang.proficiency))),
+
+              const SizedBox(height: 80), // مسافة قبل الزر العائم
             ],
           ),
         ),

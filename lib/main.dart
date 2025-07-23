@@ -4,7 +4,6 @@ import 'package:cv_pro/features/cv_creation/ui/screens/cv_form_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
-  // ProviderScope هو ما يجعل Riverpod يعمل في التطبيق
   runApp(const ProviderScope(child: MyApp()));
 }
 
