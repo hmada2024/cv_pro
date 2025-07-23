@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 Future<Uint8List> generatePdf(CVData data) async {
   final pdf = pw.Document();
 
-  // تحميل الخط العربي من مجلد assets
   final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
   final arabicFont = pw.Font.ttf(fontData);
 
@@ -17,7 +16,7 @@ Future<Uint8List> generatePdf(CVData data) async {
       pageFormat: PdfPageFormat.a4,
       build: (pw.Context context) {
         return pw.Directionality(
-          textDirection: pw.TextDirection.rtl, // دعم الاتجاه من اليمين لليسار
+          textDirection: pw.TextDirection.rtl,
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -46,7 +45,8 @@ Future<Uint8List> generatePdf(CVData data) async {
                     pw.Text(
                       data.personalInfo.email,
                       style: const pw.TextStyle(
-                          fontSize: 12, color: PdfColors.blueGrey200),
+                          fontSize: 12,
+                          color: PdfColors.blueGrey200),
                     ),
                   ],
                 ),
@@ -62,9 +62,7 @@ Future<Uint8List> generatePdf(CVData data) async {
               pw.Divider(color: PdfColors.blueGrey200, thickness: 2),
 
               // عرض قائمة الخبرات
-              ...data.experiences
-                  .map((exp) => _buildExperienceItem(exp))
-                  ,
+              ...data.experiences.map((exp) => _buildExperienceItem(exp)),
             ],
           ),
         );
@@ -75,7 +73,6 @@ Future<Uint8List> generatePdf(CVData data) async {
   return pdf.save();
 }
 
-// دالة مساعدة لبناء عنصر الخبرة
 pw.Widget _buildExperienceItem(Experience exp) {
   final formatter = DateFormat('yyyy/MM');
   return pw.Container(
@@ -89,15 +86,16 @@ pw.Widget _buildExperienceItem(Experience exp) {
           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
           children: [
             pw.Text(exp.companyName,
-                style: pw.TextStyle(fontSize: 14, color: PdfColors.grey700)),
+                style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey700)),
             pw.Text(
               '${formatter.format(exp.startDate)} - ${formatter.format(exp.endDate)}',
-              style: pw.TextStyle(fontSize: 12, color: PdfColors.grey600),
+              style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey600),
             ),
           ],
         ),
         pw.SizedBox(height: 5),
-        pw.Text(exp.description, style: const pw.TextStyle(fontSize: 12)),
+        pw.Text(exp.description,
+            style: const pw.TextStyle(fontSize: 12)), // const مضافة
       ],
     ),
   );
