@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
               GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
-      home: CvFormScreen(),
+      home: const CvFormScreen(),
     );
   }
 }
