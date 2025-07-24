@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_data_provider.dart';
+import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:intl/intl.dart';
 
 // Helper function to build section titles

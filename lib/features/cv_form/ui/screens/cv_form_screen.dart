@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_data_provider.dart';
+import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/pdf_generation/pdf_generator.dart';
 import 'package:printing/printing.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';

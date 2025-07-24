@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_creation/ui/screens/cv_form_screen.dart';
+import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() {
