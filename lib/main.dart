@@ -16,13 +16,20 @@ class MyApp extends StatelessWidget {
       title: 'CV Pro',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
-        textTheme: GoogleFonts.cairoTextTheme(Theme.of(context).textTheme),
-        appBarTheme: AppBarTheme(
-          titleTextStyle:
-              GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.bold),
-        ),
-      ),
+          primarySwatch: Colors.indigo,
+          textTheme: GoogleFonts.cairoTextTheme(Theme.of(context).textTheme),
+          appBarTheme: AppBarTheme(
+            titleTextStyle:
+                GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          inputDecorationTheme: const InputDecorationTheme(
+            border: OutlineInputBorder(),
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+            ),
+          )),
       home: const CvFormScreen(),
     );
   }

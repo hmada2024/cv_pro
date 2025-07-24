@@ -1,19 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
+// مزود حالة بسيط لتحديد اللغة المختارة
 enum AppLanguage { arabic, english }
 
 final languageProvider =
     StateProvider<AppLanguage>((ref) => AppLanguage.arabic);
 
-class CvDataNotifier extends StateNotifier<CVData> {
-  CvDataNotifier()
-      : super(CVData(
-          personalInfo: PersonalInfo(),
-          experiences: [],
-          skills: [],
-          languages: [],
-        ));
+// الـ Notifier المسؤول عن إدارة حالة نموذج السيرة الذاتية بالكامل
+class CvFormNotifier extends StateNotifier<CVData> {
+  // يبدأ بحالة أولية فارغة باستخدام الدالة المصنعية
+  CvFormNotifier() : super(CVData.initial());
 
   void updatePersonalInfo({String? name, String? jobTitle, String? email}) {
     state = state.copyWith(
@@ -38,6 +35,7 @@ class CvDataNotifier extends StateNotifier<CVData> {
   }
 }
 
-final cvDataProvider = StateNotifierProvider<CvDataNotifier, CVData>((ref) {
-  return CvDataNotifier();
+// الـ Provider الذي يوفر الـ Notifier وحالته للتطبيق
+final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
+  return CvFormNotifier();
 });
