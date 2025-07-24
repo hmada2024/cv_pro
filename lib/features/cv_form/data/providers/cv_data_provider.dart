@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_creation/models/cv_data.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
 enum AppLanguage { arabic, english }
 

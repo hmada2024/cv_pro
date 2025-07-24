@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_creation/providers/cv_data_provider.dart';
+import 'package:cv_pro/features/cv_form/data/providers/cv_data_provider.dart';
 import 'package:cv_pro/features/pdf_generation/pdf_generator.dart';
 import 'package:printing/printing.dart';
-import 'package:cv_pro/features/cv_creation/models/cv_data.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
 class CvFormScreen extends ConsumerStatefulWidget {
   const CvFormScreen({super.key});
