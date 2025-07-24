@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -5,8 +6,8 @@ import 'package:cv_pro/features/cv_creation/models/cv_data.dart';
 import 'package:cv_pro/features/cv_creation/providers/cv_data_provider.dart';
 import 'package:intl/intl.dart';
 
-// هذه الدالة المساعدة لم تتغير
-pw.Widget _buildSectionTitle(String title, pw.Font font, AppLanguage language) {
+// Helper function to build section titles
+pw.Widget _buildSectionTitle(String title, pw.Font font) {
   return pw.Column(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
@@ -25,7 +26,7 @@ pw.Widget _buildSectionTitle(String title, pw.Font font, AppLanguage language) {
   );
 }
 
-// هذه الدالة تم تعديلها لإضافة الخط لوصف الخبرة
+// Helper function to build a single experience item
 pw.Widget _buildExperienceItem(
     Experience exp, AppLanguage language, pw.Font font) {
   final locale = language == AppLanguage.english ? 'en_US' : 'ar_EG';
@@ -41,10 +42,7 @@ pw.Widget _buildExperienceItem(
             pw.Text(
               exp.position,
               style: pw.TextStyle(
-                fontWeight: pw.FontWeight.bold,
-                fontSize: 13,
-                font: font, // تم إضافة الخط هنا أيضاً للاحتياط
-              ),
+                  fontWeight: pw.FontWeight.bold, fontSize: 13, font: font),
             ),
             pw.Text(
               '${formatter.format(exp.startDate)} - ${formatter.format(exp.endDate)}',
@@ -55,17 +53,12 @@ pw.Widget _buildExperienceItem(
         ),
         pw.Text(
           exp.companyName,
-          style: pw.TextStyle(
-            color: PdfColors.grey700,
-            fontSize: 11,
-            font: font, // تم إضافة الخط هنا أيضاً للاحتياط
-          ),
+          style:
+              pw.TextStyle(color: PdfColors.grey700, fontSize: 11, font: font),
         ),
         pw.SizedBox(height: 5),
         pw.Text(
           exp.description,
-          // <<<<<<<<< الإصلاح الرئيسي الأول هنا >>>>>>>>>
-          // تم تمرير الخط العربي لوصف الخبرة لكي يظهر في الـ PDF
           style: pw.TextStyle(fontSize: 11, lineSpacing: 2, font: font),
           textAlign: pw.TextAlign.justify,
         ),
@@ -74,57 +67,59 @@ pw.Widget _buildExperienceItem(
   );
 }
 
-// هذه هي الدالة الرئيسية التي تم إصلاحها
+// Main PDF generation function
 Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
   final pdf = pw.Document();
-  final pw.Font font, boldFont;
+  final pw.Font font;
   final pw.TextDirection textDirection;
 
   if (language == AppLanguage.arabic) {
     final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
     font = pw.Font.ttf(fontData);
-    boldFont = pw.Font.ttf(fontData); // يمكنك استخدام نفس الخط للعادي والـ bold
     textDirection = pw.TextDirection.rtl;
   } else {
-    font = pw.Font.helvetica();
-    boldFont = pw.Font.helveticaBold();
+    font =
+        await PdfGoogleFonts.latoRegular(); // Using a Google font for English
     textDirection = pw.TextDirection.ltr;
   }
 
+  // A simple test to make sure data is arriving correctly
+  debugPrint("Generating PDF with ${data.experiences.length} experiences.");
+  debugPrint("Generating PDF with ${data.skills.length} skills.");
+
   pdf.addPage(
     pw.Page(
-      theme: pw.ThemeData.withFont(base: font, bold: boldFont),
+      theme: pw.ThemeData.withFont(base: font, bold: font),
       pageFormat: PdfPageFormat.a4,
       margin: const pw.EdgeInsets.all(30),
       build: (pw.Context context) {
         return pw.Directionality(
           textDirection: textDirection,
           child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              // قسم المعلومات الشخصية (لا يحتاج لتغيير كبير)
+              // --- Header Section ---
               pw.Container(
                 alignment: pw.Alignment.center,
                 child: pw.Column(
                   children: [
-                    pw.Text(
-                      data.personalInfo.name,
-                      style: pw.TextStyle(
-                          font: font,
-                          fontWeight: pw.FontWeight.bold,
-                          fontSize: 26),
-                    ),
+                    pw.Text(data.personalInfo.name,
+                        style: pw.TextStyle(
+                            font: font,
+                            fontWeight: pw.FontWeight.bold,
+                            fontSize: 26)),
                     pw.SizedBox(height: 5),
-                    pw.Text(
-                      data.personalInfo.jobTitle,
-                      style: pw.TextStyle(
-                          font: font, fontSize: 16, color: PdfColors.grey700),
-                    ),
+                    pw.Text(data.personalInfo.jobTitle,
+                        style: pw.TextStyle(
+                            font: font,
+                            fontSize: 16,
+                            color: PdfColors.grey700)),
                     pw.SizedBox(height: 5),
-                    pw.Text(
-                      data.personalInfo.email,
-                      style: pw.TextStyle(
-                          font: font, fontSize: 12, color: PdfColors.blue700),
-                    ),
+                    pw.Text(data.personalInfo.email,
+                        style: pw.TextStyle(
+                            font: font,
+                            fontSize: 12,
+                            color: PdfColors.blue700)),
                   ],
                 ),
               ),
@@ -132,6 +127,7 @@ Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
               pw.Row(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
+                  // --- Left Column (Experience) ---
                   pw.Expanded(
                     flex: 2,
                     child: pw.Column(
@@ -141,8 +137,7 @@ Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
                             language == AppLanguage.arabic
                                 ? 'الخبرة العملية'
                                 : 'Work Experience',
-                            font,
-                            language),
+                            font),
                         ...data.experiences.map(
                             (exp) => _buildExperienceItem(exp, language, font)),
                       ],
@@ -158,49 +153,32 @@ Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
                             language == AppLanguage.arabic
                                 ? 'المهارات'
                                 : 'Skills',
-                            font,
-                            language),
-                        if (data.skills.isNotEmpty)
-                          ...data.skills.map(
-                            (skill) => pw.Bullet(
+                            font),
+                        ...data.skills.map((skill) => pw.Bullet(
                               text: skill.name,
-                              // <<<<<<<<< الإصلاح الرئيسي الثاني هنا >>>>>>>>>
-                              // تم تمرير الخط العربي للمهارات
                               style: pw.TextStyle(fontSize: 11, font: font),
-                            ),
-                          ),
+                            )),
                         pw.SizedBox(height: 20),
                         _buildSectionTitle(
                             language == AppLanguage.arabic
                                 ? 'اللغات'
                                 : 'Languages',
-                            font,
-                            language),
-                        if (data.languages.isNotEmpty)
-                          ...data.languages.map(
-                            (lang) => pw.Column(
-                              crossAxisAlignment: pw.CrossAxisAlignment.start,
-                              children: [
-                                pw.Text(
-                                  lang.name,
-                                  // <<<<<<<<< الإصلاح الرئيسي الثالث هنا >>>>>>>>>
-                                  // تم تمرير الخط العربي للغات
-                                  style: pw.TextStyle(
-                                      fontWeight: pw.FontWeight.bold,
-                                      fontSize: 11,
-                                      font: font),
-                                ),
-                                pw.Text(
-                                  lang.proficiency,
-                                  style: pw.TextStyle(
-                                      color: PdfColors.grey600,
-                                      fontSize: 10,
-                                      font: font),
-                                ),
-                                pw.SizedBox(height: 5),
-                              ],
-                            ),
-                          ),
+                            font),
+                        ...data.languages.map((lang) => pw.Column(
+                                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                children: [
+                                  pw.Text(lang.name,
+                                      style: pw.TextStyle(
+                                          fontWeight: pw.FontWeight.bold,
+                                          fontSize: 11,
+                                          font: font)),
+                                  pw.Text(lang.proficiency,
+                                      style: pw.TextStyle(
+                                          color: PdfColors.grey600,
+                                          fontSize: 10,
+                                          font: font)),
+                                  pw.SizedBox(height: 5),
+                                ])),
                       ],
                     ),
                   ),
@@ -214,4 +192,13 @@ Future<Uint8List> generatePdf(CVData data, AppLanguage language) async {
   );
 
   return pdf.save();
+}
+
+// Added this to avoid a direct dependency on printing/google_fonts in this file.
+// In a real app, this might come from a service.
+class PdfGoogleFonts {
+  static Future<pw.Font> latoRegular() async {
+    final fontData = await rootBundle.load("assets/fonts/Lato-Regular.ttf");
+    return pw.Font.ttf(fontData);
+  }
 }
