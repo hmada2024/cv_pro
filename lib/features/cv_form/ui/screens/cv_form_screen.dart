@@ -17,7 +17,6 @@ class CvFormScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('محرر السيرة الذاتية'),
       ),
-      // استخدام SingleChildScrollView لضمان أن الشاشة قابلة للتمرير
       body: const SingleChildScrollView(
         // استخدام padding لتوفير هوامش حول المحتوى
         padding: EdgeInsets.all(16.0),
