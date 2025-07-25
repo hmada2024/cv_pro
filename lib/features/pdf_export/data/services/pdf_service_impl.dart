@@ -3,7 +3,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/classic_template_builder.dart';
+import 'package:cv_pro/features/pdf_export/templates/classic/classic_template_builder.dart';
 import 'package:cv_pro/features/pdf_export/templates/modern/modern_template_builder.dart';
 
 enum CvTemplate { classic, modern }
