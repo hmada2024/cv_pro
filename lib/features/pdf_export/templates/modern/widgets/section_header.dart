@@ -1,34 +1,40 @@
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../modern_template_colors.dart';
 
-enum HeaderType { forLeftColumn, forRightColumn }
-
+// ✅✅ تم التحديث: إعادة هيكلة كاملة للويدجت ليكون أكثر مرونة وإعادة استخدام ✅✅
 class SectionHeader extends pw.StatelessWidget {
   final String title;
-  final HeaderType type;
+  final PdfColor titleColor;
+  final PdfColor lineColor;
+  final double fontSize;
+  final double lineWidth;
 
-  SectionHeader({required this.title, required this.type});
+  SectionHeader({
+    required this.title,
+    required this.titleColor,
+    required this.lineColor,
+    this.fontSize = 16,
+    this.lineWidth = 50,
+  });
 
   @override
   pw.Widget build(pw.Context context) {
-    // ✅✅ تم التصحيح: إزالة المتغيرات غير المستخدمة واستخدام الشروط مباشرة ✅✅
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text(
           title,
           style: pw.TextStyle(
-            color: type == HeaderType.forLeftColumn
-                ? ModernTemplateColors.lightText
-                : ModernTemplateColors.primary,
+            color: titleColor,
             fontWeight: pw.FontWeight.bold,
-            fontSize: type == HeaderType.forLeftColumn ? 14 : 16,
+            fontSize: fontSize,
           ),
         ),
         pw.Container(
           height: 2,
-          width: type == HeaderType.forLeftColumn ? 30 : 50,
-          color: ModernTemplateColors.accent,
+          width: lineWidth,
+          color: lineColor,
           margin: const pw.EdgeInsets.only(top: 4, bottom: 12),
         ),
       ],

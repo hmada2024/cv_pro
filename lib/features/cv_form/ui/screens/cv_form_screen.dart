@@ -11,7 +11,6 @@ import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
 
-  // ✅ الدالة الآن أبسط، وظيفتها فقط عرض واجهة
   void _showTemplatePicker(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
@@ -21,26 +20,26 @@ class CvFormScreen extends ConsumerWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // ✅✅ تم حذف القالب الكلاسيكي ✅✅
               ListTile(
-                leading: const Icon(Icons.article),
-                title: const Text('Classic'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  // ✅ استدعاء مباشر لدالة الـ Notifier
-                  ref
-                      .read(cvFormProvider.notifier)
-                      .generateAndPreviewPdf(CvTemplate.classic);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.dashboard),
+                leading: const Icon(Icons.dashboard_customize_outlined),
                 title: const Text('Modern'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  // ✅ استدعاء مباشر لدالة الـ Notifier
                   ref
                       .read(cvFormProvider.notifier)
                       .generateAndPreviewPdf(CvTemplate.modern);
+                },
+              ),
+              // ✅✅ تم إضافة القالب الجديد ✅✅
+              ListTile(
+                leading: const Icon(Icons.business_center_outlined),
+                title: const Text('Corporate Blue'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  ref
+                      .read(cvFormProvider.notifier)
+                      .generateAndPreviewPdf(CvTemplate.corporateBlue);
                 },
               ),
             ],
@@ -49,8 +48,6 @@ class CvFormScreen extends ConsumerWidget {
       },
     );
   }
-
-  // ✅✅ تم حذف دالة _generatePdf بالكامل من هنا ✅✅
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

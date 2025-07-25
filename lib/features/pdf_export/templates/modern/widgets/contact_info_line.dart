@@ -1,3 +1,4 @@
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../modern_template_colors.dart';
 
@@ -5,11 +6,15 @@ class ContactInfoLine extends pw.StatelessWidget {
   final pw.IconData iconData;
   final String text;
   final pw.Font iconFont;
+  final PdfColor textColor;
+  final PdfColor iconColor;
 
   ContactInfoLine({
     required this.iconData,
     required this.text,
     required this.iconFont,
+    this.textColor = ModernTemplateColors.lightText,
+    this.iconColor = ModernTemplateColors.accent,
   });
 
   @override
@@ -20,7 +25,7 @@ class ContactInfoLine extends pw.StatelessWidget {
         children: [
           pw.Icon(
             iconData,
-            color: ModernTemplateColors.accent,
+            color: iconColor, // استخدام اللون الممرر
             font: iconFont,
             size: 14,
           ),
@@ -28,7 +33,7 @@ class ContactInfoLine extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               text,
-              style: const pw.TextStyle(color: ModernTemplateColors.lightText, fontSize: 9),
+              style: pw.TextStyle(color: textColor, fontSize: 9), // استخدام اللون الممرر
             ),
           ),
         ],

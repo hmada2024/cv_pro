@@ -36,26 +36,58 @@ class LeftColumn extends pw.StatelessWidget {
             ),
           if (profileImage != null) pw.SizedBox(height: 25),
 
-          SectionHeader(title: 'CONTACT', type: HeaderType.forLeftColumn),
-          if (data.personalInfo.phone != null && data.personalInfo.phone!.isNotEmpty)
-            ContactInfoLine(iconData: const pw.IconData(0xe0b0), text: data.personalInfo.phone!, iconFont: iconFont),
-          ContactInfoLine(iconData: const pw.IconData(0xe158), text: data.personalInfo.email, iconFont: iconFont),
-          if (data.personalInfo.address != null && data.personalInfo.address!.isNotEmpty)
-            ContactInfoLine(iconData: const pw.IconData(0xe55f), text: data.personalInfo.address!, iconFont: iconFont),
+          // ✅✅ تم التحديث: استخدام SectionHeader الجديد ✅✅
+          SectionHeader(
+              title: 'CONTACT',
+              titleColor: ModernTemplateColors.lightText,
+              lineColor: ModernTemplateColors.accent,
+              fontSize: 14,
+              lineWidth: 30),
+          if (data.personalInfo.phone != null &&
+              data.personalInfo.phone!.isNotEmpty)
+            ContactInfoLine(
+                iconData: const pw.IconData(0xe0b0),
+                text: data.personalInfo.phone!,
+                iconFont: iconFont),
+          ContactInfoLine(
+              iconData: const pw.IconData(0xe158),
+              text: data.personalInfo.email,
+              iconFont: iconFont),
+          if (data.personalInfo.address != null &&
+              data.personalInfo.address!.isNotEmpty)
+            ContactInfoLine(
+                iconData: const pw.IconData(0xe55f),
+                text: data.personalInfo.address!,
+                iconFont: iconFont),
           pw.SizedBox(height: 20),
 
           if (data.education.isNotEmpty)
-            SectionHeader(title: 'EDUCATION', type: HeaderType.forLeftColumn),
+            SectionHeader(
+                title: 'EDUCATION',
+                titleColor: ModernTemplateColors.lightText,
+                lineColor: ModernTemplateColors.accent,
+                fontSize: 14,
+                lineWidth: 30),
           ...data.education.map((edu) => EducationItem(edu)),
           pw.SizedBox(height: 20),
 
           if (data.skills.isNotEmpty)
-            SectionHeader(title: 'SKILLS', type: HeaderType.forLeftColumn),
+            SectionHeader(
+                title: 'SKILLS',
+                titleColor: ModernTemplateColors.lightText,
+                lineColor: ModernTemplateColors.accent,
+                fontSize: 14,
+                lineWidth: 30),
           ...data.skills.map((skill) => SkillItem(skill.name)),
           pw.SizedBox(height: 20),
 
           if (data.languages.isNotEmpty)
-            SectionHeader(title: 'LANGUAGES', type: HeaderType.forLeftColumn),
+            SectionHeader(
+                title: 'LANGUAGES',
+                titleColor: ModernTemplateColors.lightText,
+                lineColor: ModernTemplateColors.accent,
+                fontSize: 14,
+                lineWidth: 30),
           ...data.languages.map((lang) => LanguageItem(lang)),
         ],
       ),
