@@ -11,11 +11,27 @@ class SkillSection extends ConsumerStatefulWidget {
 
 class _SkillSectionState extends ConsumerState<SkillSection> {
   final _skillController = TextEditingController();
+  // ✅✅ تم التحديث: إضافة متغير حالة لتخزين قيمة الـ Slider ✅✅
+  double _currentSkillLevel = 50.0;
 
   @override
   void dispose() {
     _skillController.dispose();
     super.dispose();
+  }
+
+  // ✅✅ تم التحديث: دالة لإضافة المهارة ✅✅
+  void _addSkill() {
+    if (_skillController.text.isNotEmpty) {
+      ref.read(cvFormProvider.notifier).addSkill(
+            name: _skillController.text,
+            level: _currentSkillLevel.round(),
+          );
+      _skillController.clear();
+      setState(() {
+        _currentSkillLevel = 50.0; // Reset slider
+      });
+    }
   }
 
   @override
@@ -39,32 +55,61 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               controller: _skillController,
               decoration: const InputDecoration(
                   labelText: 'Skill Name (e.g., Flutter)'),
-              onFieldSubmitted: (value) {
-                // ✅✅ تم التصحيح: استدعاء الدالة بالطريقة الجديدة ✅✅
-                ref
-                    .read(cvFormProvider.notifier)
-                    .addSkill(name: _skillController.text);
-                _skillController.clear();
-              },
+              onFieldSubmitted: (value) => _addSkill(),
             ),
-            const SizedBox(height: 16),
+            // ✅✅ تم التحديث: إضافة Slider ومؤشر النسبة ✅✅
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  flex: 5,
+                  child: Slider(
+                    value: _currentSkillLevel,
+                    min: 0,
+                    max: 100,
+                    divisions: 100,
+                    label: '${_currentSkillLevel.round()}%',
+                    onChanged: (double value) {
+                      setState(() {
+                        _currentSkillLevel = value;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    '${_currentSkillLevel.round()}%',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             ElevatedButton(
-              onPressed: () {
-                // ✅✅ تم التصحيح: استدعاء الدالة بالطريقة الجديدة ✅✅
-                ref
-                    .read(cvFormProvider.notifier)
-                    .addSkill(name: _skillController.text);
-                _skillController.clear();
-              },
+              onPressed: _addSkill,
               child: const Text('Add Skill'),
             ),
             if (skills.isNotEmpty) const SizedBox(height: 16),
             Wrap(
               spacing: 8.0,
               runSpacing: 4.0,
+              // ✅✅ تم التحديث: عرض المستوى بجانب اسم المهارة ✅✅
               children: skills
                   .map((skill) => Chip(
-                        label: Text(skill.name),
+                        label: Text('${skill.name} (${skill.level}%)'),
+                        avatar: CircleAvatar(
+                          backgroundColor: Colors.blueGrey.shade200,
+                          child: Text(
+                            '${skill.level}',
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.white),
+                          ),
+                        ),
                         backgroundColor: Colors.blueGrey.shade50,
                         labelStyle: const TextStyle(color: Colors.blueGrey),
                       ))

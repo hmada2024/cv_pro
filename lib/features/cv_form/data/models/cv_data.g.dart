@@ -3064,8 +3064,13 @@ const SkillSchema = Schema(
   name: r'Skill',
   id: 4092444674663721600,
   properties: {
-    r'name': PropertySchema(
+    r'level': PropertySchema(
       id: 0,
+      name: r'level',
+      type: IsarType.long,
+    ),
+    r'name': PropertySchema(
+      id: 1,
       name: r'name',
       type: IsarType.string,
     )
@@ -3092,7 +3097,8 @@ void _skillSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.name);
+  writer.writeLong(offsets[0], object.level);
+  writer.writeString(offsets[1], object.name);
 }
 
 Skill _skillDeserialize(
@@ -3102,7 +3108,8 @@ Skill _skillDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Skill();
-  object.name = reader.readString(offsets[0]);
+  object.level = reader.readLong(offsets[0]);
+  object.name = reader.readString(offsets[1]);
   return object;
 }
 
@@ -3114,6 +3121,8 @@ P _skillDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readLong(offset)) as P;
+    case 1:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -3121,6 +3130,58 @@ P _skillDeserializeProp<P>(
 }
 
 extension SkillQueryFilter on QueryBuilder<Skill, Skill, QFilterCondition> {
+  QueryBuilder<Skill, Skill, QAfterFilterCondition> levelEqualTo(int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'level',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Skill, Skill, QAfterFilterCondition> levelGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'level',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Skill, Skill, QAfterFilterCondition> levelLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'level',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Skill, Skill, QAfterFilterCondition> levelBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'level',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Skill, Skill, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,

@@ -55,8 +55,6 @@ class PersonalInfo {
   final String summary;
   final String? phone;
   final String? address;
-
-  // ✅✅ تم التصحيح: تغيير النوع إلى String وإزالة @ignore ✅✅
   final String? profileImagePath;
 
   PersonalInfo({
@@ -66,7 +64,7 @@ class PersonalInfo {
     this.summary = '',
     this.phone = '',
     this.address = '',
-    this.profileImagePath, // ✅
+    this.profileImagePath,
   });
 
   PersonalInfo copyWith({
@@ -76,7 +74,7 @@ class PersonalInfo {
     String? summary,
     String? phone,
     String? address,
-    String? profileImagePath, // ✅
+    String? profileImagePath,
   }) {
     return PersonalInfo(
       name: name ?? this.name,
@@ -85,12 +83,10 @@ class PersonalInfo {
       summary: summary ?? this.summary,
       phone: phone ?? this.phone,
       address: address ?? this.address,
-      profileImagePath: profileImagePath ?? this.profileImagePath, // ✅
+      profileImagePath: profileImagePath ?? this.profileImagePath,
     );
   }
 }
-
-// ... باقي الكلاسات (Education, Experience, etc.) تبقى كما هي ...
 
 @embedded
 class Education {
@@ -142,12 +138,17 @@ class Experience {
 @embedded
 class Skill {
   late String name;
+  // ✅✅ تم التحديث: إضافة مستوى المهارة ✅✅
+  late int level;
 
   Skill() {
     name = '';
+    // ✅✅ تم التحديث: إعطاء قيمة افتراضية ✅✅
+    level = 50;
   }
 
-  Skill.create({required this.name});
+  // ✅✅ تم التحديث: تحديث المنشئ ✅✅
+  Skill.create({required this.name, required this.level});
 }
 
 @embedded

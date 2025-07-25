@@ -35,7 +35,7 @@ class CvFormNotifier extends StateNotifier<CVData> {
     String? summary,
     String? phone,
     String? address,
-    String? profileImagePath, // ✅ تم التغيير إلى String
+    String? profileImagePath,
   }) {
     state = state.copyWith(
       personalInfo: state.personalInfo.copyWith(
@@ -45,7 +45,7 @@ class CvFormNotifier extends StateNotifier<CVData> {
         summary: summary,
         phone: phone,
         address: address,
-        profileImagePath: profileImagePath, // ✅
+        profileImagePath: profileImagePath,
       ),
     );
     _saveStateToDb();
@@ -82,10 +82,11 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
-  void addSkill({required String name}) {
+  // ✅✅ تم التحديث: تعديل الدالة لاستقبال المستوى ✅✅
+  void addSkill({required String name, required int level}) {
     if (name.isNotEmpty) {
-      state =
-          state.copyWith(skills: [...state.skills, Skill.create(name: name)]);
+      state = state.copyWith(
+          skills: [...state.skills, Skill.create(name: name, level: level)]);
       _saveStateToDb();
     }
   }
@@ -104,7 +105,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
     final pickedFile =
         await _imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      // ✅✅ تم التصحيح: حفظ المسار كنص ✅✅
       updatePersonalInfo(profileImagePath: pickedFile.path);
     }
   }
