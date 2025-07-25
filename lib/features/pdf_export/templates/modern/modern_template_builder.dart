@@ -1,11 +1,10 @@
-// ✅✅ تم التصحيح: حذف 'dart:io' غير المستخدم ✅✅
+import 'dart:io';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
-// ألوان القالب
-const PdfColor primaryColor = PdfColor.fromInt(0xFF2C3E50); // أزرق داكن
-const PdfColor accentColor = PdfColor.fromInt(0xFF3498DB); // أزرق أفتح
+const PdfColor primaryColor = PdfColor.fromInt(0xFF2C3E50);
+const PdfColor accentColor = PdfColor.fromInt(0xFF3498DB);
 const PdfColor lightGreyColor = PdfColor.fromInt(0xFFBDC3C7);
 const PdfColor darkGreyColor = PdfColor.fromInt(0xFF7F8C8D);
 
@@ -14,9 +13,9 @@ Future<pw.Widget> buildModernTemplate({
   required pw.Font iconFont,
 }) async {
   pw.ImageProvider? profileImage;
-  // الصورة تحتاج إلى dart:io، لذلك سنعيد الاستيراد ولكن سنستخدمه بشكل مشروط
-  if (data.personalInfo.profileImage != null) {
-      final imageFile = data.personalInfo.profileImage!;
+  // ✅✅ تم التصحيح: التحقق من مسار الصورة وقراءته عند الحاجة ✅✅
+  if (data.personalInfo.profileImagePath != null) {
+      final imageFile = File(data.personalInfo.profileImagePath!);
       if (await imageFile.exists()) {
           final imageBytes = await imageFile.readAsBytes();
           profileImage = pw.MemoryImage(imageBytes);
@@ -26,7 +25,6 @@ Future<pw.Widget> buildModernTemplate({
   return pw.Row(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
-      // --- العمود الأيسر (الجانبي) ---
       pw.Expanded(
         flex: 1,
         child: pw.Container(
@@ -70,7 +68,6 @@ Future<pw.Widget> buildModernTemplate({
           ),
         ),
       ),
-      // --- العمود الأيمن (الرئيسي) ---
       pw.Expanded(
         flex: 2,
         child: pw.Container(
@@ -113,7 +110,8 @@ Future<pw.Widget> buildModernTemplate({
   );
 }
 
-// -- ويدجتس مساعدة للقالب --
+// ... باقي الدوال المساعدة تبقى كما هي ...
+
 pw.Widget _sideBarHeader(String text) {
   return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -161,7 +159,6 @@ pw.Widget _contactInfo(
 
 pw.Widget _educationInfo(Education edu) {
   return pw.Padding(
-    // ✅✅ تم التصحيح: كتابة EdgeInsets.only بشكل صحيح ✅✅
     padding: const pw.EdgeInsets.only(bottom: 10),
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -179,7 +176,6 @@ pw.Widget _educationInfo(Education edu) {
 
 pw.Widget _skillItem(String text) {
   return pw.Padding(
-    // ✅✅ تم التصحيح: كتابة EdgeInsets.only بشكل صحيح ✅✅
     padding: const pw.EdgeInsets.only(bottom: 4),
     child: pw.Row(
       children: [
@@ -194,7 +190,6 @@ pw.Widget _skillItem(String text) {
 
 pw.Widget _languageItem(Language lang) {
   return pw.Padding(
-      // ✅✅ تم التصحيح: كتابة EdgeInsets.only بشكل صحيح ✅✅
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text('${lang.name} (${lang.proficiency})',
           style: const pw.TextStyle(color: PdfColors.white, fontSize: 10)));
@@ -202,7 +197,6 @@ pw.Widget _languageItem(Language lang) {
 
 pw.Widget _experienceItem(Experience exp) {
   return pw.Padding(
-    // ✅✅ تم التصحيح: كتابة EdgeInsets.only بشكل صحيح ✅✅
     padding: const pw.EdgeInsets.only(bottom: 20),
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,

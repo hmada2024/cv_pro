@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/core/services/pdf_service.dart';
@@ -10,10 +9,9 @@ import 'package:printing/printing.dart';
 
 class CvFormNotifier extends StateNotifier<CVData> {
   final StorageService _storageService;
-  final PdfService _pdfService; // ✅ حقن خدمة الـ PDF
-  final ImagePicker _imagePicker = ImagePicker(); // ✅ إنشاء منتقي الصور
+  final PdfService _pdfService;
+  final ImagePicker _imagePicker = ImagePicker();
 
-  // ✅ تعديل المُنشئ ليقبل الخدمات المطلوبة
   CvFormNotifier(this._storageService, this._pdfService)
       : super(CVData.initial()) {
     _loadDataFromDb();
@@ -30,8 +28,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
     await _storageService.saveCV(state);
   }
 
-  // --- دوال تحديث الحالة ---
-
   void updatePersonalInfo({
     String? name,
     String? jobTitle,
@@ -39,7 +35,7 @@ class CvFormNotifier extends StateNotifier<CVData> {
     String? summary,
     String? phone,
     String? address,
-    File? profileImage,
+    String? profileImagePath, // ✅ تم التغيير إلى String
   }) {
     state = state.copyWith(
       personalInfo: state.personalInfo.copyWith(
@@ -49,15 +45,12 @@ class CvFormNotifier extends StateNotifier<CVData> {
         summary: summary,
         phone: phone,
         address: address,
-        profileImage: profileImage,
+        profileImagePath: profileImagePath, // ✅
       ),
     );
     _saveStateToDb();
   }
 
-  // ✅✅✅ المنطق الجديد هنا ✅✅✅
-
-  /// يضيف خبرة جديدة بناءً على البيانات الأولية من الواجهة
   void addExperience({
     required String position,
     required String companyName,
@@ -76,7 +69,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
-  /// يضيف تعليماً جديداً بناءً على البيانات الأولية من الواجهة
   void addEducation({required String school, required String degree}) {
     if (school.isNotEmpty && degree.isNotEmpty) {
       final newEducation = Education.create(
@@ -108,24 +100,21 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
-  /// يفتح معرض الصور ويحدث الصورة الشخصية
   Future<void> pickProfileImage() async {
     final pickedFile =
         await _imagePicker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      updatePersonalInfo(profileImage: File(pickedFile.path));
+      // ✅✅ تم التصحيح: حفظ المسار كنص ✅✅
+      updatePersonalInfo(profileImagePath: pickedFile.path);
     }
   }
 
-  /// ينسق عملية إنشاء ومعاينة الـ PDF بالكامل
   Future<void> generateAndPreviewPdf(CvTemplate template) async {
-    // لا حاجة لقراءة أي شيء من الخارج، كل شيء موجود هنا
     final pdfBytes = await _pdfService.generateCv(state, template);
     await Printing.layoutPdf(onLayout: (format) => pdfBytes);
   }
 }
 
-// ✅ تعديل الـ Provider ليزود الـ Notifier بكل ما يحتاجه
 final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
   final storageService = ref.watch(storageServiceProvider);
   final pdfService = ref.watch(pdfServiceProvider);

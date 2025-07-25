@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:isar/isar.dart';
 
 part 'cv_data.g.dart';
@@ -11,14 +10,14 @@ class CVData {
   final List<Experience> experiences;
   final List<Skill> skills;
   final List<Language> languages;
-  final List<Education> education; // ✅ حقل جديد
+  final List<Education> education;
 
   CVData({
     required this.personalInfo,
     required this.experiences,
     required this.skills,
     required this.languages,
-    required this.education, // ✅
+    required this.education,
   });
 
   factory CVData.initial() {
@@ -27,7 +26,7 @@ class CVData {
       experiences: [],
       skills: [],
       languages: [],
-      education: [], // ✅
+      education: [],
     );
   }
 
@@ -36,14 +35,14 @@ class CVData {
     List<Experience>? experiences,
     List<Skill>? skills,
     List<Language>? languages,
-    List<Education>? education, // ✅
+    List<Education>? education,
   }) {
     return CVData(
       personalInfo: personalInfo ?? this.personalInfo,
       experiences: experiences ?? this.experiences,
       skills: skills ?? this.skills,
       languages: languages ?? this.languages,
-      education: education ?? this.education, // ✅
+      education: education ?? this.education,
     );
   }
 }
@@ -53,45 +52,46 @@ class PersonalInfo {
   final String name;
   final String jobTitle;
   final String email;
-  final String summary; // ✅ حقل جديد (الملخص أو "About Me")
-  final String? phone; // ✅ حقل جديد
-  final String? address; // ✅ حقل جديد
+  final String summary;
+  final String? phone;
+  final String? address;
 
-  @ignore
-  final File? profileImage;
+  // ✅✅ تم التصحيح: تغيير النوع إلى String وإزالة @ignore ✅✅
+  final String? profileImagePath;
 
   PersonalInfo({
     this.name = '',
     this.jobTitle = '',
     this.email = '',
-    this.summary = '', // ✅
-    this.phone = '', // ✅
-    this.address = '', // ✅
-    this.profileImage,
+    this.summary = '',
+    this.phone = '',
+    this.address = '',
+    this.profileImagePath, // ✅
   });
 
   PersonalInfo copyWith({
     String? name,
     String? jobTitle,
     String? email,
-    String? summary, // ✅
-    String? phone, // ✅
-    String? address, // ✅
-    File? profileImage,
+    String? summary,
+    String? phone,
+    String? address,
+    String? profileImagePath, // ✅
   }) {
     return PersonalInfo(
       name: name ?? this.name,
       jobTitle: jobTitle ?? this.jobTitle,
       email: email ?? this.email,
-      summary: summary ?? this.summary, // ✅
-      phone: phone ?? this.phone, // ✅
-      address: address ?? this.address, // ✅
-      profileImage: profileImage ?? this.profileImage,
+      summary: summary ?? this.summary,
+      phone: phone ?? this.phone,
+      address: address ?? this.address,
+      profileImagePath: profileImagePath ?? this.profileImagePath, // ✅
     );
   }
 }
 
-// ✅✅ كلاس جديد بالكامل ✅✅
+// ... باقي الكلاسات (Education, Experience, etc.) تبقى كما هي ...
+
 @embedded
 class Education {
   late String school;

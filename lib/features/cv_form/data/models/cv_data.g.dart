@@ -859,8 +859,13 @@ const PersonalInfoSchema = Schema(
       name: r'phone',
       type: IsarType.string,
     ),
-    r'summary': PropertySchema(
+    r'profileImagePath': PropertySchema(
       id: 5,
+      name: r'profileImagePath',
+      type: IsarType.string,
+    ),
+    r'summary': PropertySchema(
+      id: 6,
       name: r'summary',
       type: IsarType.string,
     )
@@ -892,6 +897,12 @@ int _personalInfoEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
+  {
+    final value = object.profileImagePath;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.summary.length * 3;
   return bytesCount;
 }
@@ -907,7 +918,8 @@ void _personalInfoSerialize(
   writer.writeString(offsets[2], object.jobTitle);
   writer.writeString(offsets[3], object.name);
   writer.writeString(offsets[4], object.phone);
-  writer.writeString(offsets[5], object.summary);
+  writer.writeString(offsets[5], object.profileImagePath);
+  writer.writeString(offsets[6], object.summary);
 }
 
 PersonalInfo _personalInfoDeserialize(
@@ -922,7 +934,8 @@ PersonalInfo _personalInfoDeserialize(
     jobTitle: reader.readStringOrNull(offsets[2]) ?? '',
     name: reader.readStringOrNull(offsets[3]) ?? '',
     phone: reader.readStringOrNull(offsets[4]),
-    summary: reader.readStringOrNull(offsets[5]) ?? '',
+    profileImagePath: reader.readStringOrNull(offsets[5]),
+    summary: reader.readStringOrNull(offsets[6]) ?? '',
   );
   return object;
 }
@@ -945,6 +958,8 @@ P _personalInfoDeserializeProp<P>(
     case 4:
       return (reader.readStringOrNull(offset)) as P;
     case 5:
+      return (reader.readStringOrNull(offset)) as P;
+    case 6:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1658,6 +1673,160 @@ extension PersonalInfoQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'phone',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'profileImagePath',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'profileImagePath',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profileImagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'profileImagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'profileImagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'profileImagePath',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'profileImagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'profileImagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'profileImagePath',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'profileImagePath',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'profileImagePath',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      profileImagePathIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'profileImagePath',
         value: '',
       ));
     });

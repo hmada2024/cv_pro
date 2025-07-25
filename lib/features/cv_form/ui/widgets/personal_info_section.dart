@@ -1,8 +1,7 @@
+import 'dart:io'; // نحتاجه لتحويل المسار إلى ملف للعرض
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
-
-// ✅ تم حذف استيراد image_picker و dart:io
 
 class PersonalInfoSection extends ConsumerStatefulWidget {
   const PersonalInfoSection({super.key});
@@ -43,11 +42,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     super.dispose();
   }
 
-  // ✅✅ تم حذف دالة _pickImage بالكامل من هنا ✅✅
-
   @override
   Widget build(BuildContext context) {
-    final profileImage = ref.watch(cvFormProvider).personalInfo.profileImage;
+    // ✅✅ تم التصحيح: مشاهدة مسار الصورة بدلاً من كائن الملف ✅✅
+    final profileImagePath =
+        ref.watch(cvFormProvider).personalInfo.profileImagePath;
 
     return Card(
       child: Padding(
@@ -70,9 +69,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey.shade200,
-                    backgroundImage:
-                        profileImage != null ? FileImage(profileImage) : null,
-                    child: profileImage == null
+                    // ✅✅ تم التصحيح: إنشاء FileImage من المسار عند الحاجة ✅✅
+                    backgroundImage: profileImagePath != null
+                        ? FileImage(File(profileImagePath))
+                        : null,
+                    child: profileImagePath == null
                         ? const Icon(Icons.camera_alt,
                             size: 40, color: Colors.grey)
                         : null,
@@ -81,7 +82,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                     bottom: 0,
                     right: 0,
                     child: InkWell(
-                      // ✅ استدعاء مباشر لدالة الـ Notifier
                       onTap: () =>
                           ref.read(cvFormProvider.notifier).pickProfileImage(),
                       child: const CircleAvatar(
