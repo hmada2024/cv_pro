@@ -19,7 +19,9 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     super.dispose();
   }
 
-  void _addSkill(String value) {
+  // ✅ تم تعديل هذه الدالة لتقرأ من الـ controller مباشرة
+  void _addSkill() {
+    final value = _skillController.text;
     if (value.isNotEmpty) {
       ref.read(cvFormProvider.notifier).addSkill(Skill(name: value));
       _skillController.clear();
@@ -40,8 +42,20 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
           controller: _skillController,
           decoration:
               const InputDecoration(labelText: 'Skill Name (e.g., Flutter)'),
-          onFieldSubmitted: _addSkill,
+          // onFieldSubmitted لا يزال يعمل كطريقة سريعة للإضافة
+          onFieldSubmitted: (value) => _addSkill(),
         ),
+
+        // ✅✅✅ هذا هو الزر الجديد الذي سيحل المشكلة ✅✅✅
+        const SizedBox(height: 10),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _addSkill, // استدعاء الدالة عند الضغط
+            child: const Text('Add Skill'),
+          ),
+        ),
+
         const SizedBox(height: 10),
         Wrap(
           spacing: 8.0,
