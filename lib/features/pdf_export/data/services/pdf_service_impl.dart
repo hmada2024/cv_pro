@@ -13,9 +13,6 @@ class PdfServiceImpl implements PdfService {
   Future<Uint8List> generateCv(CVData data, CvTemplate template) async {
     final pdf = pw.Document();
 
-    // ✅ تم حذف تحميل خطوط القاهرة بالكامل
-
-    // تحميل خط الأيقونات فقط، فهو ضروري
     final iconFont =
         await rootBundle.load("assets/fonts/MaterialIcons-Regular.ttf");
     final iconTtf = pw.Font.ttf(iconFont);
@@ -27,7 +24,6 @@ class PdfServiceImpl implements PdfService {
         content = buildClassicTemplate(data: data);
         break;
       case CvTemplate.modern:
-        // ✅ لم نعد بحاجة لتمرير الخط الأساسي، سيعتمد القالب على الثيم
         content = await buildModernTemplate(
           data: data,
           iconFont: iconTtf,
@@ -37,7 +33,6 @@ class PdfServiceImpl implements PdfService {
 
     pdf.addPage(
       pw.Page(
-        // ✅ استخدام الخطوط الافتراضية المضمنة في المكتبة (Helvetica)
         theme: pw.ThemeData.withFont(
           base: pw.Font.helvetica(),
           bold: pw.Font.helveticaBold(),
