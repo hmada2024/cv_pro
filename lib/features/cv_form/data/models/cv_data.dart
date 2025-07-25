@@ -11,12 +11,14 @@ class CVData {
   final List<Experience> experiences;
   final List<Skill> skills;
   final List<Language> languages;
+  final List<Education> education; // ✅ حقل جديد
 
   CVData({
     required this.personalInfo,
     required this.experiences,
     required this.skills,
     required this.languages,
+    required this.education, // ✅
   });
 
   factory CVData.initial() {
@@ -25,6 +27,7 @@ class CVData {
       experiences: [],
       skills: [],
       languages: [],
+      education: [], // ✅
     );
   }
 
@@ -33,12 +36,14 @@ class CVData {
     List<Experience>? experiences,
     List<Skill>? skills,
     List<Language>? languages,
+    List<Education>? education, // ✅
   }) {
     return CVData(
       personalInfo: personalInfo ?? this.personalInfo,
       experiences: experiences ?? this.experiences,
       skills: skills ?? this.skills,
       languages: languages ?? this.languages,
+      education: education ?? this.education, // ✅
     );
   }
 }
@@ -48,6 +53,9 @@ class PersonalInfo {
   final String name;
   final String jobTitle;
   final String email;
+  final String summary; // ✅ حقل جديد (الملخص أو "About Me")
+  final String? phone; // ✅ حقل جديد
+  final String? address; // ✅ حقل جديد
 
   @ignore
   final File? profileImage;
@@ -56,6 +64,9 @@ class PersonalInfo {
     this.name = '',
     this.jobTitle = '',
     this.email = '',
+    this.summary = '', // ✅
+    this.phone = '', // ✅
+    this.address = '', // ✅
     this.profileImage,
   });
 
@@ -63,15 +74,44 @@ class PersonalInfo {
     String? name,
     String? jobTitle,
     String? email,
+    String? summary, // ✅
+    String? phone, // ✅
+    String? address, // ✅
     File? profileImage,
   }) {
     return PersonalInfo(
       name: name ?? this.name,
       jobTitle: jobTitle ?? this.jobTitle,
       email: email ?? this.email,
+      summary: summary ?? this.summary, // ✅
+      phone: phone ?? this.phone, // ✅
+      address: address ?? this.address, // ✅
       profileImage: profileImage ?? this.profileImage,
     );
   }
+}
+
+// ✅✅ كلاس جديد بالكامل ✅✅
+@embedded
+class Education {
+  late String school;
+  late String degree;
+  late DateTime startDate;
+  late DateTime endDate;
+
+  Education() {
+    school = '';
+    degree = '';
+    startDate = DateTime.now();
+    endDate = DateTime.now();
+  }
+
+  Education.create({
+    required this.school,
+    required this.degree,
+    required this.startDate,
+    required this.endDate,
+  });
 }
 
 @embedded
