@@ -1,6 +1,6 @@
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import '../corporate_blue_template_colors.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
 
 class CorporateBlueHeader extends pw.StatelessWidget {
   final CVData data;
@@ -50,7 +50,8 @@ class CorporateBlueHeader extends pw.StatelessWidget {
               width: 90,
               height: 90,
               child: pw.ClipOval(
-                child: pw.Image(profileImage, fit: pw.BoxFit.cover),
+                // ✅✅ تم التصحيح: إضافة '!' لتأكيد أن القيمة ليست null هنا ✅✅
+                child: pw.Image(profileImage!, fit: pw.BoxFit.cover),
               ),
             ),
         ],

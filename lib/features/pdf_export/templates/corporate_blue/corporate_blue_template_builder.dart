@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'widgets/corporate_blue_header.dart';
-import 'widgets/corporate_blue_left_column.dart';
-import 'widgets/corporate_blue_right_column.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_header.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_left_column.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_right_column.dart';
 
 Future<pw.Widget> buildCorporateBlueTemplate({
   required CVData data,

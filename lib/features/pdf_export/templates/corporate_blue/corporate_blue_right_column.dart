@@ -1,9 +1,9 @@
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../../modern/widgets/experience_item.dart';
-import '../../modern/widgets/section_header.dart';
-import 'skill_progress_item.dart';
-import '../corporate_blue_template_colors.dart';
+import '../creative/widgets/experience_item.dart';
+import '../creative/widgets/section_header.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/widgets/skill_progress_item.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
 
 class CorporateBlueRightColumn extends pw.StatelessWidget {
   final CVData data;

@@ -1,6 +1,5 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../creative_template_colors.dart';
 
 // ✅✅ تم التحديث: إعادة هيكلة كاملة للويدجت ليكون أكثر مرونة وإعادة استخدام ✅✅
 class SectionHeader extends pw.StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../../modern/widgets/contact_info_line.dart';
-import '../../modern/widgets/section_header.dart';
-import '../corporate_blue_template_colors.dart';
+import '../creative/widgets/contact_info_line.dart';
+import '../creative/widgets/section_header.dart';
+import 'corporate_blue_template_colors.dart';
 
 class CorporateBlueLeftColumn extends pw.StatelessWidget {
   final CVData data;
