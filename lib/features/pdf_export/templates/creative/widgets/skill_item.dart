@@ -1,5 +1,5 @@
 import 'package:pdf/widgets.dart' as pw;
-import '../modern_template_colors.dart';
+import '../creative_template_colors.dart';
 
 class SkillItem extends pw.StatelessWidget {
   final String skill;

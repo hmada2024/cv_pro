@@ -1,6 +1,6 @@
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'modern_template_colors.dart';
+import 'creative_template_colors.dart';
 import 'widgets/contact_info_line.dart';
 import 'widgets/education_item.dart';
 import 'widgets/language_item.dart';

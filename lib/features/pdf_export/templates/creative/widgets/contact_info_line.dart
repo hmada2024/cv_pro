@@ -1,6 +1,6 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../modern_template_colors.dart';
+import '../creative_template_colors.dart';
 
 class ContactInfoLine extends pw.StatelessWidget {
   final pw.IconData iconData;

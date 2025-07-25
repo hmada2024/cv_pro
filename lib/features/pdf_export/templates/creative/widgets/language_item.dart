@@ -1,6 +1,6 @@
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../modern_template_colors.dart';
+import '../creative_template_colors.dart';
 
 class LanguageItem extends pw.StatelessWidget {
   final Language language;
