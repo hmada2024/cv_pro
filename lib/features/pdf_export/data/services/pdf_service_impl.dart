@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart'; // <<< أضف هذا السطر
-import 'package:flutter/services.dart';
-import 'package:pdf/pdf.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pdf/pdf.dart'; // ✅✅✅ الخطوة 1: أضف هذا الاستيراد الجديد ✅✅✅
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -12,38 +11,28 @@ class PdfServiceImpl implements PdfService {
   Future<Uint8List> generateCv(CVData data, AppLanguage language) async {
     final pdf = pw.Document();
 
-    pw.Font? arabicFont;
+    final pw.Font baseFont = pw.Font.helvetica();
+    final pw.Font boldFont = pw.Font.helveticaBold();
+    final pw.Font italicFont = pw.Font.helveticaOblique();
+    final pw.Font boldItalicFont = pw.Font.helveticaBoldOblique();
 
-    // ================== الكود التشخيصي ==================
-    // سنحاول تحميل الخط، وإذا فشل، سيتم طباعة الخطأ في الـ Console
-    try {
-      debugPrint("Attempting to load font: assets/fonts/Cairo-Regular.ttf");
-      final fontData = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
-      arabicFont = pw.Font.ttf(fontData);
-      debugPrint("✅ Font loaded successfully!");
-    } catch (e) {
-      debugPrint("❌ FAILED TO LOAD FONT: $e");
-      // إذا فشل تحميل الخط، سنستخدم خطًا احتياطيًا لنرى ما إذا كانت البيانات تظهر
-      // هذا سيؤدي إلى ظهور حروف غريبة، لكنه سيؤكد أن المشكلة في الخط فقط
-      arabicFont = pw.Font.symbol();
-    }
-    // ====================================================
-
-    final pw.Font fontToUse = arabicFont;
-    final pw.TextDirection textDirection =
-        (language == AppLanguage.arabic) ? pw.TextDirection.rtl : pw.TextDirection.ltr;
+    debugPrint("Generating PDF with ${data.experiences.length} experiences.");
+    debugPrint("Generating PDF with ${data.skills.length} skills.");
 
     pdf.addPage(
       pw.Page(
-        theme: pw.ThemeData.withFont(base: fontToUse, bold: fontToUse),
+        theme: pw.ThemeData.withFont(
+          base: baseFont,
+          bold: boldFont,
+          italic: italicFont,
+          boldItalic: boldItalicFont,
+        ),
+        // ✅✅✅ الخطوة 2: أزل البادئة `pw.` من هنا ✅✅✅
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(30),
         build: (pw.Context context) {
           return buildClassicTemplate(
             data: data,
-            font: fontToUse,
-            language: language,
-            textDirection: textDirection,
           );
         },
       ),
