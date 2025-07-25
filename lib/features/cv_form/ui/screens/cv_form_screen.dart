@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/education_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/experience_section.dart';
@@ -8,12 +7,11 @@ import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/personal_info_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/skill_section.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
-import 'package:printing/printing.dart';
 
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
 
-  // دالة لفتح نافذة اختيار القالب
+  // ✅ الدالة الآن أبسط، وظيفتها فقط عرض واجهة
   void _showTemplatePicker(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,
@@ -28,7 +26,10 @@ class CvFormScreen extends ConsumerWidget {
                 title: const Text('Classic'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  _generatePdf(ref, CvTemplate.classic);
+                  // ✅ استدعاء مباشر لدالة الـ Notifier
+                  ref
+                      .read(cvFormProvider.notifier)
+                      .generateAndPreviewPdf(CvTemplate.classic);
                 },
               ),
               ListTile(
@@ -36,7 +37,10 @@ class CvFormScreen extends ConsumerWidget {
                 title: const Text('Modern'),
                 onTap: () {
                   Navigator.of(context).pop();
-                  _generatePdf(ref, CvTemplate.modern);
+                  // ✅ استدعاء مباشر لدالة الـ Notifier
+                  ref
+                      .read(cvFormProvider.notifier)
+                      .generateAndPreviewPdf(CvTemplate.modern);
                 },
               ),
             ],
@@ -46,14 +50,7 @@ class CvFormScreen extends ConsumerWidget {
     );
   }
 
-  // دالة لتوليد الـ PDF
-  Future<void> _generatePdf(WidgetRef ref, CvTemplate template) async {
-    final pdfService = ref.read(pdfServiceProvider);
-    final cvData = ref.read(cvFormProvider);
-
-    final pdfBytes = await pdfService.generateCv(cvData, template);
-    await Printing.layoutPdf(onLayout: (format) => pdfBytes);
-  }
+  // ✅✅ تم حذف دالة _generatePdf بالكامل من هنا ✅✅
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

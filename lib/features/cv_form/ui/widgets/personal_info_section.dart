@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
-import 'package:image_picker/image_picker.dart';
+
+// ✅ تم حذف استيراد image_picker و dart:io
 
 class PersonalInfoSection extends ConsumerStatefulWidget {
   const PersonalInfoSection({super.key});
@@ -43,15 +43,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      ref
-          .read(cvFormProvider.notifier)
-          .updatePersonalInfo(profileImage: File(pickedFile.path));
-    }
-  }
+  // ✅✅ تم حذف دالة _pickImage بالكامل من هنا ✅✅
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +81,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                     bottom: 0,
                     right: 0,
                     child: InkWell(
-                      onTap: _pickImage,
+                      // ✅ استدعاء مباشر لدالة الـ Notifier
+                      onTap: () =>
+                          ref.read(cvFormProvider.notifier).pickProfileImage(),
                       child: const CircleAvatar(
                         radius: 18,
                         backgroundColor: Colors.blue,

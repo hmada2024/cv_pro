@@ -21,17 +21,6 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
     super.dispose();
   }
 
-  void _addLanguage() {
-    if (_languageController.text.isNotEmpty &&
-        _proficiencyController.text.isNotEmpty) {
-      ref.read(cvFormProvider.notifier).addLanguage(Language.create(
-          name: _languageController.text,
-          proficiency: _proficiencyController.text));
-      _languageController.clear();
-      _proficiencyController.clear();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final languages = ref.watch(cvFormProvider).languages;
@@ -61,7 +50,16 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
                     labelText: 'Proficiency (e.g., Native)')),
             const SizedBox(height: 16),
             ElevatedButton(
-                onPressed: _addLanguage, child: const Text('Add Language')),
+                onPressed: () {
+                  // ✅✅ تم التصحيح: استدعاء الدالة بالطريقة الجديدة ✅✅
+                  ref.read(cvFormProvider.notifier).addLanguage(
+                        name: _languageController.text,
+                        proficiency: _proficiencyController.text,
+                      );
+                  _languageController.clear();
+                  _proficiencyController.clear();
+                },
+                child: const Text('Add Language')),
             if (languages.isNotEmpty) const SizedBox(height: 16),
             ...languages.map((lang) => _buildLanguageCard(lang)),
           ],

@@ -6,7 +6,6 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/templates/classic_template_builder.dart';
 import 'package:cv_pro/features/pdf_export/templates/modern_template_builder.dart';
 
-// تعريف الـ enum هنا ليكون مرتبطًا بالتنفيذ
 enum CvTemplate { classic, modern }
 
 class PdfServiceImpl implements PdfService {
@@ -14,26 +13,23 @@ class PdfServiceImpl implements PdfService {
   Future<Uint8List> generateCv(CVData data, CvTemplate template) async {
     final pdf = pw.Document();
 
-    // تحميل خطوط الأيقونات والنصوص
-    final font = await rootBundle.load("assets/fonts/Cairo-Regular.ttf");
-    final ttf = pw.Font.ttf(font);
+    // ✅ تم حذف تحميل خطوط القاهرة بالكامل
 
-    // خط الأيقونات
+    // تحميل خط الأيقونات فقط، فهو ضروري
     final iconFont =
         await rootBundle.load("assets/fonts/MaterialIcons-Regular.ttf");
     final iconTtf = pw.Font.ttf(iconFont);
 
     pw.Widget content;
 
-    // استخدام switch لاختيار الباني المناسب
     switch (template) {
       case CvTemplate.classic:
         content = buildClassicTemplate(data: data);
         break;
       case CvTemplate.modern:
+        // ✅ لم نعد بحاجة لتمرير الخط الأساسي، سيعتمد القالب على الثيم
         content = await buildModernTemplate(
           data: data,
-          baseFont: ttf,
           iconFont: iconTtf,
         );
         break;
@@ -41,13 +37,15 @@ class PdfServiceImpl implements PdfService {
 
     pdf.addPage(
       pw.Page(
+        // ✅ استخدام الخطوط الافتراضية المضمنة في المكتبة (Helvetica)
         theme: pw.ThemeData.withFont(
-          base: ttf,
-          bold:
-              pw.Font.ttf(await rootBundle.load("assets/fonts/Cairo-Bold.ttf")),
+          base: pw.Font.helvetica(),
+          bold: pw.Font.helveticaBold(),
         ),
         pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.zero, // القالب العصري لا يحتاج إلى هوامش
+        margin: template == CvTemplate.modern
+            ? pw.EdgeInsets.zero
+            : const pw.EdgeInsets.all(30),
         build: (pw.Context context) {
           return content;
         },

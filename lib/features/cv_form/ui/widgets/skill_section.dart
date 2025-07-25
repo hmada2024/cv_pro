@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 
 class SkillSection extends ConsumerStatefulWidget {
@@ -17,14 +16,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
   void dispose() {
     _skillController.dispose();
     super.dispose();
-  }
-
-  void _addSkill() {
-    final value = _skillController.text;
-    if (value.isNotEmpty) {
-      ref.read(cvFormProvider.notifier).addSkill(Skill.create(name: value));
-      _skillController.clear();
-    }
   }
 
   @override
@@ -48,11 +39,23 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               controller: _skillController,
               decoration: const InputDecoration(
                   labelText: 'Skill Name (e.g., Flutter)'),
-              onFieldSubmitted: (value) => _addSkill(),
+              onFieldSubmitted: (value) {
+                // ✅✅ تم التصحيح: استدعاء الدالة بالطريقة الجديدة ✅✅
+                ref
+                    .read(cvFormProvider.notifier)
+                    .addSkill(name: _skillController.text);
+                _skillController.clear();
+              },
             ),
             const SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _addSkill,
+              onPressed: () {
+                // ✅✅ تم التصحيح: استدعاء الدالة بالطريقة الجديدة ✅✅
+                ref
+                    .read(cvFormProvider.notifier)
+                    .addSkill(name: _skillController.text);
+                _skillController.clear();
+              },
               child: const Text('Add Skill'),
             ),
             if (skills.isNotEmpty) const SizedBox(height: 16),

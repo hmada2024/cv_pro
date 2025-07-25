@@ -23,21 +23,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     super.dispose();
   }
 
-  void _addExperience() {
-    if (_companyController.text.isNotEmpty &&
-        _positionController.text.isNotEmpty) {
-      final newExperience = Experience.create(
-          companyName: _companyController.text,
-          position: _positionController.text,
-          description: _descriptionController.text,
-          startDate: DateTime.now().subtract(const Duration(days: 365)),
-          endDate: DateTime.now());
-      ref.read(cvFormProvider.notifier).addExperience(newExperience);
-      _companyController.clear();
-      _positionController.clear();
-      _descriptionController.clear();
-    }
-  }
+  // ✅✅ تم حذف دالة _addExperience بالكامل من هنا ✅✅
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +61,19 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                 maxLines: 3),
             const SizedBox(height: 16),
             ElevatedButton(
-                onPressed: _addExperience, child: const Text('Add Experience')),
+                onPressed: () {
+                  // ✅ استدعاء مباشر لدالة الـ Notifier مع تمرير البيانات
+                  ref.read(cvFormProvider.notifier).addExperience(
+                        position: _positionController.text,
+                        companyName: _companyController.text,
+                        description: _descriptionController.text,
+                      );
+                  // مسح الحقول مسؤولية الواجهة
+                  _positionController.clear();
+                  _companyController.clear();
+                  _descriptionController.clear();
+                },
+                child: const Text('Add Experience')),
             if (experiences.isNotEmpty) const SizedBox(height: 16),
             ...experiences.map((exp) => _buildExperienceCard(exp)),
           ],

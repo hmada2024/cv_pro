@@ -21,20 +21,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     super.dispose();
   }
 
-  void _addEducation() {
-    if (_schoolController.text.isNotEmpty &&
-        _degreeController.text.isNotEmpty) {
-      final newEducation = Education.create(
-        school: _schoolController.text,
-        degree: _degreeController.text,
-        startDate: DateTime.now().subtract(const Duration(days: 365 * 4)),
-        endDate: DateTime.now().subtract(const Duration(days: 365)),
-      );
-      ref.read(cvFormProvider.notifier).addEducation(newEducation);
-      _schoolController.clear();
-      _degreeController.clear();
-    }
-  }
+  // ✅✅ تم حذف دالة _addEducation بالكامل من هنا ✅✅
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +55,16 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                     const InputDecoration(labelText: 'School / University')),
             const SizedBox(height: 16),
             ElevatedButton(
-                onPressed: _addEducation, child: const Text('Add Education')),
+                onPressed: () {
+                  // ✅ استدعاء مباشر لدالة الـ Notifier مع تمرير البيانات
+                  ref.read(cvFormProvider.notifier).addEducation(
+                        school: _schoolController.text,
+                        degree: _degreeController.text,
+                      );
+                  _schoolController.clear();
+                  _degreeController.clear();
+                },
+                child: const Text('Add Education')),
             if (educationList.isNotEmpty) const SizedBox(height: 16),
             ...educationList.map((edu) => _buildEducationCard(edu)),
           ],
