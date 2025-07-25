@@ -36,15 +36,11 @@ class CvFormScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          // 1. اقرأ الخدمة
           final pdfService = ref.read(pdfServiceProvider);
-          // 2. اقرأ البيانات
           final cvData = ref.read(cvFormProvider);
 
-          // 3. استدعِ الخدمة (تم حذف متغير اللغة من هنا)
           final pdfBytes = await pdfService.generateCv(cvData);
 
-          // 4. اعرض النتيجة
           await Printing.layoutPdf(onLayout: (format) => pdfBytes);
         },
         label: const Text('Create & Preview PDF'),

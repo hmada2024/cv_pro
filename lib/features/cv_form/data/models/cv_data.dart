@@ -13,7 +13,6 @@ class CVData {
     required this.languages,
   });
 
-  // دالة مصنعية للحصول على الحالة الأولية بسهولة
   factory CVData.initial() {
     return CVData(
       personalInfo: PersonalInfo(),
