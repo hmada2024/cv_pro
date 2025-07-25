@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
-import 'package:cv_pro/data/services/storage_service_impl.dart';
+import 'package:cv_pro/features/cv_form/data/services/storage_service_impl.dart'; // المسار الجديد
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 
 // === الخدمات الحالية ===

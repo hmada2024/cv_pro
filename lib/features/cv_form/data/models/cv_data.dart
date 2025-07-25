@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:isar/isar.dart';
 
-part 'cv_data.g.dart'; // Isar ستنشئ هذا الملف
+part 'cv_data.g.dart';
 
 @collection
 class CVData {
-  Id id = Isar.autoIncrement; // Isar تحتاج إلى حقل ID فريد لكل مجموعة
+  Id id = Isar.autoIncrement;
 
   final PersonalInfo personalInfo;
   final List<Experience> experiences;
@@ -49,8 +49,6 @@ class PersonalInfo {
   final String jobTitle;
   final String email;
 
-  // لا يمكن تخزين كائنات File مباشرة في Isar، سنقوم بتجاهلها حاليًا.
-  // في المستقبل، يمكننا تخزين مسار الصورة كنص String.
   @ignore
   final File? profileImage;
 
@@ -84,7 +82,6 @@ class Experience {
   late DateTime endDate;
   late String description;
 
-  // Isar تحتاج إلى مُنشئ فارغ للكائنات المضمنة
   Experience() {
     companyName = '';
     position = '';
@@ -93,7 +90,6 @@ class Experience {
     description = '';
   }
 
-  // المُنشئ الأصلي للاستخدام داخل التطبيق
   Experience.create({
     required this.companyName,
     required this.position,
@@ -107,12 +103,10 @@ class Experience {
 class Skill {
   late String name;
 
-  // Isar تحتاج إلى مُنشئ فارغ
   Skill() {
     name = '';
   }
 
-  // المُنشئ الأصلي
   Skill.create({required this.name});
 }
 
@@ -121,12 +115,10 @@ class Language {
   late String name;
   late String proficiency;
 
-  // Isar تحتاج إلى مُنشئ فارغ
   Language() {
     name = '';
     proficiency = '';
   }
 
-  // المُنشئ الأصلي
   Language.create({required this.name, required this.proficiency});
 }
