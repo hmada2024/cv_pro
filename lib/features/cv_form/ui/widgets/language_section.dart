@@ -24,7 +24,8 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
   void _addLanguage() {
     if (_languageController.text.isNotEmpty &&
         _proficiencyController.text.isNotEmpty) {
-      ref.read(cvFormProvider.notifier).addLanguage(Language(
+      // استخدام المنشئ الجديد .create
+      ref.read(cvFormProvider.notifier).addLanguage(Language.create(
           name: _languageController.text,
           proficiency: _proficiencyController.text));
       _languageController.clear();

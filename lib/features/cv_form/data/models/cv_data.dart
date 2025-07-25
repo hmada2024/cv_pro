@@ -1,6 +1,12 @@
 import 'dart:io';
+import 'package:isar/isar.dart';
 
+part 'cv_data.g.dart'; // Isar ستنشئ هذا الملف
+
+@collection
 class CVData {
+  Id id = Isar.autoIncrement; // Isar تحتاج إلى حقل ID فريد لكل مجموعة
+
   final PersonalInfo personalInfo;
   final List<Experience> experiences;
   final List<Skill> skills;
@@ -37,10 +43,15 @@ class CVData {
   }
 }
 
+@embedded
 class PersonalInfo {
   final String name;
   final String jobTitle;
   final String email;
+
+  // لا يمكن تخزين كائنات File مباشرة في Isar، سنقوم بتجاهلها حاليًا.
+  // في المستقبل، يمكننا تخزين مسار الصورة كنص String.
+  @ignore
   final File? profileImage;
 
   PersonalInfo({
@@ -65,14 +76,25 @@ class PersonalInfo {
   }
 }
 
+@embedded
 class Experience {
-  final String companyName;
-  final String position;
-  final DateTime startDate;
-  final DateTime endDate;
-  final String description;
+  late String companyName;
+  late String position;
+  late DateTime startDate;
+  late DateTime endDate;
+  late String description;
 
-  Experience({
+  // Isar تحتاج إلى مُنشئ فارغ للكائنات المضمنة
+  Experience() {
+    companyName = '';
+    position = '';
+    startDate = DateTime.now();
+    endDate = DateTime.now();
+    description = '';
+  }
+
+  // المُنشئ الأصلي للاستخدام داخل التطبيق
+  Experience.create({
     required this.companyName,
     required this.position,
     required this.startDate,
@@ -81,13 +103,30 @@ class Experience {
   });
 }
 
+@embedded
 class Skill {
-  final String name;
-  Skill({required this.name});
+  late String name;
+
+  // Isar تحتاج إلى مُنشئ فارغ
+  Skill() {
+    name = '';
+  }
+
+  // المُنشئ الأصلي
+  Skill.create({required this.name});
 }
 
+@embedded
 class Language {
-  final String name;
-  final String proficiency;
-  Language({required this.name, required this.proficiency});
+  late String name;
+  late String proficiency;
+
+  // Isar تحتاج إلى مُنشئ فارغ
+  Language() {
+    name = '';
+    proficiency = '';
+  }
+
+  // المُنشئ الأصلي
+  Language.create({required this.name, required this.proficiency});
 }

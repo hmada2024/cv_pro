@@ -19,11 +19,11 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     super.dispose();
   }
 
-  // ✅ تم تعديل هذه الدالة لتقرأ من الـ controller مباشرة
   void _addSkill() {
     final value = _skillController.text;
     if (value.isNotEmpty) {
-      ref.read(cvFormProvider.notifier).addSkill(Skill(name: value));
+      // استخدام المنشئ الجديد .create
+      ref.read(cvFormProvider.notifier).addSkill(Skill.create(name: value));
       _skillController.clear();
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Skill Added: $value')));
@@ -42,20 +42,16 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
           controller: _skillController,
           decoration:
               const InputDecoration(labelText: 'Skill Name (e.g., Flutter)'),
-          // onFieldSubmitted لا يزال يعمل كطريقة سريعة للإضافة
           onFieldSubmitted: (value) => _addSkill(),
         ),
-
-        // ✅✅✅ هذا هو الزر الجديد الذي سيحل المشكلة ✅✅✅
         const SizedBox(height: 10),
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: _addSkill, // استدعاء الدالة عند الضغط
+            onPressed: _addSkill,
             child: const Text('Add Skill'),
           ),
         ),
-
         const SizedBox(height: 10),
         Wrap(
           spacing: 8.0,

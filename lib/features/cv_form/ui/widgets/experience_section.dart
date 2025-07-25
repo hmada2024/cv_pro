@@ -26,7 +26,8 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
   void _addExperience() {
     if (_companyController.text.isNotEmpty &&
         _positionController.text.isNotEmpty) {
-      final newExperience = Experience(
+      // استخدام المنشئ الجديد .create
+      final newExperience = Experience.create(
           companyName: _companyController.text,
           position: _positionController.text,
           description: _descriptionController.text,
