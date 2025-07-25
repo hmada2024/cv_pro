@@ -1,11 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
-// مزود حالة بسيط لتحديد اللغة المختارة
-enum AppLanguage { arabic, english }
-
-final languageProvider =
-    StateProvider<AppLanguage>((ref) => AppLanguage.arabic);
+// تم حذف enum AppLanguage و languageProvider بالكامل
 
 // الـ Notifier المسؤول عن إدارة حالة نموذج السيرة الذاتية بالكامل
 class CvFormNotifier extends StateNotifier<CVData> {

@@ -24,7 +24,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
       ref.read(cvFormProvider.notifier).addSkill(Skill(name: value));
       _skillController.clear();
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('تمت إضافة المهارة: $value')));
+          .showSnackBar(SnackBar(content: Text('Skill Added: $value')));
     }
   }
 
@@ -34,12 +34,12 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('المهارات', style: Theme.of(context).textTheme.headlineSmall),
+        Text('Skills', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 10),
         TextFormField(
           controller: _skillController,
           decoration:
-              const InputDecoration(labelText: 'اسم المهارة (مثل: Flutter)'),
+              const InputDecoration(labelText: 'Skill Name (e.g., Flutter)'),
           onFieldSubmitted: _addSkill,
         ),
         const SizedBox(height: 10),

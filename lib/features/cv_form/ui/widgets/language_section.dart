@@ -30,7 +30,7 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
       _languageController.clear();
       _proficiencyController.clear();
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('تمت إضافة اللغة')));
+          .showSnackBar(const SnackBar(content: Text('Language Added')));
     }
   }
 
@@ -40,20 +40,22 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('اللغات', style: Theme.of(context).textTheme.headlineSmall),
+        Text('Languages', style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 10),
         TextFormField(
             controller: _languageController,
-            decoration: const InputDecoration(labelText: 'اللغة')),
+            decoration:
+                const InputDecoration(labelText: 'Language (e.g., English)')),
         const SizedBox(height: 10),
         TextFormField(
             controller: _proficiencyController,
-            decoration: const InputDecoration(labelText: 'مستوى الإتقان')),
+            decoration: const InputDecoration(
+                labelText: 'Proficiency (e.g., Native, Fluent)')),
         const SizedBox(height: 10),
         SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-                onPressed: _addLanguage, child: const Text('إضافة لغة'))),
+                onPressed: _addLanguage, child: const Text('Add Language'))),
         const SizedBox(height: 10),
         ListView.builder(
           shrinkWrap: true,

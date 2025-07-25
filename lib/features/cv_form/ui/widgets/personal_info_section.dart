@@ -37,12 +37,12 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('المعلومات الشخصية',
+        Text('Personal Information',
             style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 10),
         TextFormField(
           controller: _nameController,
-          decoration: const InputDecoration(labelText: 'الاسم الكامل'),
+          decoration: const InputDecoration(labelText: 'Full Name'),
           onChanged: (value) {
             ref.read(cvFormProvider.notifier).updatePersonalInfo(name: value);
           },
@@ -50,7 +50,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _jobTitleController,
-          decoration: const InputDecoration(labelText: 'المسمى الوظيفي'),
+          decoration: const InputDecoration(labelText: 'Job Title'),
           onChanged: (value) {
             ref
                 .read(cvFormProvider.notifier)
@@ -60,7 +60,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         const SizedBox(height: 10),
         TextFormField(
           controller: _emailController,
-          decoration: const InputDecoration(labelText: 'البريد الإلكتروني'),
+          decoration: const InputDecoration(labelText: 'Email Address'),
           keyboardType: TextInputType.emailAddress,
           onChanged: (value) {
             ref.read(cvFormProvider.notifier).updatePersonalInfo(email: value);

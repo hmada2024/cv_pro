@@ -13,64 +13,41 @@ class CvFormScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedLanguage = ref.watch(languageProvider);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CV Pro - أنشئ سيرتك'),
+        title: const Text('CV Pro'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+      body: const SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // --- Language Selection ---
-            Text('لغة السيرة الذاتية',
-                style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            SegmentedButton<AppLanguage>(
-              segments: const [
-                ButtonSegment<AppLanguage>(
-                    value: AppLanguage.arabic, label: Text('العربية')),
-                ButtonSegment<AppLanguage>(
-                    value: AppLanguage.english, label: Text('English')),
-              ],
-              selected: {selectedLanguage},
-              onSelectionChanged: (newSelection) {
-                ref.read(languageProvider.notifier).state = newSelection.first;
-              },
-            ),
-            const Divider(height: 40),
-
-            // --- Form Sections (Now in separate widgets) ---
-            const PersonalInfoSection(),
-            const Divider(height: 40),
-            const ExperienceSection(),
-            const Divider(height: 40),
-            const SkillSection(),
-            const Divider(height: 40),
-            const LanguageSection(),
-            const SizedBox(height: 80),
+            PersonalInfoSection(),
+            Divider(height: 40),
+            ExperienceSection(),
+            Divider(height: 40),
+            SkillSection(),
+            Divider(height: 40),
+            LanguageSection(),
+            SizedBox(height: 80),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
-          // 1. اقرأ الخدمة من الـ injector
+          // 1. اقرأ الخدمة
           final pdfService = ref.read(pdfServiceProvider);
-
-          // 2. اقرأ البيانات الحالية
+          // 2. اقرأ البيانات
           final cvData = ref.read(cvFormProvider);
-          final lang = ref.read(languageProvider);
 
-          // 3. استدعِ الخدمة (الواجهة لا تعرف كيف يتم توليد الـ PDF)
-          final pdfBytes = await pdfService.generateCv(cvData, lang);
+          // 3. استدعِ الخدمة (تم حذف متغير اللغة من هنا)
+          final pdfBytes = await pdfService.generateCv(cvData);
 
           // 4. اعرض النتيجة
           await Printing.layoutPdf(onLayout: (format) => pdfBytes);
         },
-        label: const Text('إنشاء و معاينة PDF'),
+        label: const Text('Create & Preview PDF'),
         icon: const Icon(Icons.picture_as_pdf),
       ),
     );

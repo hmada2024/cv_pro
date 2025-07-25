@@ -37,7 +37,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
       _positionController.clear();
       _descriptionController.clear();
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('تمت إضافة الخبرة')));
+          .showSnackBar(const SnackBar(content: Text('Experience Added')));
     }
   }
 
@@ -47,26 +47,27 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('الخبرة العملية',
+        Text('Work Experience',
             style: Theme.of(context).textTheme.headlineSmall),
         const SizedBox(height: 10),
         TextFormField(
             controller: _positionController,
-            decoration: const InputDecoration(labelText: 'المنصب')),
+            decoration: const InputDecoration(labelText: 'Position')),
         const SizedBox(height: 10),
         TextFormField(
             controller: _companyController,
-            decoration: const InputDecoration(labelText: 'اسم الشركة')),
+            decoration: const InputDecoration(labelText: 'Company Name')),
         const SizedBox(height: 10),
         TextFormField(
             controller: _descriptionController,
-            decoration: const InputDecoration(labelText: 'الوصف'),
+            decoration: const InputDecoration(labelText: 'Description'),
             maxLines: 3),
         const SizedBox(height: 10),
         SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-                onPressed: _addExperience, child: const Text('إضافة خبرة'))),
+                onPressed: _addExperience,
+                child: const Text('Add Experience'))),
         const SizedBox(height: 10),
         ListView.builder(
           shrinkWrap: true,

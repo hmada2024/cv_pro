@@ -1,14 +1,14 @@
+// تم حذف import 'dart:typed_data' غير المستخدم
 import 'package:flutter/foundation.dart';
-import 'package:pdf/pdf.dart'; // ✅✅✅ الخطوة 1: أضف هذا الاستيراد الجديد ✅✅✅
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/pdf_export/templates/classic_template_builder.dart';
 
 class PdfServiceImpl implements PdfService {
   @override
-  Future<Uint8List> generateCv(CVData data, AppLanguage language) async {
+  Future<Uint8List> generateCv(CVData data) async {
     final pdf = pw.Document();
 
     final pw.Font baseFont = pw.Font.helvetica();
@@ -27,7 +27,6 @@ class PdfServiceImpl implements PdfService {
           italic: italicFont,
           boldItalic: boldItalicFont,
         ),
-        // ✅✅✅ الخطوة 2: أزل البادئة `pw.` من هنا ✅✅✅
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(30),
         build: (pw.Context context) {
