@@ -33,7 +33,8 @@ class ContactInfoLine extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               text,
-              style: pw.TextStyle(color: textColor, fontSize: 9), // استخدام اللون الممرر
+              style: pw.TextStyle(
+                  color: textColor, fontSize: 9), // استخدام اللون الممرر
             ),
           ),
         ],

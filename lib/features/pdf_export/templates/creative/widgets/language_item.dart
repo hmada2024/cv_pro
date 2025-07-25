@@ -4,7 +4,7 @@ import '../creative_template_colors.dart';
 
 class LanguageItem extends pw.StatelessWidget {
   final Language language;
-  
+
   LanguageItem(this.language);
 
   @override
@@ -13,7 +13,8 @@ class LanguageItem extends pw.StatelessWidget {
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(
         '${language.name} (${language.proficiency})',
-        style: const pw.TextStyle(color: ModernTemplateColors.lightText, fontSize: 10),
+        style: const pw.TextStyle(
+            color: ModernTemplateColors.lightText, fontSize: 10),
       ),
     );
   }

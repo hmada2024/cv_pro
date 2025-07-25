@@ -19,7 +19,8 @@ class EducationItem extends pw.StatelessWidget {
         children: [
           pw.Text(
             '${formatter.format(education.startDate)} - ${formatter.format(education.endDate)}',
-            style: const pw.TextStyle(color: ModernTemplateColors.accent, fontSize: 8),
+            style: const pw.TextStyle(
+                color: ModernTemplateColors.accent, fontSize: 8),
           ),
           pw.Text(
             education.degree,
@@ -31,7 +32,8 @@ class EducationItem extends pw.StatelessWidget {
           ),
           pw.Text(
             education.school,
-            style: const pw.TextStyle(color: ModernTemplateColors.lightText, fontSize: 9),
+            style: const pw.TextStyle(
+                color: ModernTemplateColors.lightText, fontSize: 9),
           ),
         ],
       ),

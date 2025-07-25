@@ -23,7 +23,8 @@ class SkillItem extends pw.StatelessWidget {
           pw.SizedBox(width: 8),
           pw.Text(
             skill,
-            style: const pw.TextStyle(color: ModernTemplateColors.lightText, fontSize: 10),
+            style: const pw.TextStyle(
+                color: ModernTemplateColors.lightText, fontSize: 10),
           ),
         ],
       ),

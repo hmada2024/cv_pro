@@ -31,7 +31,6 @@ class RightColumn extends pw.StatelessWidget {
                 fontSize: 14, color: ModernTemplateColors.darkText),
           ),
           pw.SizedBox(height: 25),
-
           if (data.personalInfo.summary.isNotEmpty)
             SectionHeader(
                 title: 'PROFILE',
@@ -44,7 +43,6 @@ class RightColumn extends pw.StatelessWidget {
               textAlign: pw.TextAlign.justify,
             ),
           if (data.personalInfo.summary.isNotEmpty) pw.SizedBox(height: 25),
-
           if (data.experiences.isNotEmpty)
             SectionHeader(
                 title: 'WORK EXPERIENCE',
