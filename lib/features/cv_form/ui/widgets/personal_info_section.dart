@@ -18,7 +18,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   @override
   void initState() {
     super.initState();
-    // ربط الـ controllers بالحالة عند بدء التشغيل
     final cvData = ref.read(cvFormProvider);
     _nameController.text = cvData.personalInfo.name;
     _jobTitleController.text = cvData.personalInfo.jobTitle;
@@ -35,20 +34,18 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
   @override
   Widget build(BuildContext context) {
-    // استخدام Card لتنظيم المحتوى بصريًا
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // عنوان القسم مع أيقونة
             Row(
               children: [
                 const Icon(Icons.person, color: Colors.blueGrey),
                 const SizedBox(width: 8),
                 Text(
-                  'المعلومات الشخصية',
+                  'Personal Information',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -57,7 +54,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             TextFormField(
               controller: _nameController,
               decoration: const InputDecoration(
-                labelText: 'الاسم الكامل',
+                labelText: 'Full Name',
                 prefixIcon: Icon(Icons.badge_outlined),
               ),
               onChanged: (value) {
@@ -70,7 +67,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             TextFormField(
               controller: _jobTitleController,
               decoration: const InputDecoration(
-                labelText: 'المسمى الوظيفي',
+                labelText: 'Job Title',
                 prefixIcon: Icon(Icons.work_outline),
               ),
               onChanged: (value) {
@@ -83,7 +80,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(
-                labelText: 'البريد الإلكتروني',
+                labelText: 'Email Address',
                 prefixIcon: Icon(Icons.email_outlined),
               ),
               keyboardType: TextInputType.emailAddress,

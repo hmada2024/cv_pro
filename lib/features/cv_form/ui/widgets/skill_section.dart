@@ -40,23 +40,22 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               children: [
                 const Icon(Icons.star, color: Colors.blueGrey),
                 const SizedBox(width: 8),
-                Text('المهارات', style: Theme.of(context).textTheme.titleLarge),
+                Text('Skills', style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _skillController,
               decoration: const InputDecoration(
-                  labelText: 'اسم المهارة (مثال: Flutter)'),
+                  labelText: 'Skill Name (e.g., Flutter)'),
               onFieldSubmitted: (value) => _addSkill(),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _addSkill,
-              child: const Text('أضف مهارة'),
+              child: const Text('Add Skill'),
             ),
             if (skills.isNotEmpty) const SizedBox(height: 16),
-            // عرض المهارات باستخدام Wrap و Chip
             Wrap(
               spacing: 8.0,
               runSpacing: 4.0,

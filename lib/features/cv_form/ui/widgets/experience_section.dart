@@ -54,7 +54,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                 const Icon(Icons.business_center, color: Colors.blueGrey),
                 const SizedBox(width: 8),
                 Text(
-                  'الخبرة العملية',
+                  'Work Experience',
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ],
@@ -62,20 +62,20 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             const SizedBox(height: 16),
             TextFormField(
                 controller: _positionController,
-                decoration: const InputDecoration(labelText: 'المسمى الوظيفي')),
+                decoration:
+                    const InputDecoration(labelText: 'Position / Job Title')),
             const SizedBox(height: 12),
             TextFormField(
                 controller: _companyController,
-                decoration: const InputDecoration(labelText: 'اسم الشركة')),
+                decoration: const InputDecoration(labelText: 'Company Name')),
             const SizedBox(height: 12),
             TextFormField(
                 controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'الوصف'),
+                decoration: const InputDecoration(labelText: 'Description'),
                 maxLines: 3),
             const SizedBox(height: 16),
             ElevatedButton(
-                onPressed: _addExperience, child: const Text('أضف خبرة')),
-            // عرض قائمة الخبرات المضافة
+                onPressed: _addExperience, child: const Text('Add Experience')),
             if (experiences.isNotEmpty) const SizedBox(height: 16),
             ...experiences.map((exp) => _buildExperienceCard(exp)),
           ],
@@ -84,7 +84,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     );
   }
 
-  // ويدجت صغيرة لعرض كل خبرة في بطاقة منفصلة
   Widget _buildExperienceCard(Experience exp) {
     return Card(
       elevation: 2,
@@ -99,7 +98,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             Text(exp.position, style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(exp.companyName,
             style: Theme.of(context).textTheme.bodyMedium),
-        // يمكن إضافة زر للحذف هنا في المستقبل
       ),
     );
   }

@@ -45,22 +45,23 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
               children: [
                 const Icon(Icons.language, color: Colors.blueGrey),
                 const SizedBox(width: 8),
-                Text('اللغات', style: Theme.of(context).textTheme.titleLarge),
+                Text('Languages',
+                    style: Theme.of(context).textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
             TextFormField(
                 controller: _languageController,
-                decoration:
-                    const InputDecoration(labelText: 'اللغة (مثال: العربية)')),
+                decoration: const InputDecoration(
+                    labelText: 'Language (e.g., English)')),
             const SizedBox(height: 12),
             TextFormField(
                 controller: _proficiencyController,
-                decoration:
-                    const InputDecoration(labelText: 'المستوى (مثال: لغة أم)')),
+                decoration: const InputDecoration(
+                    labelText: 'Proficiency (e.g., Native)')),
             const SizedBox(height: 16),
             ElevatedButton(
-                onPressed: _addLanguage, child: const Text('أضف لغة')),
+                onPressed: _addLanguage, child: const Text('Add Language')),
             if (languages.isNotEmpty) const SizedBox(height: 16),
             ...languages.map((lang) => _buildLanguageCard(lang)),
           ],

@@ -15,14 +15,35 @@ class CvFormScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('محرر السيرة الذاتية'),
+        title: const Text('CV Pro Editor'),
+        actions: [
+          // ✅✅ الزر الجديد في الـ AppBar ✅✅
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: TextButton.icon(
+              onPressed: () async {
+                final pdfService = ref.read(pdfServiceProvider);
+                final cvData = ref.read(cvFormProvider);
+                final pdfBytes = await pdfService.generateCv(cvData);
+                await Printing.layoutPdf(onLayout: (format) => pdfBytes);
+              },
+              icon: const Icon(Icons.picture_as_pdf_outlined,
+                  color: Colors.white),
+              label: const Text(
+                'Generate PDF',
+                style: TextStyle(color: Colors.white),
+              ),
+              style: TextButton.styleFrom(
+                splashFactory: NoSplash.splashFactory,
+              ),
+            ),
+          ),
+        ],
       ),
       body: const SingleChildScrollView(
-        // استخدام padding لتوفير هوامش حول المحتوى
         padding: EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // استخدام SizedBox للتحكم في المسافات بين البطاقات بشكل موحد
             PersonalInfoSection(),
             SizedBox(height: 16),
             ExperienceSection(),
@@ -30,21 +51,12 @@ class CvFormScreen extends ConsumerWidget {
             SkillSection(),
             SizedBox(height: 16),
             LanguageSection(),
-            // مسافة إضافية في الأسفل لتجنب تغطية الزر العائم للمحتوى
-            SizedBox(height: 80),
+            // مسافة في الأسفل لراحة العين
+            SizedBox(height: 20),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final pdfService = ref.read(pdfServiceProvider);
-          final cvData = ref.read(cvFormProvider);
-          final pdfBytes = await pdfService.generateCv(cvData);
-          await Printing.layoutPdf(onLayout: (format) => pdfBytes);
-        },
-        label: const Text('معاينة PDF'),
-        icon: const Icon(Icons.picture_as_pdf),
-      ),
+      // تم حذف الـ FloatingActionButton من هنا بالكامل
     );
   }
 }
