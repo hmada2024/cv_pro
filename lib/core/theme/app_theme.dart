@@ -13,7 +13,7 @@ final appTheme = ThemeData(
     seedColor: AppColors.primary,
     primary: AppColors.primary,
     secondary: AppColors.accent,
-    background: AppColors.background,
+    surface: AppColors.background,
   ),
 
   // تحديد الخطوط باستخدام google_fonts
