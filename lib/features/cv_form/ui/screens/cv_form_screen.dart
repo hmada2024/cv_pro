@@ -15,21 +15,23 @@ class CvFormScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CV Pro'),
-        centerTitle: true,
+        title: const Text('محرر السيرة الذاتية'),
       ),
+      // استخدام SingleChildScrollView لضمان أن الشاشة قابلة للتمرير
       body: const SingleChildScrollView(
+        // استخدام padding لتوفير هوامش حول المحتوى
         padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // استخدام SizedBox للتحكم في المسافات بين البطاقات بشكل موحد
             PersonalInfoSection(),
-            Divider(height: 40),
+            SizedBox(height: 16),
             ExperienceSection(),
-            Divider(height: 40),
+            SizedBox(height: 16),
             SkillSection(),
-            Divider(height: 40),
+            SizedBox(height: 16),
             LanguageSection(),
+            // مسافة إضافية في الأسفل لتجنب تغطية الزر العائم للمحتوى
             SizedBox(height: 80),
           ],
         ),
@@ -38,12 +40,10 @@ class CvFormScreen extends ConsumerWidget {
         onPressed: () async {
           final pdfService = ref.read(pdfServiceProvider);
           final cvData = ref.read(cvFormProvider);
-
           final pdfBytes = await pdfService.generateCv(cvData);
-
           await Printing.layoutPdf(onLayout: (format) => pdfBytes);
         },
-        label: const Text('Create & Preview PDF'),
+        label: const Text('معاينة PDF'),
         icon: const Icon(Icons.picture_as_pdf),
       ),
     );

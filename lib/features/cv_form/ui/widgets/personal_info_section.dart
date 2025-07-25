@@ -18,6 +18,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   @override
   void initState() {
     super.initState();
+    // ربط الـ controllers بالحالة عند بدء التشغيل
     final cvData = ref.read(cvFormProvider);
     _nameController.text = cvData.personalInfo.name;
     _jobTitleController.text = cvData.personalInfo.jobTitle;
@@ -34,39 +35,67 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Personal Information',
-            style: Theme.of(context).textTheme.headlineSmall),
-        const SizedBox(height: 10),
-        TextFormField(
-          controller: _nameController,
-          decoration: const InputDecoration(labelText: 'Full Name'),
-          onChanged: (value) {
-            ref.read(cvFormProvider.notifier).updatePersonalInfo(name: value);
-          },
+    // استخدام Card لتنظيم المحتوى بصريًا
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // عنوان القسم مع أيقونة
+            Row(
+              children: [
+                const Icon(Icons.person, color: Colors.blueGrey),
+                const SizedBox(width: 8),
+                Text(
+                  'المعلومات الشخصية',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'الاسم الكامل',
+                prefixIcon: Icon(Icons.badge_outlined),
+              ),
+              onChanged: (value) {
+                ref
+                    .read(cvFormProvider.notifier)
+                    .updatePersonalInfo(name: value);
+              },
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _jobTitleController,
+              decoration: const InputDecoration(
+                labelText: 'المسمى الوظيفي',
+                prefixIcon: Icon(Icons.work_outline),
+              ),
+              onChanged: (value) {
+                ref
+                    .read(cvFormProvider.notifier)
+                    .updatePersonalInfo(jobTitle: value);
+              },
+            ),
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'البريد الإلكتروني',
+                prefixIcon: Icon(Icons.email_outlined),
+              ),
+              keyboardType: TextInputType.emailAddress,
+              onChanged: (value) {
+                ref
+                    .read(cvFormProvider.notifier)
+                    .updatePersonalInfo(email: value);
+              },
+            ),
+          ],
         ),
-        const SizedBox(height: 10),
-        TextFormField(
-          controller: _jobTitleController,
-          decoration: const InputDecoration(labelText: 'Job Title'),
-          onChanged: (value) {
-            ref
-                .read(cvFormProvider.notifier)
-                .updatePersonalInfo(jobTitle: value);
-          },
-        ),
-        const SizedBox(height: 10),
-        TextFormField(
-          controller: _emailController,
-          decoration: const InputDecoration(labelText: 'Email Address'),
-          keyboardType: TextInputType.emailAddress,
-          onChanged: (value) {
-            ref.read(cvFormProvider.notifier).updatePersonalInfo(email: value);
-          },
-        ),
-      ],
+      ),
     );
   }
 }
