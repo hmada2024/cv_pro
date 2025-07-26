@@ -1,4 +1,5 @@
-import 'dart:io'; // نحتاجه لتحويل المسار إلى ملف للعرض
+import 'dart:io';
+import 'package:cv_pro/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
@@ -44,9 +45,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
   @override
   Widget build(BuildContext context) {
-    // ✅✅ تم التصحيح: مشاهدة مسار الصورة بدلاً من كائن الملف ✅✅
     final profileImagePath =
         ref.watch(cvFormProvider).personalInfo.profileImagePath;
+
+    final theme = Theme.of(context);
 
     return Card(
       child: Padding(
@@ -69,7 +71,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey.shade200,
-                    // ✅✅ تم التصحيح: إنشاء FileImage من المسار عند الحاجة ✅✅
                     backgroundImage: profileImagePath != null
                         ? FileImage(File(profileImagePath))
                         : null,
@@ -82,8 +83,15 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                     bottom: 0,
                     right: 0,
                     child: InkWell(
-                      onTap: () =>
-                          ref.read(cvFormProvider.notifier).pickProfileImage(),
+                      onTap: () {
+                        ref.read(cvFormProvider.notifier).pickProfileImage(
+                              toolbarColor: theme.appBarTheme.backgroundColor!,
+                              toolbarWidgetColor:
+                                  theme.appBarTheme.foregroundColor!,
+                              backgroundColor: theme.scaffoldBackgroundColor,
+                              activeControlsWidgetColor: AppColors.accent,
+                            );
+                      },
                       child: const CircleAvatar(
                         radius: 18,
                         backgroundColor: Colors.blue,

@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/di/injector.dart';
+import 'package:cv_pro/core/services/image_cropper_service.dart';
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -10,9 +12,11 @@ import 'package:printing/printing.dart';
 class CvFormNotifier extends StateNotifier<CVData> {
   final StorageService _storageService;
   final PdfService _pdfService;
+  final ImageCropperService _imageCropperService;
   final ImagePicker _imagePicker = ImagePicker();
 
-  CvFormNotifier(this._storageService, this._pdfService)
+  CvFormNotifier(
+      this._storageService, this._pdfService, this._imageCropperService)
       : super(CVData.initial()) {
     _loadDataFromDb();
   }
@@ -128,11 +132,29 @@ class CvFormNotifier extends StateNotifier<CVData> {
     _saveStateToDb();
   }
 
-  Future<void> pickProfileImage() async {
+  // ✅ تم التصحيح: الدالة لم تعد تستقبل السياق، بل الألوان مباشرة.
+  Future<void> pickProfileImage({
+    required Color toolbarColor,
+    required Color toolbarWidgetColor,
+    required Color backgroundColor,
+    required Color activeControlsWidgetColor,
+  }) async {
     final pickedFile =
         await _imagePicker.pickImage(source: ImageSource.gallery);
+
     if (pickedFile != null) {
-      updatePersonalInfo(profileImagePath: pickedFile.path);
+      // بعد اختيار الصورة، يتم استدعاء خدمة القص مع تمرير الألوان
+      final croppedFile = await _imageCropperService.cropImage(
+        sourcePath: pickedFile.path,
+        toolbarColor: toolbarColor,
+        toolbarWidgetColor: toolbarWidgetColor,
+        backgroundColor: backgroundColor,
+        activeControlsWidgetColor: activeControlsWidgetColor,
+      );
+
+      if (croppedFile != null) {
+        updatePersonalInfo(profileImagePath: croppedFile.path);
+      }
     }
   }
 
@@ -145,5 +167,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
 final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
   final storageService = ref.watch(storageServiceProvider);
   final pdfService = ref.watch(pdfServiceProvider);
-  return CvFormNotifier(storageService, pdfService);
+  final imageCropperService = ref.watch(imageCropperServiceProvider);
+  return CvFormNotifier(storageService, pdfService, imageCropperService);
 });
