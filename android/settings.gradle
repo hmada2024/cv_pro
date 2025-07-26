@@ -18,8 +18,14 @@ pluginManagement {
 
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "7.3.0" apply false
-    id "org.jetbrains.kotlin.android" version "1.7.10" apply false
+    id "com.android.application" version "8.4.1" apply false
+    id "org.jetbrains.kotlin.android" version "1.9.23" apply false
 }
 
 include ":app"
+
+gradle.beforeProject { project ->
+    if (project.name == 'isar_flutter_libs') {
+        project.buildFile.append('\nandroid { namespace "dev.isar.isar_flutter_libs" }\n')
+    }
+}
