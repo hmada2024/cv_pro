@@ -11,7 +11,6 @@ class SkillSection extends ConsumerStatefulWidget {
 
 class _SkillSectionState extends ConsumerState<SkillSection> {
   final _skillController = TextEditingController();
-  // ✅✅ تم التحديث: إضافة متغير حالة لتخزين قيمة الـ Slider ✅✅
   double _currentSkillLevel = 50.0;
 
   @override
@@ -20,7 +19,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     super.dispose();
   }
 
-  // ✅✅ تم التحديث: دالة لإضافة المهارة ✅✅
   void _addSkill() {
     if (_skillController.text.isNotEmpty) {
       ref.read(cvFormProvider.notifier).addSkill(
@@ -29,7 +27,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
           );
       _skillController.clear();
       setState(() {
-        _currentSkillLevel = 50.0; // Reset slider
+        _currentSkillLevel = 50.0;
       });
     }
   }
@@ -57,7 +55,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
                   labelText: 'Skill Name (e.g., Flutter)'),
               onFieldSubmitted: (value) => _addSkill(),
             ),
-            // ✅✅ تم التحديث: إضافة Slider ومؤشر النسبة ✅✅
             const SizedBox(height: 12),
             Row(
               children: [
@@ -98,22 +95,17 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
             Wrap(
               spacing: 8.0,
               runSpacing: 4.0,
-              // ✅✅ تم التحديث: عرض المستوى بجانب اسم المهارة ✅✅
-              children: skills
-                  .map((skill) => Chip(
-                        label: Text('${skill.name} (${skill.level}%)'),
-                        avatar: CircleAvatar(
-                          backgroundColor: Colors.blueGrey.shade200,
-                          child: Text(
-                            '${skill.level}',
-                            style: const TextStyle(
-                                fontSize: 10, color: Colors.white),
-                          ),
-                        ),
-                        backgroundColor: Colors.blueGrey.shade50,
-                        labelStyle: const TextStyle(color: Colors.blueGrey),
-                      ))
-                  .toList(),
+              children: [
+                for (var i = 0; i < skills.length; i++)
+                  Chip(
+                    label: Text('${skills[i].name} (${skills[i].level}%)'),
+                    backgroundColor: Colors.blueGrey.shade50,
+                    labelStyle: const TextStyle(color: Colors.blueGrey),
+                    onDeleted: () {
+                      ref.read(cvFormProvider.notifier).removeSkill(i);
+                    },
+                  )
+              ],
             ),
           ],
         ),

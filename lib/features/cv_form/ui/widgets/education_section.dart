@@ -21,8 +21,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     super.dispose();
   }
 
-  // ✅✅ تم حذف دالة _addEducation بالكامل من هنا ✅✅
-
   @override
   Widget build(BuildContext context) {
     final educationList = ref.watch(cvFormProvider).education;
@@ -56,7 +54,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             const SizedBox(height: 16),
             ElevatedButton(
                 onPressed: () {
-                  // ✅ استدعاء مباشر لدالة الـ Notifier مع تمرير البيانات
                   ref.read(cvFormProvider.notifier).addEducation(
                         school: _schoolController.text,
                         degree: _degreeController.text,
@@ -66,14 +63,15 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 },
                 child: const Text('Add Education')),
             if (educationList.isNotEmpty) const SizedBox(height: 16),
-            ...educationList.map((edu) => _buildEducationCard(edu)),
+            for (var i = 0; i < educationList.length; i++)
+              _buildEducationCard(educationList[i], i),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildEducationCard(Education edu) {
+  Widget _buildEducationCard(Education edu, int index) {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8.0),
@@ -86,6 +84,13 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
         title: Text(edu.degree, style: Theme.of(context).textTheme.titleMedium),
         subtitle:
             Text(edu.school, style: Theme.of(context).textTheme.bodyMedium),
+        trailing: IconButton(
+          icon: Icon(Icons.delete_outline,
+              color: Theme.of(context).colorScheme.error),
+          onPressed: () {
+            ref.read(cvFormProvider.notifier).removeEducation(index);
+          },
+        ),
       ),
     );
   }

@@ -69,6 +69,13 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
+  void removeExperience(int index) {
+    final currentExperiences = List<Experience>.from(state.experiences);
+    currentExperiences.removeAt(index);
+    state = state.copyWith(experiences: currentExperiences);
+    _saveStateToDb();
+  }
+
   void addEducation({required String school, required String degree}) {
     if (school.isNotEmpty && degree.isNotEmpty) {
       final newEducation = Education.create(
@@ -82,13 +89,26 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
-  // ✅✅ تم التحديث: تعديل الدالة لاستقبال المستوى ✅✅
+  void removeEducation(int index) {
+    final currentEducation = List<Education>.from(state.education);
+    currentEducation.removeAt(index);
+    state = state.copyWith(education: currentEducation);
+    _saveStateToDb();
+  }
+
   void addSkill({required String name, required int level}) {
     if (name.isNotEmpty) {
       state = state.copyWith(
           skills: [...state.skills, Skill.create(name: name, level: level)]);
       _saveStateToDb();
     }
+  }
+
+  void removeSkill(int index) {
+    final currentSkills = List<Skill>.from(state.skills);
+    currentSkills.removeAt(index);
+    state = state.copyWith(skills: currentSkills);
+    _saveStateToDb();
   }
 
   void addLanguage({required String name, required String proficiency}) {
@@ -99,6 +119,13 @@ class CvFormNotifier extends StateNotifier<CVData> {
       ]);
       _saveStateToDb();
     }
+  }
+
+  void removeLanguage(int index) {
+    final currentLanguages = List<Language>.from(state.languages);
+    currentLanguages.removeAt(index);
+    state = state.copyWith(languages: currentLanguages);
+    _saveStateToDb();
   }
 
   Future<void> pickProfileImage() async {

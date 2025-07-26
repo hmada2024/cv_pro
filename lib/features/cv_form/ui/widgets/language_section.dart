@@ -51,7 +51,6 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
             const SizedBox(height: 16),
             ElevatedButton(
                 onPressed: () {
-                  // ✅✅ تم التصحيح: استدعاء الدالة بالطريقة الجديدة ✅✅
                   ref.read(cvFormProvider.notifier).addLanguage(
                         name: _languageController.text,
                         proficiency: _proficiencyController.text,
@@ -61,14 +60,15 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
                 },
                 child: const Text('Add Language')),
             if (languages.isNotEmpty) const SizedBox(height: 16),
-            ...languages.map((lang) => _buildLanguageCard(lang)),
+            for (var i = 0; i < languages.length; i++)
+              _buildLanguageCard(languages[i], i),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLanguageCard(Language lang) {
+  Widget _buildLanguageCard(Language lang, int index) {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8.0),
@@ -81,6 +81,13 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
         title: Text(lang.name, style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(lang.proficiency,
             style: Theme.of(context).textTheme.bodyMedium),
+        trailing: IconButton(
+          icon: Icon(Icons.delete_outline,
+              color: Theme.of(context).colorScheme.error),
+          onPressed: () {
+            ref.read(cvFormProvider.notifier).removeLanguage(index);
+          },
+        ),
       ),
     );
   }

@@ -23,8 +23,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     super.dispose();
   }
 
-  // ✅✅ تم حذف دالة _addExperience بالكامل من هنا ✅✅
-
   @override
   Widget build(BuildContext context) {
     final experiences = ref.watch(cvFormProvider).experiences;
@@ -62,27 +60,27 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             const SizedBox(height: 16),
             ElevatedButton(
                 onPressed: () {
-                  // ✅ استدعاء مباشر لدالة الـ Notifier مع تمرير البيانات
                   ref.read(cvFormProvider.notifier).addExperience(
                         position: _positionController.text,
                         companyName: _companyController.text,
                         description: _descriptionController.text,
                       );
-                  // مسح الحقول مسؤولية الواجهة
                   _positionController.clear();
                   _companyController.clear();
                   _descriptionController.clear();
                 },
                 child: const Text('Add Experience')),
             if (experiences.isNotEmpty) const SizedBox(height: 16),
-            ...experiences.map((exp) => _buildExperienceCard(exp)),
+            // ✅ UPDATED: Use a for loop to get index for deletion
+            for (var i = 0; i < experiences.length; i++)
+              _buildExperienceCard(experiences[i], i),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildExperienceCard(Experience exp) {
+  Widget _buildExperienceCard(Experience exp, int index) {
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8.0),
@@ -96,6 +94,13 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             Text(exp.position, style: Theme.of(context).textTheme.titleMedium),
         subtitle: Text(exp.companyName,
             style: Theme.of(context).textTheme.bodyMedium),
+        trailing: IconButton(
+          icon: Icon(Icons.delete_outline,
+              color: Theme.of(context).colorScheme.error),
+          onPressed: () {
+            ref.read(cvFormProvider.notifier).removeExperience(index);
+          },
+        ),
       ),
     );
   }
