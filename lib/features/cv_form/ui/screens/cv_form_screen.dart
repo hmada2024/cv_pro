@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cv_pro/core/theme/app_theme.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/education_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/experience_section.dart';
@@ -49,10 +50,27 @@ class CvFormScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('CV Pro Editor'),
         actions: [
+          IconButton(
+            icon: Icon(
+              isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            ),
+            onPressed: () {
+              final currentMode = ref.read(themeModeProvider);
+              // Simple toggle logic: if it's dark, switch to light, otherwise switch to dark.
+              // We ignore 'system' for manual toggle and just switch between light/dark.
+              if (currentMode == ThemeMode.dark) {
+                ref.read(themeModeProvider.notifier).state = ThemeMode.light;
+              } else {
+                ref.read(themeModeProvider.notifier).state = ThemeMode.dark;
+              }
+            },
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: TextButton.icon(

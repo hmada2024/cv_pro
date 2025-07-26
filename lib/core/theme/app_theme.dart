@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cv_pro/core/theme/app_colors.dart';
 
-// هذا الملف يعرف المظهر الكامل للتطبيق في مكان واحد
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.system);
 
 class AppTheme {
   static final ThemeData lightTheme = ThemeData(
@@ -27,15 +28,17 @@ class AppTheme {
       ),
     ),
     appBarTheme: AppBarTheme(
-      elevation: 0, // إزالة الظل
+      elevation: 0,
       centerTitle: true,
-      backgroundColor: AppColors.lightBackground, // نفس لون الخلفية
-      foregroundColor: AppColors.lightPrimaryText, // لون الأيقونات والنص
+      backgroundColor: AppColors.lightBackground,
+      foregroundColor: AppColors.lightPrimaryText,
       titleTextStyle: GoogleFonts.cairo(
         fontSize: 20,
         fontWeight: FontWeight.bold,
         color: AppColors.lightPrimaryText,
       ),
+      iconTheme: const IconThemeData(
+          color: AppColors.lightPrimaryText), // Ensure icons color
     ),
     cardTheme: CardTheme(
       elevation: 0,
@@ -106,6 +109,8 @@ class AppTheme {
         fontWeight: FontWeight.bold,
         color: AppColors.darkPrimaryText,
       ),
+      iconTheme: const IconThemeData(
+          color: AppColors.darkPrimaryText), // Ensure icons color
     ),
     cardTheme: CardTheme(
       elevation: 0,

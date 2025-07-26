@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/di/injector.dart';
-import 'package:cv_pro/core/theme/app_theme.dart'; // استيراد الثيم الجديد
+import 'package:cv_pro/core/theme/app_theme.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
 import 'package:isar/isar.dart';
@@ -26,17 +26,20 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+// ✅ UPDATED: Converted to ConsumerWidget
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+
     return MaterialApp(
       title: 'CV Pro',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // يتكيف مع إعدادات الجهاز
+      themeMode: themeMode,
       home: const CvFormScreen(),
     );
   }
