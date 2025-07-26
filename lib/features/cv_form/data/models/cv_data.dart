@@ -11,6 +11,7 @@ class CVData {
   final List<Skill> skills;
   final List<Language> languages;
   final List<Education> education;
+  final List<Reference> references; // ✅ NEW: Added references list
 
   CVData({
     required this.personalInfo,
@@ -18,6 +19,7 @@ class CVData {
     required this.skills,
     required this.languages,
     required this.education,
+    required this.references, // ✅ NEW: Added to constructor
   });
 
   factory CVData.initial() {
@@ -27,6 +29,7 @@ class CVData {
       skills: [],
       languages: [],
       education: [],
+      references: [], // ✅ NEW: Initialized as empty list
     );
   }
 
@@ -36,6 +39,7 @@ class CVData {
     List<Skill>? skills,
     List<Language>? languages,
     List<Education>? education,
+    List<Reference>? references, // ✅ NEW: Added to copyWith
   }) {
     return CVData(
       personalInfo: personalInfo ?? this.personalInfo,
@@ -43,6 +47,7 @@ class CVData {
       skills: skills ?? this.skills,
       languages: languages ?? this.languages,
       education: education ?? this.education,
+      references: references ?? this.references, // ✅ NEW: Added to copyWith
     );
   }
 }
@@ -138,16 +143,13 @@ class Experience {
 @embedded
 class Skill {
   late String name;
-  // ✅✅ تم التحديث: إضافة مستوى المهارة ✅✅
   late int level;
 
   Skill() {
     name = '';
-    // ✅✅ تم التحديث: إعطاء قيمة افتراضية ✅✅
     level = 50;
   }
 
-  // ✅✅ تم التحديث: تحديث المنشئ ✅✅
   Skill.create({required this.name, required this.level});
 }
 
@@ -162,4 +164,30 @@ class Language {
   }
 
   Language.create({required this.name, required this.proficiency});
+}
+
+// ✅ NEW: Added Reference class
+@embedded
+class Reference {
+  late String name;
+  late String company;
+  late String position;
+  late String email;
+  String? phone;
+
+  Reference() {
+    name = '';
+    company = '';
+    position = '';
+    email = '';
+    phone = '';
+  }
+
+  Reference.create({
+    required this.name,
+    required this.company,
+    required this.position,
+    required this.email,
+    this.phone,
+  });
 }
