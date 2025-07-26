@@ -60,10 +60,9 @@ class CvFormScreen extends ConsumerWidget {
             icon: Icon(
               isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
             ),
+            tooltip: 'Toggle Theme',
             onPressed: () {
               final currentMode = ref.read(themeModeProvider);
-              // Simple toggle logic: if it's dark, switch to light, otherwise switch to dark.
-              // We ignore 'system' for manual toggle and just switch between light/dark.
               if (currentMode == ThemeMode.dark) {
                 ref.read(themeModeProvider.notifier).state = ThemeMode.light;
               } else {
@@ -71,16 +70,12 @@ class CvFormScreen extends ConsumerWidget {
               }
             },
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: TextButton.icon(
-              onPressed: () => _showTemplatePicker(context, ref),
-              icon: const Icon(Icons.picture_as_pdf_outlined),
-              label: const Text('Generate PDF'),
-              style:
-                  TextButton.styleFrom(splashFactory: NoSplash.splashFactory),
-            ),
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf_outlined),
+            tooltip: 'Generate & Preview PDF',
+            onPressed: () => _showTemplatePicker(context, ref),
           ),
+          const SizedBox(width: 8), 
         ],
       ),
       body: const SingleChildScrollView(
