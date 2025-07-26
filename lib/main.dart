@@ -26,7 +26,6 @@ Future<void> main() async {
   );
 }
 
-// ✅ UPDATED: Converted to ConsumerWidget
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
