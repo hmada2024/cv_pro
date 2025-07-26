@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 
-// هذا الملف يحتوي على لوحة الألوان الأساسية للتطبيق لسهولة التعديل المركزي
 class AppColors {
-  // اللون الأساسي الذي يمثل هوية التطبيق
-  static const Color primary = Color(0xFF0D47A1); // أزرق داكن احترافي
+  static const Color accent = Color(0xFF1976D2); // أزرق احترافي
 
-  // لون ثانوي مميز يستخدم للأزرار والعناصر التفاعلية
-  static const Color accent = Color(0xFF42A5F5); // أزرق فاتح
+  static const Color lightBackground = Color(0xFFFFFFFF); // أبيض
+  static const Color lightCard = Color(0xFFF5F5F5); // رمادي فاتح جدًا
+  static const Color lightPrimaryText = Color(0xFF1A1A1A); // رمادي داكن جدًا
+  static const Color lightSecondaryText = Color(0xFF757575); // رمادي متوسط
 
-  // لون الخلفية الرئيسي للتطبيق لراحة العين
-  static const Color background = Color(0xFFF5F5F5);
-
-  // لون النصوص الرئيسي
-  static const Color textPrimary = Color(0xFF212121);
-
-  // لون النصوص الثانوي (للعناوين الفرعية أو المعلومات الأقل أهمية)
-  static const Color textSecondary = Color(0xFF757575);
-
-  // لون خلفية البطاقات
-  static const Color cardBackground = Colors.white;
+  // --- ألوان الوضع الداكن ---
+  static const Color darkBackground = Color(0xFF121212); // فحمي
+  static const Color darkCard = Color(0xFF1E1E1E); // رمادي داكن
+  static const Color darkPrimaryText = Color(0xFFE0E0E0); // رمادي فاتح جدًا
+  static const Color darkSecondaryText = Color(0xFF9E9E9E); // رمادي متوسط
 }

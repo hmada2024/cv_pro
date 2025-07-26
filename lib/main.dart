@@ -34,8 +34,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CV Pro',
       debugShowCheckedModeBanner: false,
-      // تطبيق الثيم الجديد على مستوى التطبيق بالكامل
-      theme: appTheme,
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.system, // يتكيف مع إعدادات الجهاز
       home: const CvFormScreen(),
     );
   }

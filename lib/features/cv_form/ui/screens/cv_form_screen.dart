@@ -20,7 +20,6 @@ class CvFormScreen extends ConsumerWidget {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // ✅✅ تم حذف القالب الكلاسيكي ✅✅
               ListTile(
                 leading: const Icon(Icons.dashboard_customize_outlined),
                 title: const Text('Modern'),
@@ -31,7 +30,6 @@ class CvFormScreen extends ConsumerWidget {
                       .generateAndPreviewPdf(CvTemplate.modern);
                 },
               ),
-              // ✅✅ تم إضافة القالب الجديد ✅✅
               ListTile(
                 leading: const Icon(Icons.business_center_outlined),
                 title: const Text('Corporate Blue'),
@@ -59,10 +57,8 @@ class CvFormScreen extends ConsumerWidget {
             padding: const EdgeInsets.only(right: 8.0),
             child: TextButton.icon(
               onPressed: () => _showTemplatePicker(context, ref),
-              icon: const Icon(Icons.picture_as_pdf_outlined,
-                  color: Colors.white),
-              label: const Text('Generate PDF',
-                  style: TextStyle(color: Colors.white)),
+              icon: const Icon(Icons.picture_as_pdf_outlined),
+              label: const Text('Generate PDF'),
               style:
                   TextButton.styleFrom(splashFactory: NoSplash.splashFactory),
             ),
