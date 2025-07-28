@@ -1,15 +1,15 @@
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_builder.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/creative_template_builder.dart';
+import 'package:cv_pro/features/pdf_export/templates/timeline_professional/timeline_professional_template_builder.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✅ NEW: Import Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_builder.dart';
 
-enum CvTemplate { modern, corporateBlue }
+enum CvTemplate { modern, corporateBlue, timelineProfessional }
 
-// ✅ NEW: Provider to hold the currently selected template state
 final selectedTemplateProvider =
     StateProvider<CvTemplate>((ref) => CvTemplate.modern);
 
@@ -33,6 +33,12 @@ class PdfServiceImpl implements PdfService {
         break;
       case CvTemplate.corporateBlue:
         content = await buildCorporateBlueTemplate(
+          data: data,
+          iconFont: iconTtf,
+        );
+        break;
+      case CvTemplate.timelineProfessional:
+        content = buildTimelineProfessionalTemplate(
           data: data,
           iconFont: iconTtf,
         );

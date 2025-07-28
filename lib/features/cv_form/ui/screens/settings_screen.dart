@@ -7,7 +7,6 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the provider to get the current state and update it
     final selectedTemplate = ref.watch(selectedTemplateProvider);
 
     return Scaffold(
@@ -45,6 +44,19 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Corporate Blue',
             subtitle: 'A professional design with a blue header.',
             value: CvTemplate.corporateBlue,
+            groupValue: selectedTemplate,
+            onChanged: (value) {
+              if (value != null) {
+                ref.read(selectedTemplateProvider.notifier).state = value;
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+          _buildTemplateSelector(
+            context: context,
+            title: 'Timeline Professional',
+            subtitle: 'A stylish timeline design with a 3D-like effect.',
+            value: CvTemplate.timelineProfessional,
             groupValue: selectedTemplate,
             onChanged: (value) {
               if (value != null) {
