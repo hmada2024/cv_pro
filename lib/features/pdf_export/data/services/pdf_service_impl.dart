@@ -1,5 +1,6 @@
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_builder.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/creative_template_builder.dart';
+// import 'package:cv_pro/features/pdf_export/templates/timeline_professional/timeline_professional_template_builder.dart'; // 🗑️ REMOVED
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/pdf.dart';
@@ -7,6 +8,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
+// 🗑️ REMOVED TIMELINE TEMPLATE FOR NOW
 enum CvTemplate { modern, corporateBlue }
 
 final selectedTemplateProvider =
@@ -36,6 +38,7 @@ class PdfServiceImpl implements PdfService {
           iconFont: iconTtf,
         );
         break;
+      // 🗑️ REMOVED TIMELINE CASE
     }
 
     pdf.addPage(

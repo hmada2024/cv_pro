@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/services.dart'; // ✅ NEW: Import
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'left_column.dart';
@@ -9,17 +10,26 @@ Future<pw.Widget> buildModernTemplate({
   required pw.Font iconFont,
 }) async {
   pw.ImageProvider? profileImage;
-  if (data.personalInfo.profileImagePath != null) {
-    final imageFile = File(data.personalInfo.profileImagePath!);
-    if (await imageFile.exists()) {
-      profileImage = pw.MemoryImage(await imageFile.readAsBytes());
+  final imagePath = data.personalInfo.profileImagePath;
+
+  if (imagePath != null && imagePath.isNotEmpty) {
+    // ✅ UPDATED: Check if the path is an asset or a file path
+    if (imagePath.startsWith('assets/')) {
+      // It's an asset
+      final imageBytes = await rootBundle.load(imagePath);
+      profileImage = pw.MemoryImage(imageBytes.buffer.asUint8List());
+    } else {
+      // It's a file path
+      final imageFile = File(imagePath);
+      if (await imageFile.exists()) {
+        profileImage = pw.MemoryImage(await imageFile.readAsBytes());
+      }
     }
   }
 
   return pw.Row(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
-      // --- Left Column ---
       pw.Expanded(
         flex: 1,
         child: LeftColumn(
@@ -28,7 +38,6 @@ Future<pw.Widget> buildModernTemplate({
           iconFont: iconFont,
         ),
       ),
-      // --- Right Column ---
       pw.Expanded(
         flex: 2,
         child: RightColumn(

@@ -1,26 +1,20 @@
-import 'dart:typed_data';
-
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/core/services/image_cropper_service.dart';
-import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/data/models/dummy_cv_data.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:printing/printing.dart';
-
-// ... (الكود الحالي لـ CvFormNotifier و cvFormProvider يبقى كما هو) ...
 
 class CvFormNotifier extends StateNotifier<CVData> {
   final StorageService _storageService;
-  final PdfService _pdfService;
   final ImageCropperService _imageCropperService;
   final ImagePicker _imagePicker = ImagePicker();
 
-  CvFormNotifier(
-      this._storageService, this._pdfService, this._imageCropperService)
+  // ✅ UPDATED: Constructor no longer needs PdfService
+  CvFormNotifier(this._storageService, this._imageCropperService)
       : super(CVData.initial()) {
     _loadDataFromDb();
   }
@@ -159,27 +153,25 @@ class CvFormNotifier extends StateNotifier<CVData> {
       }
     }
   }
-
-  // ✅ DEPRECATED: We will use the FutureProvider for previews.
-  // This function can be kept for other purposes or removed later.
-  Future<void> generateAndPreviewPdf(CvTemplate template) async {
-    final pdfBytes = await _pdfService.generateCv(state, template);
-    await Printing.layoutPdf(onLayout: (format) => pdfBytes);
-  }
 }
 
 final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
   final storageService = ref.watch(storageServiceProvider);
-  final pdfService = ref.watch(pdfServiceProvider);
   final imageCropperService = ref.watch(imageCropperServiceProvider);
-  return CvFormNotifier(storageService, pdfService, imageCropperService);
+  return CvFormNotifier(storageService, imageCropperService);
 });
 
-// ✅ NEW: FutureProvider to generate PDF bytes asynchronously.
-// It watches the main form provider to get the latest data.
+// Provider for REAL data
 final pdfBytesProvider = FutureProvider.autoDispose
     .family<Uint8List, CvTemplate>((ref, template) async {
   final pdfService = ref.read(pdfServiceProvider);
   final cvData = ref.watch(cvFormProvider);
   return pdfService.generateCv(cvData, template);
+});
+
+final dummyPdfBytesProvider = FutureProvider.autoDispose
+    .family<Uint8List, CvTemplate>((ref, template) async {
+  final pdfService = ref.read(pdfServiceProvider);
+  final dummyData = createDummyCvData();
+  return pdfService.generateCv(dummyData, template);
 });
