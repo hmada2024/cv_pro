@@ -6,8 +6,12 @@ import 'widgets/section_header.dart';
 
 class RightColumn extends pw.StatelessWidget {
   final CVData data;
+  final pw.Font iconFont; // ✅ NEW: Added to pass down to children
 
-  RightColumn({required this.data});
+  RightColumn({
+    required this.data,
+    required this.iconFont, // ✅ NEW: Made it required
+  });
 
   @override
   pw.Widget build(pw.Context context) {
@@ -48,8 +52,10 @@ class RightColumn extends pw.StatelessWidget {
                 title: 'WORK EXPERIENCE',
                 titleColor: ModernTemplateColors.primary,
                 lineColor: ModernTemplateColors.accent),
+          // ✅ UPDATED: Pass the iconFont to each ExperienceItem
           ...data.experiences.map((exp) => ExperienceItem(
                 exp,
+                iconFont: iconFont,
                 positionColor: ModernTemplateColors.primary,
               )),
         ],

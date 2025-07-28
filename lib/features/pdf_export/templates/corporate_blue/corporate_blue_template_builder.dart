@@ -38,7 +38,8 @@ Future<pw.Widget> buildCorporateBlueTemplate({
             ),
             pw.Expanded(
               flex: 3,
-              child: CorporateBlueRightColumn(data: data),
+              // ✅ UPDATED: Pass iconFont to the RightColumn
+              child: CorporateBlueRightColumn(data: data, iconFont: iconFont),
             ),
           ],
         ),

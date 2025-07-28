@@ -1,14 +1,18 @@
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:pdf/widgets.dart' as pw;
-import '../creative/widgets/experience_item.dart';
-import '../creative/widgets/section_header.dart';
-import 'package:cv_pro/features/pdf_export/templates/corporate_blue/widgets/skill_progress_item.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/widgets/skill_progress_item.dart';
+import 'package:cv_pro/features/pdf_export/templates/creative/widgets/experience_item.dart';
+import 'package:cv_pro/features/pdf_export/templates/creative/widgets/section_header.dart';
+import 'package:pdf/widgets.dart' as pw;
 
 class CorporateBlueRightColumn extends pw.StatelessWidget {
   final CVData data;
+  final pw.Font iconFont; // ✅ NEW: Added to pass down
 
-  CorporateBlueRightColumn({required this.data});
+  CorporateBlueRightColumn({
+    required this.data,
+    required this.iconFont, // ✅ NEW: Made it required
+  });
 
   @override
   pw.Widget build(pw.Context context) {
@@ -24,8 +28,10 @@ class CorporateBlueRightColumn extends pw.StatelessWidget {
               titleColor: CorporateBlueColors.darkText,
               lineColor: CorporateBlueColors.accentBlue,
             ),
+          // ✅ UPDATED: Pass the iconFont to each ExperienceItem
           ...data.experiences.map((exp) => ExperienceItem(
                 exp,
+                iconFont: iconFont,
                 positionColor: CorporateBlueColors.darkText,
                 companyColor: CorporateBlueColors.subtleText,
               )),

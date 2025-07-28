@@ -6,20 +6,50 @@ import '../creative_template_colors.dart';
 
 class ExperienceItem extends pw.StatelessWidget {
   final Experience experience;
+  final pw.Font iconFont; // ✅ NEW: Added to use for custom bullets
   final DateFormat formatter = DateFormat('MMM yyyy');
-  // ✅✅ تم التحديث: إضافة مرونة في الألوان ✅✅
   final PdfColor positionColor;
   final PdfColor companyColor;
 
   ExperienceItem(
     this.experience, {
-    // ✅✅ تم التحديث: قيم افتراضية للحفاظ على التوافقية ✅✅
+    required this.iconFont, // ✅ NEW: Made it required
     this.positionColor = PdfColors.black,
     this.companyColor = ModernTemplateColors.darkText,
   });
 
   @override
   pw.Widget build(pw.Context context) {
+    // ✅ NEW: Logic to split description into lines with custom bullets
+    final descriptionLines = experience.description
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .map((line) => pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 3),
+              child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Container(
+                    margin: const pw.EdgeInsets.only(top: 3, right: 8),
+                    child: pw.Icon(
+                      const pw.IconData(0xe834), // Material Icon: check_box
+                      font: iconFont,
+                      size: 9,
+                      color: companyColor,
+                    ),
+                  ),
+                  pw.Expanded(
+                    child: pw.Text(
+                      line.trim().replaceFirst('•', '').trim(),
+                      textAlign: pw.TextAlign.justify,
+                      style: const pw.TextStyle(fontSize: 10, lineSpacing: 2),
+                    ),
+                  ),
+                ],
+              ),
+            ))
+        .toList();
+
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 16),
       child: pw.Column(
@@ -33,7 +63,7 @@ class ExperienceItem extends pw.StatelessWidget {
                 style: pw.TextStyle(
                   fontSize: 12,
                   fontWeight: pw.FontWeight.bold,
-                  color: positionColor, // استخدام اللون الممرر
+                  color: positionColor,
                 ),
               ),
               pw.Text(
@@ -47,16 +77,13 @@ class ExperienceItem extends pw.StatelessWidget {
             experience.companyName,
             style: pw.TextStyle(
               fontSize: 11,
-              color: companyColor, // استخدام اللون الممرر
+              color: companyColor,
               fontStyle: pw.FontStyle.italic,
             ),
           ),
           pw.SizedBox(height: 6),
-          pw.Text(
-            experience.description,
-            textAlign: pw.TextAlign.justify,
-            style: const pw.TextStyle(fontSize: 10, lineSpacing: 2),
-          ),
+          // ✅ UPDATED: Use the new list of widgets instead of a single text widget
+          ...descriptionLines,
         ],
       ),
     );

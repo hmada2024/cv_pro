@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter/services.dart'; // ✅ NEW: Import
+import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'left_column.dart';
@@ -13,13 +13,10 @@ Future<pw.Widget> buildModernTemplate({
   final imagePath = data.personalInfo.profileImagePath;
 
   if (imagePath != null && imagePath.isNotEmpty) {
-    // ✅ UPDATED: Check if the path is an asset or a file path
     if (imagePath.startsWith('assets/')) {
-      // It's an asset
       final imageBytes = await rootBundle.load(imagePath);
       profileImage = pw.MemoryImage(imageBytes.buffer.asUint8List());
     } else {
-      // It's a file path
       final imageFile = File(imagePath);
       if (await imageFile.exists()) {
         profileImage = pw.MemoryImage(await imageFile.readAsBytes());
@@ -27,11 +24,13 @@ Future<pw.Widget> buildModernTemplate({
     }
   }
 
+  // ✅ RESTORED: Simple Row structure, no more Stack needed.
   return pw.Row(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
       pw.Expanded(
         flex: 1,
+        // ✅ RESTORED: Pass the profile image to the LeftColumn again.
         child: LeftColumn(
           data: data,
           profileImage: profileImage,
@@ -42,6 +41,7 @@ Future<pw.Widget> buildModernTemplate({
         flex: 2,
         child: RightColumn(
           data: data,
+          iconFont: iconFont,
         ),
       ),
     ],
