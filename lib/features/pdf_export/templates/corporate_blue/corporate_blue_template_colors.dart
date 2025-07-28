@@ -1,11 +1,14 @@
 import 'package:pdf/pdf.dart';
 
-// ألوان مخصصة لقالب Corporate Blue
 abstract class CorporateBlueColors {
-  static const PdfColor primaryBlue = PdfColor.fromInt(0xFF003D7A);
-  static const PdfColor accentBlue = PdfColor.fromInt(0xFF007BFF);
-  static const PdfColor backgroundDark = PdfColor.fromInt(0xFF1F1F1F);
+  static const PdfColor primaryBlueDark = PdfColor.fromInt(0xFF0D47A1);
+  static const PdfColor primaryBlueLight = PdfColor.fromInt(0xFF1976D2);
+
+  static const PdfColor accentBlue = PdfColor.fromInt(0xFF42A5F5);
+
+  static const PdfColor backgroundDark = PdfColor.fromInt(0xFF212121);
+  
   static const PdfColor lightText = PdfColors.white;
   static const PdfColor darkText = PdfColor.fromInt(0xFF333333);
-  static const PdfColor subtleText = PdfColor.fromInt(0xFF888888);
+  static const PdfColor subtleText = PdfColor.fromInt(0xFF757575);
 }
