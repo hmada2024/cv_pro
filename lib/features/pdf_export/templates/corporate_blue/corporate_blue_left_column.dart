@@ -1,8 +1,7 @@
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
+import 'package:cv_pro/features/pdf_export/templates/creative/widgets/contact_info_line.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../creative/widgets/contact_info_line.dart';
-import '../creative/widgets/section_header.dart';
-import 'corporate_blue_template_colors.dart';
 
 class CorporateBlueLeftColumn extends pw.StatelessWidget {
   final CVData data;
@@ -15,18 +14,23 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
+    // Add a top padding to align content below the overflowing avatar
     return pw.Container(
       color: CorporateBlueColors.backgroundDark,
-      padding: const pw.EdgeInsets.all(20),
+      padding: const pw.EdgeInsets.fromLTRB(20, 40, 20, 20),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // About Me
-          SectionHeader(
-            title: 'ABOUT ME',
-            titleColor: CorporateBlueColors.lightText,
-            lineColor: CorporateBlueColors.accentBlue,
+          pw.Text(
+            'About Me',
+            style: pw.TextStyle(
+                color: CorporateBlueColors.lightText,
+                fontSize: 14,
+                fontWeight: pw.FontWeight.bold),
           ),
+          pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
+          pw.SizedBox(height: 8),
           pw.Text(
             data.personalInfo.summary,
             style: const pw.TextStyle(
@@ -65,40 +69,57 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
             ),
           pw.SizedBox(height: 25),
 
-          // Languages
+          // ✅ UPDATED: Use a border instead of a pill for a cleaner look on dark bg
           if (data.languages.isNotEmpty)
-            SectionHeader(
-              title: 'LANGUAGE',
-              titleColor: CorporateBlueColors.lightText,
-              lineColor: CorporateBlueColors.accentBlue,
+            pw.Text(
+              'Language',
+              style: pw.TextStyle(
+                  color: CorporateBlueColors.lightText,
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold),
             ),
-          ...data.languages.map((lang) => pw.Padding(
-                padding: const pw.EdgeInsets.only(bottom: 4),
-                child: pw.Text(
-                  '•  ${lang.name} (${lang.proficiency})',
-                  style: const pw.TextStyle(
-                      color: CorporateBlueColors.lightText, fontSize: 10),
-                ),
-              )),
+          if (data.languages.isNotEmpty)
+             pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
+          if (data.languages.isNotEmpty) pw.SizedBox(height: 8),
+          ...data.languages.map((lang) => _buildListItem(
+              '${lang.name} (${lang.proficiency})', iconFont)),
           pw.SizedBox(height: 25),
 
-          // Skills / Expertise
+          // Expertise
           if (data.skills.isNotEmpty)
-            SectionHeader(
-              title: 'EXPERTISE',
-              titleColor: CorporateBlueColors.lightText,
-              lineColor: CorporateBlueColors.accentBlue,
+            pw.Text(
+              'Expertise',
+              style: pw.TextStyle(
+                  color: CorporateBlueColors.lightText,
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold),
             ),
-          ...data.skills.map((skill) => pw.Padding(
-                padding: const pw.EdgeInsets.only(bottom: 4),
-                child: pw.Text(
-                  '•  ${skill.name}',
-                  style: const pw.TextStyle(
-                      color: CorporateBlueColors.lightText, fontSize: 10),
-                ),
-              )),
+           if (data.skills.isNotEmpty)
+             pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
+           if (data.skills.isNotEmpty) pw.SizedBox(height: 8),
+          ...data.skills.map((skill) => _buildListItem(skill.name, iconFont)),
         ],
       ),
+    );
+  }
+
+  pw.Widget _buildListItem(String text, pw.Font iconFont) {
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 4),
+      child: pw.Row(children: [
+        pw.Icon(
+          const pw.IconData(0xe834), // check_box icon
+          font: iconFont,
+          color: CorporateBlueColors.accentBlue,
+          size: 10,
+        ),
+        pw.SizedBox(width: 8),
+        pw.Text(
+          text,
+          style: const pw.TextStyle(
+              color: CorporateBlueColors.lightText, fontSize: 10),
+        ),
+      ]),
     );
   }
 }

@@ -2,47 +2,48 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/widgets/skill_progress_item.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/widgets/experience_item.dart';
-import 'package:cv_pro/features/pdf_export/templates/creative/widgets/section_header.dart';
+// 🗑️ REMOVED: No longer using the old SectionHeader
+// import 'package:cv_pro/features/pdf_export/templates/creative/widgets/section_header.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'widgets/section_header_pill.dart'; // ✅ NEW: Import the new pill header
 
 class CorporateBlueRightColumn extends pw.StatelessWidget {
   final CVData data;
-  final pw.Font iconFont; // ✅ NEW: Added to pass down
+  final pw.Font iconFont;
 
   CorporateBlueRightColumn({
     required this.data,
-    required this.iconFont, // ✅ NEW: Made it required
+    required this.iconFont,
   });
 
   @override
   pw.Widget build(pw.Context context) {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(20),
+      padding: const pw.EdgeInsets.fromLTRB(20, 25, 20, 20),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // Experience
           if (data.experiences.isNotEmpty)
-            SectionHeader(
-              title: 'EXPERIENCE',
-              titleColor: CorporateBlueColors.darkText,
-              lineColor: CorporateBlueColors.accentBlue,
+            SectionHeaderPill(
+              title: 'Experience',
+              backgroundColor: CorporateBlueColors.primaryBlueDark,
+              textColor: CorporateBlueColors.lightText,
             ),
-          // ✅ UPDATED: Pass the iconFont to each ExperienceItem
           ...data.experiences.map((exp) => ExperienceItem(
                 exp,
                 iconFont: iconFont,
                 positionColor: CorporateBlueColors.darkText,
                 companyColor: CorporateBlueColors.subtleText,
               )),
-          pw.SizedBox(height: 15),
+          pw.SizedBox(height: 20),
 
           // Education
           if (data.education.isNotEmpty)
-            SectionHeader(
-              title: 'EDUCATION',
-              titleColor: CorporateBlueColors.darkText,
-              lineColor: CorporateBlueColors.accentBlue,
+            SectionHeaderPill(
+              title: 'Education',
+              backgroundColor: CorporateBlueColors.primaryBlueDark,
+              textColor: CorporateBlueColors.lightText,
             ),
           ...data.education.map((edu) => pw.Padding(
                 padding: const pw.EdgeInsets.only(bottom: 10),
@@ -56,20 +57,21 @@ class CorporateBlueRightColumn extends pw.StatelessWidget {
                             color: CorporateBlueColors.darkText),
                       ),
                       pw.Text(
-                        edu.school,
+                        '${edu.school} / ${edu.startDate.year} - ${edu.endDate.year}',
                         style: const pw.TextStyle(
-                            color: CorporateBlueColors.subtleText),
+                            color: CorporateBlueColors.subtleText,
+                            fontSize: 9),
                       ),
                     ]),
               )),
-          pw.SizedBox(height: 15),
+          pw.SizedBox(height: 20),
 
           // Skills Summary
           if (data.skills.isNotEmpty)
-            SectionHeader(
-              title: 'SKILLS SUMMARY',
-              titleColor: CorporateBlueColors.darkText,
-              lineColor: CorporateBlueColors.accentBlue,
+            SectionHeaderPill(
+              title: 'Skills Summary',
+              backgroundColor: CorporateBlueColors.primaryBlueDark,
+              textColor: CorporateBlueColors.lightText,
             ),
           ...data.skills.map((skill) => SkillProgressItem(skill: skill)),
         ],
