@@ -1,7 +1,8 @@
+import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
+import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/theme/app_theme.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/education_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/experience_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
@@ -12,41 +13,7 @@ import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
 
-  void _showTemplatePicker(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Choose a Template'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.dashboard_customize_outlined),
-                title: const Text('Modern'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  ref
-                      .read(cvFormProvider.notifier)
-                      .generateAndPreviewPdf(CvTemplate.modern);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.business_center_outlined),
-                title: const Text('Corporate Blue'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  ref
-                      .read(cvFormProvider.notifier)
-                      .generateAndPreviewPdf(CvTemplate.corporateBlue);
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // ✅ DELETED: The _showTemplatePicker dialog is no longer needed.
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -56,6 +23,16 @@ class CvFormScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('CV Pro Editor'),
         actions: [
+          // ✅ NEW: Settings Button
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Settings',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
           IconButton(
             icon: Icon(
               isDarkMode ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
@@ -70,12 +47,22 @@ class CvFormScreen extends ConsumerWidget {
               }
             },
           ),
+          // ✅ UPDATED: This button now navigates to the new preview screen
           IconButton(
-            icon: const Icon(Icons.picture_as_pdf_outlined),
-            tooltip: 'Generate & Preview PDF',
-            onPressed: () => _showTemplatePicker(context, ref),
+            icon: const Icon(Icons.preview_outlined), // Changed icon
+            tooltip: 'Preview CV',
+            onPressed: () {
+              // Read the currently selected template from settings
+              final selectedTemplate = ref.read(selectedTemplateProvider);
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PdfPreviewScreen(template: selectedTemplate),
+                ),
+              );
+            },
           ),
-          const SizedBox(width: 8), 
+          const SizedBox(width: 8),
         ],
       ),
       body: const SingleChildScrollView(

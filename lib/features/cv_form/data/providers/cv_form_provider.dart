@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/di/injector.dart';
@@ -8,6 +10,8 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:printing/printing.dart';
+
+// ... (الكود الحالي لـ CvFormNotifier و cvFormProvider يبقى كما هو) ...
 
 class CvFormNotifier extends StateNotifier<CVData> {
   final StorageService _storageService;
@@ -132,7 +136,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
     _saveStateToDb();
   }
 
-  // ✅ تم التصحيح: الدالة لم تعد تستقبل السياق، بل الألوان مباشرة.
   Future<void> pickProfileImage({
     required Color toolbarColor,
     required Color toolbarWidgetColor,
@@ -143,7 +146,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
         await _imagePicker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
-      // بعد اختيار الصورة، يتم استدعاء خدمة القص مع تمرير الألوان
       final croppedFile = await _imageCropperService.cropImage(
         sourcePath: pickedFile.path,
         toolbarColor: toolbarColor,
@@ -158,6 +160,8 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
+  // ✅ DEPRECATED: We will use the FutureProvider for previews.
+  // This function can be kept for other purposes or removed later.
   Future<void> generateAndPreviewPdf(CvTemplate template) async {
     final pdfBytes = await _pdfService.generateCv(state, template);
     await Printing.layoutPdf(onLayout: (format) => pdfBytes);
@@ -169,4 +173,13 @@ final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
   final pdfService = ref.watch(pdfServiceProvider);
   final imageCropperService = ref.watch(imageCropperServiceProvider);
   return CvFormNotifier(storageService, pdfService, imageCropperService);
+});
+
+// ✅ NEW: FutureProvider to generate PDF bytes asynchronously.
+// It watches the main form provider to get the latest data.
+final pdfBytesProvider = FutureProvider.autoDispose
+    .family<Uint8List, CvTemplate>((ref, template) async {
+  final pdfService = ref.read(pdfServiceProvider);
+  final cvData = ref.watch(cvFormProvider);
+  return pdfService.generateCv(cvData, template);
 });

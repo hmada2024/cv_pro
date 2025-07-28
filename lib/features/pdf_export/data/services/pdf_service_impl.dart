@@ -1,13 +1,17 @@
 import 'package:cv_pro/features/pdf_export/templates/creative/creative_template_builder.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // ✅ NEW: Import Riverpod
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_builder.dart';
 
-// ✅✅ تم تحديث الـ enum ✅✅
 enum CvTemplate { modern, corporateBlue }
+
+// ✅ NEW: Provider to hold the currently selected template state
+final selectedTemplateProvider =
+    StateProvider<CvTemplate>((ref) => CvTemplate.modern);
 
 class PdfServiceImpl implements PdfService {
   @override
@@ -20,7 +24,6 @@ class PdfServiceImpl implements PdfService {
 
     pw.Widget content;
 
-    // ✅✅ تم تحديث الـ switch statement ✅✅
     switch (template) {
       case CvTemplate.modern:
         content = await buildModernTemplate(
@@ -43,7 +46,6 @@ class PdfServiceImpl implements PdfService {
           bold: pw.Font.helveticaBold(),
         ),
         pageFormat: PdfPageFormat.a4,
-        // القوالب الجديدة لا تحتاج هوامش
         margin: pw.EdgeInsets.zero,
         build: (pw.Context context) {
           return content;
