@@ -22,7 +22,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Choose the template that will be used for PDF generation.',
+            'Choose the template that will be used for the final CV.',
             style: TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 16),
@@ -44,19 +44,6 @@ class SettingsScreen extends ConsumerWidget {
             title: 'Corporate Blue',
             subtitle: 'A professional design with a blue header.',
             value: CvTemplate.corporateBlue,
-            groupValue: selectedTemplate,
-            onChanged: (value) {
-              if (value != null) {
-                ref.read(selectedTemplateProvider.notifier).state = value;
-              }
-            },
-          ),
-          const SizedBox(height: 12),
-          _buildTemplateSelector(
-            context: context,
-            title: 'Timeline Professional',
-            subtitle: 'A stylish timeline design with a 3D-like effect.',
-            value: CvTemplate.timelineProfessional,
             groupValue: selectedTemplate,
             onChanged: (value) {
               if (value != null) {
