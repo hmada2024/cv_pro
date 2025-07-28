@@ -36,3 +36,4 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/MaterialIcons-Regular.ttf
+    - assets/images/face_AI.webp
