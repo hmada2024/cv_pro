@@ -1,3 +1,6 @@
+// features/cv_form/ui/widgets/education_section.dart
+
+import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -42,15 +45,13 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               ],
             ),
             const SizedBox(height: 16),
-            TextFormField(
+            EnglishOnlyTextField(
                 controller: _degreeController,
-                decoration: const InputDecoration(
-                    labelText: 'Degree (e.g., Bachelor of Science)')),
+                labelText: 'Degree (e.g., Bachelor of Science)'),
             const SizedBox(height: 12),
-            TextFormField(
+            EnglishOnlyTextField(
                 controller: _schoolController,
-                decoration:
-                    const InputDecoration(labelText: 'School / University')),
+                labelText: 'School / University'),
             const SizedBox(height: 16),
             ElevatedButton(
                 onPressed: () {

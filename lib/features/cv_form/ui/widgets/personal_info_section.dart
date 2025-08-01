@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:cv_pro/core/theme/app_colors.dart';
+import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,13 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   final _birthDateController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('d MMMM yyyy');
 
+  final _nameFocus = FocusNode();
+  final _jobTitleFocus = FocusNode();
+  final _emailFocus = FocusNode();
+  final _phoneFocus = FocusNode();
+  final _addressFocus = FocusNode();
+  final _summaryFocus = FocusNode();
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +51,14 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       _birthDateController.text =
           _dateFormatter.format(personalInfo.birthDate!);
     }
+
+    // Add listeners to rebuild on focus change
+    _nameFocus.addListener(() => setState(() {}));
+    _jobTitleFocus.addListener(() => setState(() {}));
+    _emailFocus.addListener(() => setState(() {}));
+    _phoneFocus.addListener(() => setState(() {}));
+    _addressFocus.addListener(() => setState(() {}));
+    _summaryFocus.addListener(() => setState(() {}));
   }
 
   @override
@@ -54,6 +70,15 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _addressController.dispose();
     _summaryController.dispose();
     _birthDateController.dispose();
+
+    // Dispose focus nodes
+    _nameFocus.dispose();
+    _jobTitleFocus.dispose();
+    _emailFocus.dispose();
+    _phoneFocus.dispose();
+    _addressFocus.dispose();
+    _summaryFocus.dispose();
+
     super.dispose();
   }
 
@@ -137,7 +162,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             _buildTextField(
               controller: _nameController,
               label: 'Full Name',
-              icon: Icons.badge_outlined,
+              iconData: Icons.badge_outlined,
+              focusNode: _nameFocus,
               onChanged: (value) => ref
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(name: value),
@@ -145,7 +171,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             _buildTextField(
               controller: _jobTitleController,
               label: 'Job Title',
-              icon: Icons.work_outline,
+              iconData: Icons.work_outline,
+              focusNode: _jobTitleFocus,
               onChanged: (value) => ref
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(jobTitle: value),
@@ -159,7 +186,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             _buildTextField(
               controller: _emailController,
               label: 'Email Address',
-              icon: Icons.email_outlined,
+              iconData: Icons.email_outlined,
+              focusNode: _emailFocus,
               keyboardType: TextInputType.emailAddress,
               onChanged: (value) => ref
                   .read(cvFormProvider.notifier)
@@ -168,7 +196,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             _buildTextField(
               controller: _phoneController,
               label: 'Phone Number',
-              icon: Icons.phone_outlined,
+              iconData: Icons.phone_outlined,
+              focusNode: _phoneFocus,
               keyboardType: TextInputType.phone,
               onChanged: (value) => ref
                   .read(cvFormProvider.notifier)
@@ -177,7 +206,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             _buildTextField(
               controller: _addressController,
               label: 'Address',
-              icon: Icons.location_on_outlined,
+              iconData: Icons.location_on_outlined,
+              focusNode: _addressFocus,
               onChanged: (value) => ref
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(address: value),
@@ -207,7 +237,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             _buildTextField(
               controller: _summaryController,
               label: 'Summary / About Me',
-              icon: Icons.notes_outlined,
+              iconData: Icons.notes_outlined,
+              focusNode: _summaryFocus,
               maxLines: 4,
               onChanged: (value) => ref
                   .read(cvFormProvider.notifier)
@@ -219,21 +250,29 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     );
   }
 
+  // ✅✅ UPDATED: Method now accepts FocusNode and IconData for better UX ✅✅
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
-    required IconData icon,
+    required IconData iconData,
+    required FocusNode focusNode,
     required ValueChanged<String> onChanged,
     TextInputType? keyboardType,
-    int? maxLines = 1,
+    int maxLines = 1,
   }) {
+    final theme = Theme.of(context);
+    final bool isFocused = focusNode.hasFocus;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: TextFormField(
+      child: EnglishOnlyTextField(
         controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
+        focusNode: focusNode,
+        labelText: label,
+        prefixIcon: Icon(
+          iconData,
+          // Change color based on focus state
+          color: isFocused ? theme.colorScheme.primary : Colors.grey,
         ),
         keyboardType: keyboardType,
         maxLines: maxLines,
@@ -255,7 +294,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         value: value,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon),
+          prefixIcon: Icon(icon, color: Colors.grey),
         ),
         items: items.map<DropdownMenuItem<String>>((String item) {
           return DropdownMenuItem<String>(
@@ -281,7 +320,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon),
+          prefixIcon: Icon(icon, color: Colors.grey),
         ),
         readOnly: true,
         onTap: onTap,

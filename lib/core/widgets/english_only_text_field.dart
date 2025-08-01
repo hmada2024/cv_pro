@@ -1,63 +1,62 @@
 // lib/core/widgets/english_only_text_field.dart
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-/// ويدجت مخصصة لحقل إدخال النص يسمح فقط بالأحرف الإنجليزية، الأرقام،
-/// ومجموعة محددة من الرموز الشائعة في السير الذاتية.
 ///
-/// تعمل هذه الويدجت على تبسيط إنشاء النماذج من خلال مركزية منطق فلترة المدخلات،
-/// مما يضمن الاتساق عبر التطبيق والالتزام بمبدأ "لا تكرر نفسك".
 class EnglishOnlyTextField extends StatelessWidget {
   const EnglishOnlyTextField({
     super.key,
     this.controller,
     this.labelText,
     this.hintText,
-    this.validator,
     this.maxLines = 1,
     this.keyboardType,
     this.textInputAction,
     this.onChanged,
+    this.prefixIcon,
+    this.onFieldSubmitted,
+    this.focusNode,
   });
 
   final TextEditingController? controller;
   final String? labelText;
   final String? hintText;
-  final String? Function(String?)? validator;
   final int maxLines;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final ValueChanged<String>? onChanged;
+  final Widget? prefixIcon;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
-    // هذا التعبير النمطي يسمح بما يلي:
-    // a-z, A-Z (الأحرف الإنجليزية)
-    // 0-9 (الأرقام)
-    // \s (المسافات)
-    // رموز شائعة في السيرة الذاتية: . , - @ ( ) / # & + : '
-    final allowedCharactersRegex = RegExp(r"[a-zA-Z0-9\s.,\-@()/#&+:']");
+    // هذا التعبير النمطي يبحث عن أي حرف *ليس* من ضمن المجموعة المسموح بها.
+    final disallowedCharactersRegex = RegExp(r"[^a-zA-Z0-9\s.,-@()/#&+:']");
 
     return TextFormField(
       controller: controller,
+      focusNode: focusNode, // Pass focus node
       onChanged: onChanged,
+      onFieldSubmitted: onFieldSubmitted,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
-        // نص مساعد لتوضيح القاعدة للمستخدم بشكل دائم
-        helperText: 'English characters & common symbols only',
-        border: const OutlineInputBorder(),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
+        prefixIcon: prefixIcon,
       ),
       keyboardType: keyboardType,
       maxLines: maxLines,
       textInputAction: textInputAction,
-      // تطبيق منسق الإدخال لفلترة الأحرف في الوقت الفعلي.
-      inputFormatters: [
-        FilteringTextInputFormatter.allow(allowedCharactersRegex),
-      ],
-      validator: validator,
+      validator: (value) {
+        if (value != null && disallowedCharactersRegex.hasMatch(value)) {
+          // إذا وجد أي حرف غير مسموح به، أظهر رسالة الخطأ هذه.
+          return 'Please use English characters and numbers only.';
+        }
+        // إذا كانت كل الأحرف مسموح بها، فلا يوجد خطأ.
+        return null;
+      },
+      // Automatically validate as the user types for immediate feedback.
+      autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }
 }

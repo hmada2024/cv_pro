@@ -1,3 +1,6 @@
+// features/cv_form/ui/widgets/skill_section.dart
+
+import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -17,7 +20,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
   @override
   void initState() {
     super.initState();
-    // Set the default selection
     _selectedSkillLevel = kSkillLevels[1]; // 'Intermediate'
   }
 
@@ -35,7 +37,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
           );
       _skillController.clear();
       setState(() {
-        // Reset dropdown to default after adding
         _selectedSkillLevel = kSkillLevels[1];
       });
     }
@@ -58,14 +59,13 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               ],
             ),
             const SizedBox(height: 16),
-            TextFormField(
+            // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
+            EnglishOnlyTextField(
               controller: _skillController,
-              decoration: const InputDecoration(
-                  labelText: 'Skill Name (e.g., Flutter)'),
+              labelText: 'Skill Name (e.g., Flutter)',
               onFieldSubmitted: (value) => _addSkill(),
             ),
             const SizedBox(height: 12),
-            // ✅✅ UPDATED: Replaced Slider with a DropdownButtonFormField ✅✅
             DropdownButtonFormField<String>(
               value: _selectedSkillLevel,
               decoration: const InputDecoration(
@@ -96,7 +96,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               children: [
                 for (var i = 0; i < skills.length; i++)
                   Chip(
-                    // ✅✅ UPDATED: Display the skill name and its string level ✅✅
                     label: Text('${skills[i].name} (${skills[i].level})'),
                     backgroundColor: Colors.blueGrey.shade50,
                     labelStyle: const TextStyle(color: Colors.blueGrey),

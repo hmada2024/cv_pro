@@ -1,3 +1,6 @@
+// features/cv_form/ui/widgets/experience_section.dart
+
+import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -23,17 +26,14 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     super.dispose();
   }
 
-  // ✅✅ NEW: Method to show the edit/add dialog ✅✅
   void _showExperienceDialog({Experience? existingExperience, int? index}) {
     final isEditing = existingExperience != null;
 
-    // Pre-fill controllers if editing
     if (isEditing) {
       _positionController.text = existingExperience.position;
       _companyController.text = existingExperience.companyName;
       _descriptionController.text = existingExperience.description;
     } else {
-      // Clear controllers if adding
       _positionController.clear();
       _companyController.clear();
       _descriptionController.clear();
@@ -48,19 +48,19 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
+                // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
+                EnglishOnlyTextField(
                     controller: _positionController,
-                    decoration: const InputDecoration(
-                        labelText: 'Position / Job Title')),
+                    labelText: 'Position / Job Title'),
                 const SizedBox(height: 12),
-                TextFormField(
-                    controller: _companyController,
-                    decoration:
-                        const InputDecoration(labelText: 'Company Name')),
+                // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
+                EnglishOnlyTextField(
+                    controller: _companyController, labelText: 'Company Name'),
                 const SizedBox(height: 12),
-                TextFormField(
+                // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
+                EnglishOnlyTextField(
                     controller: _descriptionController,
-                    decoration: const InputDecoration(labelText: 'Description'),
+                    labelText: 'Description',
                     maxLines: 3),
               ],
             ),
@@ -73,7 +73,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             ElevatedButton(
               onPressed: () {
                 if (isEditing) {
-                  // Create an updated experience object
                   final updatedExperience = Experience.create(
                     companyName: _companyController.text,
                     position: _positionController.text,
@@ -99,7 +98,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
         );
       },
     ).then((_) {
-      // Clear controllers after dialog is closed
       _positionController.clear();
       _companyController.clear();
       _descriptionController.clear();
@@ -127,7 +125,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
               ],
             ),
             const SizedBox(height: 16),
-            // ✅ UPDATED: Use a button to open the dialog
             OutlinedButton.icon(
               icon: const Icon(Icons.add),
               label: const Text('Add Experience'),
@@ -137,7 +134,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
               ),
             ),
             if (experiences.isNotEmpty) const SizedBox(height: 16),
-            // ✅ UPDATED: Use a ListView for better structure
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -147,7 +143,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                 return _buildExperienceCard(exp, index);
               },
             ),
-            // ✅ NEW: Show a placeholder when the list is empty
             if (experiences.isEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
@@ -171,7 +166,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
         borderRadius: BorderRadius.circular(8.0),
         side: BorderSide(color: Colors.grey.shade200),
       ),
-      // ✅ UPDATED: Make the whole card tappable for editing
       child: ListTile(
         leading: const Icon(Icons.check_circle_outline, color: Colors.green),
         title:

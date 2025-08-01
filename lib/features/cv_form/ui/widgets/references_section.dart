@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/references_section.dart
+import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:flutter/material.dart';
@@ -32,27 +33,24 @@ class ReferencesSection extends ConsumerWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                TextFormField(
-                    controller: nameController,
-                    decoration: const InputDecoration(labelText: 'Full Name')),
+                EnglishOnlyTextField(
+                    controller: nameController, labelText: 'Full Name'),
                 const SizedBox(height: 12),
-                TextFormField(
-                    controller: companyController,
-                    decoration: const InputDecoration(labelText: 'Company')),
+                EnglishOnlyTextField(
+                    controller: companyController, labelText: 'Company'),
                 const SizedBox(height: 12),
-                TextFormField(
-                    controller: positionController,
-                    decoration: const InputDecoration(labelText: 'Position')),
+                EnglishOnlyTextField(
+                    controller: positionController, labelText: 'Position'),
                 const SizedBox(height: 12),
-                TextFormField(
+                EnglishOnlyTextField(
                     controller: emailController,
-                    decoration:
-                        const InputDecoration(labelText: 'Email Address')),
+                    keyboardType: TextInputType.emailAddress,
+                    labelText: 'Email Address'),
                 const SizedBox(height: 12),
-                TextFormField(
+                EnglishOnlyTextField(
                     controller: phoneController,
-                    decoration:
-                        const InputDecoration(labelText: 'Phone (Optional)')),
+                    keyboardType: TextInputType.phone,
+                    labelText: 'Phone (Optional)'),
               ],
             ),
           ),
@@ -114,8 +112,6 @@ class ReferencesSection extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 8),
-
-            // ✅✅ NEW: The switch is now here with smart logic ✅✅
             SwitchListTile(
               title: const Text('Available upon request'),
               subtitle: Text(
