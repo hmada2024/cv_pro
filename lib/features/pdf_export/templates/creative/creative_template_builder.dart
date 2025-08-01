@@ -8,6 +8,7 @@ import 'right_column.dart';
 Future<pw.Widget> buildModernTemplate({
   required CVData data,
   required pw.Font iconFont,
+  required bool showReferencesNote, // ✅ NEW
 }) async {
   pw.ImageProvider? profileImage;
   final imagePath = data.personalInfo.profileImagePath;
@@ -24,13 +25,11 @@ Future<pw.Widget> buildModernTemplate({
     }
   }
 
-  // ✅ RESTORED: Simple Row structure, no more Stack needed.
   return pw.Row(
     crossAxisAlignment: pw.CrossAxisAlignment.start,
     children: [
       pw.Expanded(
         flex: 1,
-        // ✅ RESTORED: Pass the profile image to the LeftColumn again.
         child: LeftColumn(
           data: data,
           profileImage: profileImage,
@@ -42,6 +41,7 @@ Future<pw.Widget> buildModernTemplate({
         child: RightColumn(
           data: data,
           iconFont: iconFont,
+          showReferencesNote: showReferencesNote, // ✅ NEW: Pass down
         ),
       ),
     ],

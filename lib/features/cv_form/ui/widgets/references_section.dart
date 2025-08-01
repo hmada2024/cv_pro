@@ -1,0 +1,164 @@
+// features/cv_form/ui/widgets/references_section.dart
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+
+class ReferencesSection extends ConsumerWidget {
+  const ReferencesSection({super.key});
+
+  void _showReferenceDialog(BuildContext context, WidgetRef ref,
+      {Reference? existingReference, int? index}) {
+    final isEditing = existingReference != null;
+
+    final nameController =
+        TextEditingController(text: isEditing ? existingReference.name : '');
+    final companyController =
+        TextEditingController(text: isEditing ? existingReference.company : '');
+    final positionController = TextEditingController(
+        text: isEditing ? existingReference.position : '');
+    final emailController =
+        TextEditingController(text: isEditing ? existingReference.email : '');
+    final phoneController =
+        TextEditingController(text: isEditing ? existingReference.phone : '');
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(isEditing ? 'Edit Reference' : 'Add Reference'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Full Name')),
+                const SizedBox(height: 12),
+                TextFormField(
+                    controller: companyController,
+                    decoration: const InputDecoration(labelText: 'Company')),
+                const SizedBox(height: 12),
+                TextFormField(
+                    controller: positionController,
+                    decoration: const InputDecoration(labelText: 'Position')),
+                const SizedBox(height: 12),
+                TextFormField(
+                    controller: emailController,
+                    decoration:
+                        const InputDecoration(labelText: 'Email Address')),
+                const SizedBox(height: 12),
+                TextFormField(
+                    controller: phoneController,
+                    decoration:
+                        const InputDecoration(labelText: 'Phone (Optional)')),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final notifier = ref.read(cvFormProvider.notifier);
+                if (isEditing) {
+                  final updatedReference = Reference.create(
+                    name: nameController.text,
+                    company: companyController.text,
+                    position: positionController.text,
+                    email: emailController.text,
+                    phone: phoneController.text,
+                  );
+                  notifier.updateReference(index!, updatedReference);
+                } else {
+                  notifier.addReference(
+                      name: nameController.text,
+                      company: companyController.text,
+                      position: positionController.text,
+                      email: emailController.text,
+                      phone: phoneController.text);
+                }
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final references = ref.watch(cvFormProvider).references;
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.group, color: Colors.blueGrey),
+                const SizedBox(width: 8),
+                Text(
+                  'References',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.add),
+              label: const Text('Add Reference'),
+              onPressed: () => _showReferenceDialog(context, ref),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
+            if (references.isNotEmpty) const SizedBox(height: 16),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: references.length,
+              itemBuilder: (context, index) {
+                final refItem = references[index];
+                return Card(
+                  elevation: 2,
+                  margin: const EdgeInsets.only(bottom: 8.0),
+                  child: ListTile(
+                    leading: const Icon(Icons.person_pin, color: Colors.orange),
+                    title: Text(refItem.name,
+                        style: Theme.of(context).textTheme.titleMedium),
+                    subtitle: Text(refItem.company),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete_outline,
+                          color: Theme.of(context).colorScheme.error),
+                      onPressed: () => ref
+                          .read(cvFormProvider.notifier)
+                          .removeReference(index),
+                    ),
+                    onTap: () => _showReferenceDialog(context, ref,
+                        existingReference: refItem, index: index),
+                  ),
+                );
+              },
+            ),
+            if (references.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  'No references added yet. Add some if needed.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}

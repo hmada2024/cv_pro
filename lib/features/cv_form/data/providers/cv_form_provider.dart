@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/di/injector.dart';
@@ -12,11 +13,17 @@ class CvFormNotifier extends StateNotifier<CVData> {
   final StorageService _storageService;
   final ImageCropperService _imageCropperService;
   final ImagePicker _imagePicker = ImagePicker();
+  Timer? _debounce;
 
-  // ✅ UPDATED: Constructor no longer needs PdfService
   CvFormNotifier(this._storageService, this._imageCropperService)
       : super(CVData.initial()) {
     _loadDataFromDb();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
   }
 
   Future<void> _loadDataFromDb() async {
@@ -50,7 +57,11 @@ class CvFormNotifier extends StateNotifier<CVData> {
         profileImagePath: profileImagePath,
       ),
     );
-    _saveStateToDb();
+
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _saveStateToDb();
+    });
   }
 
   void addExperience({
@@ -71,6 +82,15 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
+  void updateExperience(int index, Experience updatedExperience) {
+    final currentExperiences = List<Experience>.from(state.experiences);
+    if (index >= 0 && index < currentExperiences.length) {
+      currentExperiences[index] = updatedExperience;
+      state = state.copyWith(experiences: currentExperiences);
+      _saveStateToDb();
+    }
+  }
+
   void removeExperience(int index) {
     final currentExperiences = List<Experience>.from(state.experiences);
     currentExperiences.removeAt(index);
@@ -87,6 +107,15 @@ class CvFormNotifier extends StateNotifier<CVData> {
         endDate: DateTime.now().subtract(const Duration(days: 365)),
       );
       state = state.copyWith(education: [...state.education, newEducation]);
+      _saveStateToDb();
+    }
+  }
+
+  void updateEducation(int index, Education updatedEducation) {
+    final currentEducation = List<Education>.from(state.education);
+    if (index >= 0 && index < currentEducation.length) {
+      currentEducation[index] = updatedEducation;
+      state = state.copyWith(education: currentEducation);
       _saveStateToDb();
     }
   }
@@ -123,10 +152,54 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
+  void updateLanguage(int index, Language updatedLanguage) {
+    final currentLanguages = List<Language>.from(state.languages);
+    if (index >= 0 && index < currentLanguages.length) {
+      currentLanguages[index] = updatedLanguage;
+      state = state.copyWith(languages: currentLanguages);
+      _saveStateToDb();
+    }
+  }
+
   void removeLanguage(int index) {
     final currentLanguages = List<Language>.from(state.languages);
     currentLanguages.removeAt(index);
     state = state.copyWith(languages: currentLanguages);
+    _saveStateToDb();
+  }
+
+  void addReference({
+    required String name,
+    required String company,
+    required String position,
+    required String email,
+    String? phone,
+  }) {
+    if (name.isNotEmpty && email.isNotEmpty) {
+      final newReference = Reference.create(
+          name: name,
+          company: company,
+          position: position,
+          email: email,
+          phone: phone);
+      state = state.copyWith(references: [...state.references, newReference]);
+      _saveStateToDb();
+    }
+  }
+
+  void updateReference(int index, Reference updatedReference) {
+    final currentReferences = List<Reference>.from(state.references);
+    if (index >= 0 && index < currentReferences.length) {
+      currentReferences[index] = updatedReference;
+      state = state.copyWith(references: currentReferences);
+      _saveStateToDb();
+    }
+  }
+
+  void removeReference(int index) {
+    final currentReferences = List<Reference>.from(state.references);
+    currentReferences.removeAt(index);
+    state = state.copyWith(references: currentReferences);
     _saveStateToDb();
   }
 
@@ -149,7 +222,10 @@ class CvFormNotifier extends StateNotifier<CVData> {
       );
 
       if (croppedFile != null) {
-        updatePersonalInfo(profileImagePath: croppedFile.path);
+        state = state.copyWith(
+            personalInfo: state.personalInfo
+                .copyWith(profileImagePath: croppedFile.path));
+        _saveStateToDb();
       }
     }
   }
@@ -161,17 +237,21 @@ final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
   return CvFormNotifier(storageService, imageCropperService);
 });
 
-// Provider for REAL data
+// ✅ UPDATED: Provider for REAL data now passes the new option
 final pdfBytesProvider = FutureProvider.autoDispose
     .family<Uint8List, CvTemplate>((ref, template) async {
   final pdfService = ref.read(pdfServiceProvider);
   final cvData = ref.watch(cvFormProvider);
-  return pdfService.generateCv(cvData, template);
+  final showNote = ref.watch(showReferencesNoteProvider); // Read the new state
+  return pdfService.generateCv(cvData, template, showReferencesNote: showNote);
 });
 
+// ✅ UPDATED: Provider for DUMMY data also passes the new option
 final dummyPdfBytesProvider = FutureProvider.autoDispose
     .family<Uint8List, CvTemplate>((ref, template) async {
   final pdfService = ref.read(pdfServiceProvider);
   final dummyData = createDummyCvData();
-  return pdfService.generateCv(dummyData, template);
+  final showNote = ref.watch(showReferencesNoteProvider); // Read the new state
+  return pdfService.generateCv(dummyData, template,
+      showReferencesNote: showNote);
 });

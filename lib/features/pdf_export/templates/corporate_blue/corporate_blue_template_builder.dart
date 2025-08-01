@@ -6,9 +6,11 @@ import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_bl
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_left_column.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_right_column.dart';
 
+// ✅✅ UPDATED: Added the 'showReferencesNote' required named parameter ✅✅
 Future<pw.Widget> buildCorporateBlueTemplate({
   required CVData data,
   required pw.Font iconFont,
+  required bool showReferencesNote,
 }) async {
   pw.ImageProvider? profileImage;
   final imagePath = data.personalInfo.profileImagePath;
@@ -38,8 +40,12 @@ Future<pw.Widget> buildCorporateBlueTemplate({
             ),
             pw.Expanded(
               flex: 3,
-              // ✅ UPDATED: Pass iconFont to the RightColumn
-              child: CorporateBlueRightColumn(data: data, iconFont: iconFont),
+              // ✅✅ UPDATED: Pass the new parameter down to the RightColumn ✅✅
+              child: CorporateBlueRightColumn(
+                data: data,
+                iconFont: iconFont,
+                showReferencesNote: showReferencesNote,
+              ),
             ),
           ],
         ),

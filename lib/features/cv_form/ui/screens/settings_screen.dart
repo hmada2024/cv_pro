@@ -12,6 +12,8 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTemplate = ref.watch(selectedTemplateProvider);
     final currentThemeMode = ref.watch(themeModeProvider);
+    // ✅ NEW: Watch the new provider for the switch state
+    final showReferencesNote = ref.watch(showReferencesNoteProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -47,17 +49,17 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const Divider(height: 40),
 
-          // --- Template Section ---
           Text(
             'CV Template',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
           const Text(
-            'Choose the template that will be used for the final CV.',
+            'Choose the template and options for the final CV.',
             style: TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 16),
+          // --- Template Selectors ---
           _buildTemplateSelector(
             context: context,
             ref: ref,
@@ -84,6 +86,19 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(selectedTemplateProvider.notifier).state = value;
               }
             },
+          ),
+          const Divider(height: 20),
+
+          // ✅✅ NEW: The switch for the references note ✅✅
+          SwitchListTile(
+            title: const Text('Show "References available upon request"'),
+            subtitle:
+                const Text('Shows this note if you have no references listed.'),
+            value: showReferencesNote,
+            onChanged: (bool value) {
+              ref.read(showReferencesNoteProvider.notifier).state = value;
+            },
+            activeColor: Theme.of(context).colorScheme.primary,
           ),
         ],
       ),

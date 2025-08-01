@@ -23,6 +23,89 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     super.dispose();
   }
 
+  // ✅✅ NEW: Method to show the edit/add dialog ✅✅
+  void _showExperienceDialog({Experience? existingExperience, int? index}) {
+    final isEditing = existingExperience != null;
+
+    // Pre-fill controllers if editing
+    if (isEditing) {
+      _positionController.text = existingExperience.position;
+      _companyController.text = existingExperience.companyName;
+      _descriptionController.text = existingExperience.description;
+    } else {
+      // Clear controllers if adding
+      _positionController.clear();
+      _companyController.clear();
+      _descriptionController.clear();
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(isEditing ? 'Edit Experience' : 'Add Experience'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                    controller: _positionController,
+                    decoration: const InputDecoration(
+                        labelText: 'Position / Job Title')),
+                const SizedBox(height: 12),
+                TextFormField(
+                    controller: _companyController,
+                    decoration:
+                        const InputDecoration(labelText: 'Company Name')),
+                const SizedBox(height: 12),
+                TextFormField(
+                    controller: _descriptionController,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                    maxLines: 3),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (isEditing) {
+                  // Create an updated experience object
+                  final updatedExperience = Experience.create(
+                    companyName: _companyController.text,
+                    position: _positionController.text,
+                    description: _descriptionController.text,
+                    startDate: existingExperience.startDate,
+                    endDate: existingExperience.endDate,
+                  );
+                  ref
+                      .read(cvFormProvider.notifier)
+                      .updateExperience(index!, updatedExperience);
+                } else {
+                  ref.read(cvFormProvider.notifier).addExperience(
+                        position: _positionController.text,
+                        companyName: _companyController.text,
+                        description: _descriptionController.text,
+                      );
+                }
+                Navigator.of(context).pop();
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      // Clear controllers after dialog is closed
+      _positionController.clear();
+      _companyController.clear();
+      _descriptionController.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final experiences = ref.watch(cvFormProvider).experiences;
@@ -44,36 +127,36 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
               ],
             ),
             const SizedBox(height: 16),
-            TextFormField(
-                controller: _positionController,
-                decoration:
-                    const InputDecoration(labelText: 'Position / Job Title')),
-            const SizedBox(height: 12),
-            TextFormField(
-                controller: _companyController,
-                decoration: const InputDecoration(labelText: 'Company Name')),
-            const SizedBox(height: 12),
-            TextFormField(
-                controller: _descriptionController,
-                decoration: const InputDecoration(labelText: 'Description'),
-                maxLines: 3),
-            const SizedBox(height: 16),
-            ElevatedButton(
-                onPressed: () {
-                  ref.read(cvFormProvider.notifier).addExperience(
-                        position: _positionController.text,
-                        companyName: _companyController.text,
-                        description: _descriptionController.text,
-                      );
-                  _positionController.clear();
-                  _companyController.clear();
-                  _descriptionController.clear();
-                },
-                child: const Text('Add Experience')),
+            // ✅ UPDATED: Use a button to open the dialog
+            OutlinedButton.icon(
+              icon: const Icon(Icons.add),
+              label: const Text('Add Experience'),
+              onPressed: () => _showExperienceDialog(),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
             if (experiences.isNotEmpty) const SizedBox(height: 16),
-            // ✅ UPDATED: Use a for loop to get index for deletion
-            for (var i = 0; i < experiences.length; i++)
-              _buildExperienceCard(experiences[i], i),
+            // ✅ UPDATED: Use a ListView for better structure
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: experiences.length,
+              itemBuilder: (context, index) {
+                final exp = experiences[index];
+                return _buildExperienceCard(exp, index);
+              },
+            ),
+            // ✅ NEW: Show a placeholder when the list is empty
+            if (experiences.isEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Text(
+                  'No work experience added yet.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
           ],
         ),
       ),
@@ -88,6 +171,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
         borderRadius: BorderRadius.circular(8.0),
         side: BorderSide(color: Colors.grey.shade200),
       ),
+      // ✅ UPDATED: Make the whole card tappable for editing
       child: ListTile(
         leading: const Icon(Icons.check_circle_outline, color: Colors.green),
         title:
@@ -101,6 +185,8 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             ref.read(cvFormProvider.notifier).removeExperience(index);
           },
         ),
+        onTap: () =>
+            _showExperienceDialog(existingExperience: exp, index: index),
       ),
     );
   }

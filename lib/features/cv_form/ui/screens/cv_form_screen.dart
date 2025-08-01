@@ -7,9 +7,9 @@ import 'package:cv_pro/features/cv_form/ui/widgets/education_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/experience_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/personal_info_section.dart';
+import 'package:cv_pro/features/cv_form/ui/widgets/references_section.dart'; // ✅ NEW: Import
 import 'package:cv_pro/features/cv_form/ui/widgets/skill_section.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
-
 
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
@@ -32,7 +32,6 @@ class CvFormScreen extends ConsumerWidget {
           },
         ),
         actions: [
-          // ✅ UPDATED: Create button with a new icon
           IconButton(
             icon: Icon(
               Icons.checklist_rtl,
@@ -40,7 +39,7 @@ class CvFormScreen extends ConsumerWidget {
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).disabledColor,
             ),
-            iconSize: 28, // Make it slightly larger
+            iconSize: 28,
             tooltip: 'Create Final CV',
             onPressed: canCreate
                 ? () {
@@ -71,6 +70,8 @@ class CvFormScreen extends ConsumerWidget {
             SkillSection(),
             SizedBox(height: 16),
             LanguageSection(),
+            SizedBox(height: 16), // ✅ NEW: Add space
+            ReferencesSection(), // ✅✅ NEW: Add the new section here ✅✅
             SizedBox(height: 20),
           ],
         ),
