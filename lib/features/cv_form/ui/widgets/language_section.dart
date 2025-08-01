@@ -1,3 +1,4 @@
+// features/cv_form/ui/widgets/language_section.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -12,13 +13,33 @@ class LanguageSection extends ConsumerStatefulWidget {
 
 class _LanguageSectionState extends ConsumerState<LanguageSection> {
   final _languageController = TextEditingController();
-  final _proficiencyController = TextEditingController();
+  String? _selectedProficiencyLevel;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedProficiencyLevel = kSkillLevels[1]; // "Intermediate"
+  }
 
   @override
   void dispose() {
     _languageController.dispose();
-    _proficiencyController.dispose();
     super.dispose();
+  }
+
+  void _addLanguage() {
+    if (_languageController.text.isNotEmpty &&
+        _selectedProficiencyLevel != null) {
+      ref.read(cvFormProvider.notifier).addLanguage(
+            name: _languageController.text,
+            proficiency: _selectedProficiencyLevel!,
+          );
+      _languageController.clear();
+      setState(() {
+        // Reset to default after adding
+        _selectedProficiencyLevel = kSkillLevels[1];
+      });
+    }
   }
 
   @override
@@ -40,25 +61,35 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
             ),
             const SizedBox(height: 16),
             TextFormField(
-                controller: _languageController,
-                decoration: const InputDecoration(
-                    labelText: 'Language (e.g., English)')),
+              controller: _languageController,
+              decoration:
+                  const InputDecoration(labelText: 'Language (e.g., English)'),
+              onFieldSubmitted: (_) => _addLanguage(),
+            ),
             const SizedBox(height: 12),
-            TextFormField(
-                controller: _proficiencyController,
-                decoration: const InputDecoration(
-                    labelText: 'Proficiency (e.g., Native)')),
+            DropdownButtonFormField<String>(
+              value: _selectedProficiencyLevel,
+              decoration: const InputDecoration(
+                labelText: 'Proficiency Level',
+                prefixIcon: Icon(Icons.bar_chart_outlined),
+              ),
+              items: kSkillLevels.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedProficiencyLevel = newValue;
+                });
+              },
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
-                onPressed: () {
-                  ref.read(cvFormProvider.notifier).addLanguage(
-                        name: _languageController.text,
-                        proficiency: _proficiencyController.text,
-                      );
-                  _languageController.clear();
-                  _proficiencyController.clear();
-                },
-                child: const Text('Add Language')),
+              onPressed: _addLanguage,
+              child: const Text('Add Language'),
+            ),
             if (languages.isNotEmpty) const SizedBox(height: 16),
             for (var i = 0; i < languages.length; i++)
               _buildLanguageCard(languages[i], i),

@@ -48,17 +48,16 @@ CVData createDummyCvData() {
         endDate: DateTime(2015, 1, 1),
       ),
     ],
-    // ✅✅ UPDATED: Skill levels are now descriptive strings ✅✅
     skills: [
       Skill.create(name: 'Web Design', level: 'Advanced'),
       Skill.create(name: 'Branding', level: 'Advanced'),
       Skill.create(name: 'Graphic Design', level: 'Expert'),
-      Skill.create(name: 'SEO', level: 'Intermediate'),
+      Skill.create(name: 'SEO', level: 'Upper-Intermediate'),
       Skill.create(name: 'Marketing', level: 'Advanced'),
     ],
     languages: [
-      Language.create(name: 'English', proficiency: 'Native'),
-      Language.create(name: 'French', proficiency: 'Professional'),
+      Language.create(name: 'English', proficiency: 'Expert'),
+      Language.create(name: 'French', proficiency: 'Advanced'),
     ],
     references: [
       Reference.create(

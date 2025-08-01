@@ -4,7 +4,6 @@ import 'package:isar/isar.dart';
 
 part 'cv_data.g.dart';
 
-// ✅ NEW: Centralized lists for dropdown options
 const List<String> kMaritalStatusOptions = [
   'Single',
   'Married',
@@ -21,9 +20,11 @@ const List<String> kMilitaryServiceOptions = [
 const List<String> kSkillLevels = [
   'Beginner',
   'Intermediate',
+  'Upper-Intermediate',
   'Advanced',
   'Expert'
 ];
+
 
 @collection
 class CVData {
@@ -184,7 +185,7 @@ class Skill {
 
   Skill() {
     name = '';
-    level = kSkillLevels.first;
+    level = kSkillLevels[1];
   }
 
   Skill.create({required this.name, required this.level});
@@ -197,7 +198,7 @@ class Language {
 
   Language() {
     name = '';
-    proficiency = '';
+    proficiency = kSkillLevels[1];
   }
 
   Language.create({required this.name, required this.proficiency});
