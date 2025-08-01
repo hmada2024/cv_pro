@@ -1,6 +1,22 @@
+// features/cv_form/data/models/cv_data.dart
+
 import 'package:isar/isar.dart';
 
 part 'cv_data.g.dart';
+
+// ✅ NEW: Centralized lists for dropdown options
+const List<String> kMaritalStatusOptions = [
+  'Single',
+  'Married',
+  'Divorced',
+  'Widowed'
+];
+const List<String> kMilitaryServiceOptions = [
+  'Completed',
+  'Exempted',
+  'Postponed',
+  'Not Applicable'
+];
 
 @collection
 class CVData {
@@ -11,7 +27,7 @@ class CVData {
   final List<Skill> skills;
   final List<Language> languages;
   final List<Education> education;
-  final List<Reference> references; // ✅ NEW: Added references list
+  final List<Reference> references;
 
   CVData({
     required this.personalInfo,
@@ -19,7 +35,7 @@ class CVData {
     required this.skills,
     required this.languages,
     required this.education,
-    required this.references, // ✅ NEW: Added to constructor
+    required this.references,
   });
 
   factory CVData.initial() {
@@ -29,7 +45,7 @@ class CVData {
       skills: [],
       languages: [],
       education: [],
-      references: [], // ✅ NEW: Initialized as empty list
+      references: [],
     );
   }
 
@@ -39,7 +55,7 @@ class CVData {
     List<Skill>? skills,
     List<Language>? languages,
     List<Education>? education,
-    List<Reference>? references, // ✅ NEW: Added to copyWith
+    List<Reference>? references,
   }) {
     return CVData(
       personalInfo: personalInfo ?? this.personalInfo,
@@ -47,7 +63,7 @@ class CVData {
       skills: skills ?? this.skills,
       languages: languages ?? this.languages,
       education: education ?? this.education,
-      references: references ?? this.references, // ✅ NEW: Added to copyWith
+      references: references ?? this.references,
     );
   }
 }
@@ -62,6 +78,11 @@ class PersonalInfo {
   final String? address;
   final String? profileImagePath;
 
+  // ✅✅ NEW: Added new fields for personal details ✅✅
+  final DateTime? birthDate;
+  final String? maritalStatus;
+  final String? militaryServiceStatus;
+
   PersonalInfo({
     this.name = '',
     this.jobTitle = '',
@@ -70,6 +91,9 @@ class PersonalInfo {
     this.phone = '',
     this.address = '',
     this.profileImagePath,
+    this.birthDate, // ✅ NEW
+    this.maritalStatus, // ✅ NEW
+    this.militaryServiceStatus, // ✅ NEW
   });
 
   PersonalInfo copyWith({
@@ -80,6 +104,9 @@ class PersonalInfo {
     String? phone,
     String? address,
     String? profileImagePath,
+    DateTime? birthDate, // ✅ NEW
+    String? maritalStatus, // ✅ NEW
+    String? militaryServiceStatus, // ✅ NEW
   }) {
     return PersonalInfo(
       name: name ?? this.name,
@@ -89,6 +116,10 @@ class PersonalInfo {
       phone: phone ?? this.phone,
       address: address ?? this.address,
       profileImagePath: profileImagePath ?? this.profileImagePath,
+      birthDate: birthDate ?? this.birthDate, // ✅ NEW
+      maritalStatus: maritalStatus ?? this.maritalStatus, // ✅ NEW
+      militaryServiceStatus:
+          militaryServiceStatus ?? this.militaryServiceStatus, // ✅ NEW
     );
   }
 }
@@ -166,7 +197,6 @@ class Language {
   Language.create({required this.name, required this.proficiency});
 }
 
-// ✅ NEW: Added Reference class
 @embedded
 class Reference {
   late String name;

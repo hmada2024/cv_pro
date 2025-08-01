@@ -973,33 +973,48 @@ const PersonalInfoSchema = Schema(
       name: r'address',
       type: IsarType.string,
     ),
-    r'email': PropertySchema(
+    r'birthDate': PropertySchema(
       id: 1,
+      name: r'birthDate',
+      type: IsarType.dateTime,
+    ),
+    r'email': PropertySchema(
+      id: 2,
       name: r'email',
       type: IsarType.string,
     ),
     r'jobTitle': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'jobTitle',
       type: IsarType.string,
     ),
+    r'maritalStatus': PropertySchema(
+      id: 4,
+      name: r'maritalStatus',
+      type: IsarType.string,
+    ),
+    r'militaryServiceStatus': PropertySchema(
+      id: 5,
+      name: r'militaryServiceStatus',
+      type: IsarType.string,
+    ),
     r'name': PropertySchema(
-      id: 3,
+      id: 6,
       name: r'name',
       type: IsarType.string,
     ),
     r'phone': PropertySchema(
-      id: 4,
+      id: 7,
       name: r'phone',
       type: IsarType.string,
     ),
     r'profileImagePath': PropertySchema(
-      id: 5,
+      id: 8,
       name: r'profileImagePath',
       type: IsarType.string,
     ),
     r'summary': PropertySchema(
-      id: 6,
+      id: 9,
       name: r'summary',
       type: IsarType.string,
     )
@@ -1024,6 +1039,18 @@ int _personalInfoEstimateSize(
   }
   bytesCount += 3 + object.email.length * 3;
   bytesCount += 3 + object.jobTitle.length * 3;
+  {
+    final value = object.maritalStatus;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
+  {
+    final value = object.militaryServiceStatus;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   bytesCount += 3 + object.name.length * 3;
   {
     final value = object.phone;
@@ -1048,12 +1075,15 @@ void _personalInfoSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.address);
-  writer.writeString(offsets[1], object.email);
-  writer.writeString(offsets[2], object.jobTitle);
-  writer.writeString(offsets[3], object.name);
-  writer.writeString(offsets[4], object.phone);
-  writer.writeString(offsets[5], object.profileImagePath);
-  writer.writeString(offsets[6], object.summary);
+  writer.writeDateTime(offsets[1], object.birthDate);
+  writer.writeString(offsets[2], object.email);
+  writer.writeString(offsets[3], object.jobTitle);
+  writer.writeString(offsets[4], object.maritalStatus);
+  writer.writeString(offsets[5], object.militaryServiceStatus);
+  writer.writeString(offsets[6], object.name);
+  writer.writeString(offsets[7], object.phone);
+  writer.writeString(offsets[8], object.profileImagePath);
+  writer.writeString(offsets[9], object.summary);
 }
 
 PersonalInfo _personalInfoDeserialize(
@@ -1064,12 +1094,15 @@ PersonalInfo _personalInfoDeserialize(
 ) {
   final object = PersonalInfo(
     address: reader.readStringOrNull(offsets[0]),
-    email: reader.readStringOrNull(offsets[1]) ?? '',
-    jobTitle: reader.readStringOrNull(offsets[2]) ?? '',
-    name: reader.readStringOrNull(offsets[3]) ?? '',
-    phone: reader.readStringOrNull(offsets[4]),
-    profileImagePath: reader.readStringOrNull(offsets[5]),
-    summary: reader.readStringOrNull(offsets[6]) ?? '',
+    birthDate: reader.readDateTimeOrNull(offsets[1]),
+    email: reader.readStringOrNull(offsets[2]) ?? '',
+    jobTitle: reader.readStringOrNull(offsets[3]) ?? '',
+    maritalStatus: reader.readStringOrNull(offsets[4]),
+    militaryServiceStatus: reader.readStringOrNull(offsets[5]),
+    name: reader.readStringOrNull(offsets[6]) ?? '',
+    phone: reader.readStringOrNull(offsets[7]),
+    profileImagePath: reader.readStringOrNull(offsets[8]),
+    summary: reader.readStringOrNull(offsets[9]) ?? '',
   );
   return object;
 }
@@ -1084,7 +1117,7 @@ P _personalInfoDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readStringOrNull(offset) ?? '') as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 3:
@@ -1094,6 +1127,12 @@ P _personalInfoDeserializeProp<P>(
     case 5:
       return (reader.readStringOrNull(offset)) as P;
     case 6:
+      return (reader.readStringOrNull(offset) ?? '') as P;
+    case 7:
+      return (reader.readStringOrNull(offset)) as P;
+    case 8:
+      return (reader.readStringOrNull(offset)) as P;
+    case 9:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1252,6 +1291,80 @@ extension PersonalInfoQueryFilter
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'address',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      birthDateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'birthDate',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      birthDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'birthDate',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      birthDateEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'birthDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      birthDateGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'birthDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      birthDateLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'birthDate',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      birthDateBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'birthDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
@@ -1521,6 +1634,315 @@ extension PersonalInfoQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'jobTitle',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'maritalStatus',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'maritalStatus',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'maritalStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'maritalStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'maritalStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'maritalStatus',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'maritalStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'maritalStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'maritalStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'maritalStatus',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'maritalStatus',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      maritalStatusIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'maritalStatus',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'militaryServiceStatus',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'militaryServiceStatus',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'militaryServiceStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'militaryServiceStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'militaryServiceStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'militaryServiceStatus',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'militaryServiceStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'militaryServiceStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'militaryServiceStatus',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusMatches(String pattern,
+          {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'militaryServiceStatus',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'militaryServiceStatus',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      militaryServiceStatusIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'militaryServiceStatus',
         value: '',
       ));
     });
