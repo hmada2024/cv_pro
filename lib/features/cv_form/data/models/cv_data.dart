@@ -18,6 +18,13 @@ const List<String> kMilitaryServiceOptions = [
   'Not Applicable'
 ];
 
+const List<String> kSkillLevels = [
+  'Beginner',
+  'Intermediate',
+  'Advanced',
+  'Expert'
+];
+
 @collection
 class CVData {
   Id id = Isar.autoIncrement;
@@ -78,7 +85,6 @@ class PersonalInfo {
   final String? address;
   final String? profileImagePath;
 
-  // ✅✅ NEW: Added new fields for personal details ✅✅
   final DateTime? birthDate;
   final String? maritalStatus;
   final String? militaryServiceStatus;
@@ -91,9 +97,9 @@ class PersonalInfo {
     this.phone = '',
     this.address = '',
     this.profileImagePath,
-    this.birthDate, // ✅ NEW
-    this.maritalStatus, // ✅ NEW
-    this.militaryServiceStatus, // ✅ NEW
+    this.birthDate,
+    this.maritalStatus,
+    this.militaryServiceStatus,
   });
 
   PersonalInfo copyWith({
@@ -104,9 +110,9 @@ class PersonalInfo {
     String? phone,
     String? address,
     String? profileImagePath,
-    DateTime? birthDate, // ✅ NEW
-    String? maritalStatus, // ✅ NEW
-    String? militaryServiceStatus, // ✅ NEW
+    DateTime? birthDate,
+    String? maritalStatus,
+    String? militaryServiceStatus,
   }) {
     return PersonalInfo(
       name: name ?? this.name,
@@ -116,10 +122,10 @@ class PersonalInfo {
       phone: phone ?? this.phone,
       address: address ?? this.address,
       profileImagePath: profileImagePath ?? this.profileImagePath,
-      birthDate: birthDate ?? this.birthDate, // ✅ NEW
-      maritalStatus: maritalStatus ?? this.maritalStatus, // ✅ NEW
+      birthDate: birthDate ?? this.birthDate,
+      maritalStatus: maritalStatus ?? this.maritalStatus,
       militaryServiceStatus:
-          militaryServiceStatus ?? this.militaryServiceStatus, // ✅ NEW
+          militaryServiceStatus ?? this.militaryServiceStatus,
     );
   }
 }
@@ -174,11 +180,11 @@ class Experience {
 @embedded
 class Skill {
   late String name;
-  late int level;
+  late String level;
 
   Skill() {
     name = '';
-    level = 50;
+    level = kSkillLevels.first;
   }
 
   Skill.create({required this.name, required this.level});
