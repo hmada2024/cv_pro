@@ -5,15 +5,18 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 CVData createDummyCvData() {
   return CVData(
     personalInfo: PersonalInfo(
-      name: 'Salm Mroan',
-      jobTitle: 'Graphics Designer',
-      email: 'salm_mroan@gmail.com',
-      phone: '+123-456-7890',
-      address: '123 Anywhere Street, Any City',
-      profileImagePath: 'assets/images/face_AI.webp', // Path to dummy image
-      summary:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pharetra in lorem at laoreet. Donec hendrerit libero eget tempor, quis tempus arcu elementum.',
-    ),
+        name: 'Salm Mroan',
+        jobTitle: 'Graphics Designer',
+        email: 'salm_mroan@gmail.com',
+        phone: '+123-456-7890',
+        address: '123 Anywhere Street, Any City',
+        profileImagePath: 'assets/images/face_AI.webp',
+        summary:
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pharetra in lorem at laoreet. Donec hendrerit libero eget tempor, quis tempus arcu elementum.',
+        // ✅✅ NEW: Added dummy data for new fields ✅✅
+        birthDate: DateTime(1992, 8, 24),
+        maritalStatus: 'Single',
+        militaryServiceStatus: 'Completed'),
     experiences: [
       Experience.create(
         position: 'Senior Graphic Designer',
@@ -57,7 +60,6 @@ CVData createDummyCvData() {
       Language.create(name: 'English', proficiency: 'Native'),
       Language.create(name: 'French', proficiency: 'Professional'),
     ],
-    // ✅✅ UPDATED: Added a dummy reference to test the preview functionality ✅✅
     references: [
       Reference.create(
         name: 'Dr. Jane Doe',

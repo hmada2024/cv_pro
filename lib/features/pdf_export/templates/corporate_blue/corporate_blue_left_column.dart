@@ -1,6 +1,9 @@
+// features/pdf_export/templates/corporate_blue/corporate_blue_left_column.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/widgets/contact_info_line.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class CorporateBlueLeftColumn extends pw.StatelessWidget {
@@ -14,6 +17,14 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
+    final personalInfo = data.personalInfo;
+    final DateFormat dateFormatter = DateFormat('d MMMM yyyy');
+
+    // Helper to check if there are any details to show
+    final bool hasDetails = personalInfo.birthDate != null ||
+        personalInfo.maritalStatus != null ||
+        personalInfo.militaryServiceStatus != null;
+
     // Add a top padding to align content below the overflowing avatar
     return pw.Container(
       color: CorporateBlueColors.backgroundDark,
@@ -22,8 +33,31 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // About Me
+          if (personalInfo.summary.isNotEmpty)
+            pw.Text(
+              'About Me',
+              style: pw.TextStyle(
+                  color: CorporateBlueColors.lightText,
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold),
+            ),
+          if (personalInfo.summary.isNotEmpty)
+            pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
+          if (personalInfo.summary.isNotEmpty) pw.SizedBox(height: 8),
+          if (personalInfo.summary.isNotEmpty)
+            pw.Text(
+              personalInfo.summary,
+              style: const pw.TextStyle(
+                color: CorporateBlueColors.lightText,
+                fontSize: 9,
+                lineSpacing: 3,
+              ),
+            ),
+          if (personalInfo.summary.isNotEmpty) pw.SizedBox(height: 25),
+
+          // Contact
           pw.Text(
-            'About Me',
+            'Contact',
             style: pw.TextStyle(
                 color: CorporateBlueColors.lightText,
                 fontSize: 14,
@@ -31,45 +65,70 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
           ),
           pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
           pw.SizedBox(height: 8),
-          pw.Text(
-            data.personalInfo.summary,
-            style: const pw.TextStyle(
-              color: CorporateBlueColors.lightText,
-              fontSize: 9,
-              lineSpacing: 3,
-            ),
-          ),
-          pw.SizedBox(height: 25),
-
-          // Contact
-          if (data.personalInfo.phone != null &&
-              data.personalInfo.phone!.isNotEmpty)
+          if (personalInfo.phone != null && personalInfo.phone!.isNotEmpty)
             ContactInfoLine(
-              iconData: const pw.IconData(0xe0b0),
-              text: data.personalInfo.phone!,
+              iconData: const pw.IconData(0xe0b0), // phone
+              text: personalInfo.phone!,
               iconFont: iconFont,
               textColor: CorporateBlueColors.lightText,
               iconColor: CorporateBlueColors.accentBlue,
             ),
           ContactInfoLine(
-            iconData: const pw.IconData(0xe158),
-            text: data.personalInfo.email,
+            iconData: const pw.IconData(0xe158), // email
+            text: personalInfo.email,
             iconFont: iconFont,
             textColor: CorporateBlueColors.lightText,
             iconColor: CorporateBlueColors.accentBlue,
           ),
-          if (data.personalInfo.address != null &&
-              data.personalInfo.address!.isNotEmpty)
+          if (personalInfo.address != null && personalInfo.address!.isNotEmpty)
             ContactInfoLine(
-              iconData: const pw.IconData(0xe55f),
-              text: data.personalInfo.address!,
+              iconData: const pw.IconData(0xe55f), // location
+              text: personalInfo.address!,
               iconFont: iconFont,
               textColor: CorporateBlueColors.lightText,
               iconColor: CorporateBlueColors.accentBlue,
             ),
           pw.SizedBox(height: 25),
 
-          // ✅ UPDATED: Use a border instead of a pill for a cleaner look on dark bg
+          // ✅✅ NEW: Personal Details Section ✅✅
+          if (hasDetails)
+            pw.Text(
+              'Personal Details',
+              style: pw.TextStyle(
+                  color: CorporateBlueColors.lightText,
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold),
+            ),
+          if (hasDetails)
+            pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
+          if (hasDetails) pw.SizedBox(height: 8),
+
+          if (personalInfo.birthDate != null)
+            ContactInfoLine(
+              iconData: const pw.IconData(0xe145), // cake
+              text: dateFormatter.format(personalInfo.birthDate!),
+              iconFont: iconFont,
+              textColor: CorporateBlueColors.lightText,
+              iconColor: CorporateBlueColors.accentBlue,
+            ),
+          if (personalInfo.maritalStatus != null)
+            ContactInfoLine(
+              iconData: const pw.IconData(0xe87d), // favorite
+              text: personalInfo.maritalStatus!,
+              iconFont: iconFont,
+              textColor: CorporateBlueColors.lightText,
+              iconColor: CorporateBlueColors.accentBlue,
+            ),
+          if (personalInfo.militaryServiceStatus != null)
+            ContactInfoLine(
+              iconData: const pw.IconData(0xe8e8), // verified_user
+              text: personalInfo.militaryServiceStatus!,
+              iconFont: iconFont,
+              textColor: CorporateBlueColors.lightText,
+              iconColor: CorporateBlueColors.accentBlue,
+            ),
+          if (hasDetails) pw.SizedBox(height: 25),
+
           if (data.languages.isNotEmpty)
             pw.Text(
               'Language',
@@ -79,25 +138,10 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
                   fontWeight: pw.FontWeight.bold),
             ),
           if (data.languages.isNotEmpty)
-             pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
+            pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
           if (data.languages.isNotEmpty) pw.SizedBox(height: 8),
-          ...data.languages.map((lang) => _buildListItem(
-              '${lang.name} (${lang.proficiency})', iconFont)),
-          pw.SizedBox(height: 25),
-
-          // Expertise
-          if (data.skills.isNotEmpty)
-            pw.Text(
-              'Expertise',
-              style: pw.TextStyle(
-                  color: CorporateBlueColors.lightText,
-                  fontSize: 14,
-                  fontWeight: pw.FontWeight.bold),
-            ),
-           if (data.skills.isNotEmpty)
-             pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
-           if (data.skills.isNotEmpty) pw.SizedBox(height: 8),
-          ...data.skills.map((skill) => _buildListItem(skill.name, iconFont)),
+          ...data.languages.map((lang) =>
+              _buildListItem('${lang.name} (${lang.proficiency})', iconFont)),
         ],
       ),
     );

@@ -1,4 +1,7 @@
+// features/pdf_export/templates/creative/left_column.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'creative_template_colors.dart';
@@ -10,32 +13,36 @@ import 'widgets/skill_item.dart';
 
 class LeftColumn extends pw.StatelessWidget {
   final CVData data;
-  // ✅ RESTORED: Image is handled by this column again
   final pw.ImageProvider? profileImage;
   final pw.Font iconFont;
 
   LeftColumn({
     required this.data,
-    this.profileImage, // ✅ RESTORED
+    this.profileImage,
     required this.iconFont,
   });
 
   @override
   pw.Widget build(pw.Context context) {
     const double avatarRadius = 50;
+    final personalInfo = data.personalInfo;
+    final DateFormat dateFormatter = DateFormat('d MMMM yyyy');
+
+    // Helper to check if there are any details to show
+    final bool hasDetails = personalInfo.birthDate != null ||
+        personalInfo.maritalStatus != null ||
+        personalInfo.militaryServiceStatus != null;
 
     return pw.Container(
       color: ModernTemplateColors.primary,
-      // ✅ RESTORED: Padding is normal again
       padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          // ✅ RESTORED: Image logic is back inside the column
           if (profileImage != null)
-            pw.Center( // Center the avatar within the column
+            pw.Center(
               child: pw.Container(
-                width: (avatarRadius + 4) * 2, // Diameter + border*2
+                width: (avatarRadius + 4) * 2,
                 height: (avatarRadius + 4) * 2,
                 decoration: const pw.BoxDecoration(
                   color: PdfColors.white,
@@ -50,30 +57,52 @@ class LeftColumn extends pw.StatelessWidget {
               ),
             ),
           if (profileImage != null) pw.SizedBox(height: 25),
-          
           SectionHeader(
               title: 'CONTACT',
               titleColor: ModernTemplateColors.lightText,
               lineColor: ModernTemplateColors.accent,
               fontSize: 14,
               lineWidth: 30),
-          if (data.personalInfo.phone != null &&
-              data.personalInfo.phone!.isNotEmpty)
+          if (personalInfo.phone != null && personalInfo.phone!.isNotEmpty)
             ContactInfoLine(
-                iconData: const pw.IconData(0xe0b0),
-                text: data.personalInfo.phone!,
+                iconData: const pw.IconData(0xe0b0), // phone
+                text: personalInfo.phone!,
                 iconFont: iconFont),
           ContactInfoLine(
-              iconData: const pw.IconData(0xe158),
-              text: data.personalInfo.email,
+              iconData: const pw.IconData(0xe158), // email
+              text: personalInfo.email,
               iconFont: iconFont),
-          if (data.personalInfo.address != null &&
-              data.personalInfo.address!.isNotEmpty)
+          if (personalInfo.address != null && personalInfo.address!.isNotEmpty)
             ContactInfoLine(
-                iconData: const pw.IconData(0xe55f),
-                text: data.personalInfo.address!,
+                iconData: const pw.IconData(0xe55f), // location
+                text: personalInfo.address!,
                 iconFont: iconFont),
           pw.SizedBox(height: 20),
+
+          // ✅✅ NEW: Personal Details Section ✅✅
+          if (hasDetails)
+            SectionHeader(
+                title: 'DETAILS',
+                titleColor: ModernTemplateColors.lightText,
+                lineColor: ModernTemplateColors.accent,
+                fontSize: 14,
+                lineWidth: 30),
+          if (personalInfo.birthDate != null)
+            ContactInfoLine(
+                iconData: const pw.IconData(0xe145), // cake
+                text: dateFormatter.format(personalInfo.birthDate!),
+                iconFont: iconFont),
+          if (personalInfo.maritalStatus != null)
+            ContactInfoLine(
+                iconData: const pw.IconData(0xe87d), // favorite
+                text: personalInfo.maritalStatus!,
+                iconFont: iconFont),
+          if (personalInfo.militaryServiceStatus != null)
+            ContactInfoLine(
+                iconData: const pw.IconData(0xe8e8), // verified_user
+                text: personalInfo.militaryServiceStatus!,
+                iconFont: iconFont),
+          if (hasDetails) pw.SizedBox(height: 20),
 
           if (data.education.isNotEmpty)
             SectionHeader(
@@ -83,7 +112,7 @@ class LeftColumn extends pw.StatelessWidget {
                 fontSize: 14,
                 lineWidth: 30),
           ...data.education.map((edu) => EducationItem(edu)),
-          pw.SizedBox(height: 20),
+          if (data.education.isNotEmpty) pw.SizedBox(height: 20),
 
           if (data.skills.isNotEmpty)
             SectionHeader(
@@ -93,7 +122,7 @@ class LeftColumn extends pw.StatelessWidget {
                 fontSize: 14,
                 lineWidth: 30),
           ...data.skills.map((skill) => SkillItem(skill.name)),
-          pw.SizedBox(height: 20),
+          if (data.skills.isNotEmpty) pw.SizedBox(height: 20),
 
           if (data.languages.isNotEmpty)
             SectionHeader(

@@ -1,3 +1,5 @@
+// features/cv_form/data/providers/cv_form_provider.dart
+
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +39,7 @@ class CvFormNotifier extends StateNotifier<CVData> {
     await _storageService.saveCV(state);
   }
 
+  // ✅✅ UPDATED: Added new optional parameters for personal details ✅✅
   void updatePersonalInfo({
     String? name,
     String? jobTitle,
@@ -45,6 +48,9 @@ class CvFormNotifier extends StateNotifier<CVData> {
     String? phone,
     String? address,
     String? profileImagePath,
+    DateTime? birthDate,
+    String? maritalStatus,
+    String? militaryServiceStatus,
   }) {
     state = state.copyWith(
       personalInfo: state.personalInfo.copyWith(
@@ -55,6 +61,9 @@ class CvFormNotifier extends StateNotifier<CVData> {
         phone: phone,
         address: address,
         profileImagePath: profileImagePath,
+        birthDate: birthDate,
+        maritalStatus: maritalStatus,
+        militaryServiceStatus: militaryServiceStatus,
       ),
     );
 
@@ -237,21 +246,19 @@ final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
   return CvFormNotifier(storageService, imageCropperService);
 });
 
-// ✅ UPDATED: Provider for REAL data now passes the new option
 final pdfBytesProvider = FutureProvider.autoDispose
     .family<Uint8List, CvTemplate>((ref, template) async {
   final pdfService = ref.read(pdfServiceProvider);
   final cvData = ref.watch(cvFormProvider);
-  final showNote = ref.watch(showReferencesNoteProvider); // Read the new state
+  final showNote = ref.watch(showReferencesNoteProvider);
   return pdfService.generateCv(cvData, template, showReferencesNote: showNote);
 });
 
-// ✅ UPDATED: Provider for DUMMY data also passes the new option
 final dummyPdfBytesProvider = FutureProvider.autoDispose
     .family<Uint8List, CvTemplate>((ref, template) async {
   final pdfService = ref.read(pdfServiceProvider);
   final dummyData = createDummyCvData();
-  final showNote = ref.watch(showReferencesNoteProvider); // Read the new state
+  final showNote = ref.watch(showReferencesNoteProvider);
   return pdfService.generateCv(dummyData, template,
       showReferencesNote: showNote);
 });

@@ -1,8 +1,12 @@
+// features/cv_form/ui/widgets/personal_info_section.dart
+
 import 'dart:io';
 import 'package:cv_pro/core/theme/app_colors.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+import 'package:intl/intl.dart';
 
 class PersonalInfoSection extends ConsumerStatefulWidget {
   const PersonalInfoSection({super.key});
@@ -19,17 +23,27 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
   final _summaryController = TextEditingController();
+  // ✅ NEW: Controller for date display
+  final _birthDateController = TextEditingController();
+  final DateFormat _dateFormatter = DateFormat('d MMMM yyyy');
 
   @override
   void initState() {
     super.initState();
     final cvData = ref.read(cvFormProvider);
-    _nameController.text = cvData.personalInfo.name;
-    _jobTitleController.text = cvData.personalInfo.jobTitle;
-    _emailController.text = cvData.personalInfo.email;
-    _phoneController.text = cvData.personalInfo.phone ?? '';
-    _addressController.text = cvData.personalInfo.address ?? '';
-    _summaryController.text = cvData.personalInfo.summary;
+    final personalInfo = cvData.personalInfo;
+
+    _nameController.text = personalInfo.name;
+    _jobTitleController.text = personalInfo.jobTitle;
+    _emailController.text = personalInfo.email;
+    _phoneController.text = personalInfo.phone ?? '';
+    _addressController.text = personalInfo.address ?? '';
+    _summaryController.text = personalInfo.summary;
+
+    if (personalInfo.birthDate != null) {
+      _birthDateController.text =
+          _dateFormatter.format(personalInfo.birthDate!);
+    }
   }
 
   @override
@@ -40,14 +54,34 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _phoneController.dispose();
     _addressController.dispose();
     _summaryController.dispose();
+    _birthDateController.dispose(); // ✅ NEW
     super.dispose();
+  }
+
+  // ✅ NEW: Method to show the date picker
+  Future<void> _selectBirthDate(BuildContext context) async {
+    final notifier = ref.read(cvFormProvider.notifier);
+    final initialDate = ref.read(cvFormProvider).personalInfo.birthDate ??
+        DateTime.now().subtract(const Duration(days: 365 * 25));
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(1950),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != initialDate) {
+      notifier.updatePersonalInfo(birthDate: picked);
+      setState(() {
+        _birthDateController.text = _dateFormatter.format(picked);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final profileImagePath =
-        ref.watch(cvFormProvider).personalInfo.profileImagePath;
-
+    final personalInfo = ref.watch(cvFormProvider).personalInfo;
     final theme = Theme.of(context);
 
     return Card(
@@ -60,8 +94,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               children: [
                 const Icon(Icons.person, color: Colors.blueGrey),
                 const SizedBox(width: 8),
-                Text('Personal Information',
-                    style: Theme.of(context).textTheme.titleLarge),
+                Text('Personal Information', style: theme.textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
@@ -71,10 +104,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: Colors.grey.shade200,
-                    backgroundImage: profileImagePath != null
-                        ? FileImage(File(profileImagePath))
+                    backgroundImage: personalInfo.profileImagePath != null
+                        ? FileImage(File(personalInfo.profileImagePath!))
                         : null,
-                    child: profileImagePath == null
+                    child: personalInfo.profileImagePath == null
                         ? const Icon(Icons.camera_alt,
                             size: 40, color: Colors.grey)
                         : null,
@@ -119,6 +152,13 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(jobTitle: value),
             ),
+            // ✅✅ NEW: Date Picker Field ✅✅
+            _buildDatePickerField(
+              controller: _birthDateController,
+              label: 'Date of Birth',
+              icon: Icons.cake_outlined,
+              onTap: () => _selectBirthDate(context),
+            ),
             _buildTextField(
               controller: _emailController,
               label: 'Email Address',
@@ -144,6 +184,30 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               onChanged: (value) => ref
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(address: value),
+            ),
+            // ✅✅ NEW: Dropdown for Marital Status ✅✅
+            _buildDropdownField(
+              label: 'Marital Status',
+              icon: Icons.favorite_border,
+              value: personalInfo.maritalStatus,
+              items: kMaritalStatusOptions,
+              onChanged: (value) {
+                ref
+                    .read(cvFormProvider.notifier)
+                    .updatePersonalInfo(maritalStatus: value);
+              },
+            ),
+            // ✅✅ NEW: Dropdown for Military Service ✅✅
+            _buildDropdownField(
+              label: 'Military Service',
+              icon: Icons.shield_outlined,
+              value: personalInfo.militaryServiceStatus,
+              items: kMilitaryServiceOptions,
+              onChanged: (value) {
+                ref
+                    .read(cvFormProvider.notifier)
+                    .updatePersonalInfo(militaryServiceStatus: value);
+              },
             ),
             _buildTextField(
               controller: _summaryController,
@@ -179,6 +243,55 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         keyboardType: keyboardType,
         maxLines: maxLines,
         onChanged: onChanged,
+      ),
+    );
+  }
+
+  // ✅✅ NEW: Reusable Dropdown Widget ✅✅
+  Widget _buildDropdownField({
+    required String label,
+    required IconData icon,
+    required String? value,
+    required List<String> items,
+    required void Function(String?) onChanged,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: DropdownButtonFormField<String>(
+        value: value,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+        ),
+        items: items.map<DropdownMenuItem<String>>((String item) {
+          return DropdownMenuItem<String>(
+            value: item,
+            child: Text(item),
+          );
+        }).toList(),
+        onChanged: onChanged,
+        isExpanded: true,
+      ),
+    );
+  }
+
+  // ✅✅ NEW: Widget for Date Picker ✅✅
+  Widget _buildDatePickerField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+        ),
+        readOnly: true,
+        onTap: onTap,
       ),
     );
   }
