@@ -22,8 +22,10 @@ class ImageCropperService {
           cropStyle: CropStyle.circle,
           initAspectRatio: CropAspectRatioPreset.square,
           lockAspectRatio: true,
-          hideBottomControls:
-              true,
+          hideBottomControls: true,
+          aspectRatioPresets: [
+            CropAspectRatioPreset.square,
+          ],
         ),
         IOSUiSettings(
           title: 'Crop Image',
