@@ -3,8 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-/// ويدجت مخصصة لحقل إدخال النص يسمح فقط بالأحرف الإنجليزية والأرقام
-/// والنقطة والفاصلة.
+/// ويدجت مخصصة لحقل إدخال النص يسمح فقط بالأحرف الإنجليزية، الأرقام،
+/// ومجموعة محددة من الرموز الشائعة في السير الذاتية.
+///
 /// تعمل هذه الويدجت على تبسيط إنشاء النماذج من خلال مركزية منطق فلترة المدخلات،
 /// مما يضمن الاتساق عبر التطبيق والالتزام بمبدأ "لا تكرر نفسك".
 class EnglishOnlyTextField extends StatelessWidget {
@@ -35,8 +36,8 @@ class EnglishOnlyTextField extends StatelessWidget {
     // a-z, A-Z (الأحرف الإنجليزية)
     // 0-9 (الأرقام)
     // \s (المسافات)
-    // . (النقطة) و , (الفاصلة)
-    final allowedCharactersRegex = RegExp(r'[a-zA-Z0-9\s.,]');
+    // رموز شائعة في السيرة الذاتية: . , - @ ( ) / # & + : '
+    final allowedCharactersRegex = RegExp(r"[a-zA-Z0-9\s.,\-@()/#&+:']");
 
     return TextFormField(
       controller: controller,
@@ -44,7 +45,8 @@ class EnglishOnlyTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
-        helperText: 'English Characters Only',
+        // نص مساعد لتوضيح القاعدة للمستخدم بشكل دائم
+        helperText: 'English characters & common symbols only',
         border: const OutlineInputBorder(),
         floatingLabelBehavior: FloatingLabelBehavior.always,
       ),
