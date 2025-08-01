@@ -28,7 +28,6 @@ class LeftColumn extends pw.StatelessWidget {
     final personalInfo = data.personalInfo;
     final DateFormat dateFormatter = DateFormat('d MMMM yyyy');
 
-    // Helper to check if there are any details to show
     final bool hasDetails = personalInfo.birthDate != null ||
         personalInfo.maritalStatus != null ||
         personalInfo.militaryServiceStatus != null;
@@ -79,7 +78,6 @@ class LeftColumn extends pw.StatelessWidget {
                 iconFont: iconFont),
           pw.SizedBox(height: 20),
 
-          // ✅✅ NEW: Personal Details Section ✅✅
           if (hasDetails)
             SectionHeader(
                 title: 'DETAILS',
@@ -89,12 +87,12 @@ class LeftColumn extends pw.StatelessWidget {
                 lineWidth: 30),
           if (personalInfo.birthDate != null)
             ContactInfoLine(
-                iconData: const pw.IconData(0xe145), // cake
+                iconData: const pw.IconData(0xe7e9),
                 text: dateFormatter.format(personalInfo.birthDate!),
                 iconFont: iconFont),
           if (personalInfo.maritalStatus != null)
             ContactInfoLine(
-                iconData: const pw.IconData(0xe87d), // favorite
+                iconData: const pw.IconData(0xe042),
                 text: personalInfo.maritalStatus!,
                 iconFont: iconFont),
           if (personalInfo.militaryServiceStatus != null)

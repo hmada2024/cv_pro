@@ -23,7 +23,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   final _phoneController = TextEditingController();
   final _addressController = TextEditingController();
   final _summaryController = TextEditingController();
-  // ✅ NEW: Controller for date display
   final _birthDateController = TextEditingController();
   final DateFormat _dateFormatter = DateFormat('d MMMM yyyy');
 
@@ -54,11 +53,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _phoneController.dispose();
     _addressController.dispose();
     _summaryController.dispose();
-    _birthDateController.dispose(); // ✅ NEW
+    _birthDateController.dispose();
     super.dispose();
   }
 
-  // ✅ NEW: Method to show the date picker
   Future<void> _selectBirthDate(BuildContext context) async {
     final notifier = ref.read(cvFormProvider.notifier);
     final initialDate = ref.read(cvFormProvider).personalInfo.birthDate ??
@@ -152,7 +150,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(jobTitle: value),
             ),
-            // ✅✅ NEW: Date Picker Field ✅✅
             _buildDatePickerField(
               controller: _birthDateController,
               label: 'Date of Birth',
@@ -185,10 +182,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(address: value),
             ),
-            // ✅✅ NEW: Dropdown for Marital Status ✅✅
             _buildDropdownField(
               label: 'Marital Status',
-              icon: Icons.favorite_border,
+              icon: Icons.assignment_ind_outlined,
               value: personalInfo.maritalStatus,
               items: kMaritalStatusOptions,
               onChanged: (value) {
@@ -197,7 +193,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                     .updatePersonalInfo(maritalStatus: value);
               },
             ),
-            // ✅✅ NEW: Dropdown for Military Service ✅✅
             _buildDropdownField(
               label: 'Military Service',
               icon: Icons.shield_outlined,
@@ -247,7 +242,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     );
   }
 
-  // ✅✅ NEW: Reusable Dropdown Widget ✅✅
   Widget _buildDropdownField({
     required String label,
     required IconData icon,
@@ -275,7 +269,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     );
   }
 
-  // ✅✅ NEW: Widget for Date Picker ✅✅
   Widget _buildDatePickerField({
     required TextEditingController controller,
     required String label,

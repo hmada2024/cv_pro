@@ -20,19 +20,16 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
     final personalInfo = data.personalInfo;
     final DateFormat dateFormatter = DateFormat('d MMMM yyyy');
 
-    // Helper to check if there are any details to show
     final bool hasDetails = personalInfo.birthDate != null ||
         personalInfo.maritalStatus != null ||
         personalInfo.militaryServiceStatus != null;
 
-    // Add a top padding to align content below the overflowing avatar
     return pw.Container(
       color: CorporateBlueColors.backgroundDark,
       padding: const pw.EdgeInsets.fromLTRB(20, 40, 20, 20),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          // About Me
           if (personalInfo.summary.isNotEmpty)
             pw.Text(
               'About Me',
@@ -55,7 +52,6 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
             ),
           if (personalInfo.summary.isNotEmpty) pw.SizedBox(height: 25),
 
-          // Contact
           pw.Text(
             'Contact',
             style: pw.TextStyle(
@@ -90,7 +86,6 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
             ),
           pw.SizedBox(height: 25),
 
-          // ✅✅ NEW: Personal Details Section ✅✅
           if (hasDetails)
             pw.Text(
               'Personal Details',
@@ -105,7 +100,7 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
 
           if (personalInfo.birthDate != null)
             ContactInfoLine(
-              iconData: const pw.IconData(0xe145), // cake
+              iconData: const pw.IconData(0xe7e9),
               text: dateFormatter.format(personalInfo.birthDate!),
               iconFont: iconFont,
               textColor: CorporateBlueColors.lightText,
@@ -113,7 +108,7 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
             ),
           if (personalInfo.maritalStatus != null)
             ContactInfoLine(
-              iconData: const pw.IconData(0xe87d), // favorite
+              iconData: const pw.IconData(0xe042),
               text: personalInfo.maritalStatus!,
               iconFont: iconFont,
               textColor: CorporateBlueColors.lightText,
