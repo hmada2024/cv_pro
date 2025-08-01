@@ -1,3 +1,5 @@
+// features/pdf_export/data/models/dummy_cv_data.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
 CVData createDummyCvData() {
@@ -55,6 +57,15 @@ CVData createDummyCvData() {
       Language.create(name: 'English', proficiency: 'Native'),
       Language.create(name: 'French', proficiency: 'Professional'),
     ],
-    references: [],
+    // ✅✅ UPDATED: Added a dummy reference to test the preview functionality ✅✅
+    references: [
+      Reference.create(
+        name: 'Dr. Jane Doe',
+        company: 'Fauget Studio',
+        position: 'Art Director',
+        email: 'jane.doe@fauget.com',
+        phone: '+098-765-4321',
+      ),
+    ],
   );
 }
