@@ -119,7 +119,8 @@ class LeftColumn extends pw.StatelessWidget {
                 lineColor: ModernTemplateColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
-          ...data.skills.map((skill) => SkillItem(skill.name)),
+          // ✅✅ UPDATED: Passes the entire skill object to the widget ✅✅
+          ...data.skills.map((skill) => SkillItem(skill)),
           if (data.skills.isNotEmpty) pw.SizedBox(height: 20),
 
           if (data.languages.isNotEmpty)

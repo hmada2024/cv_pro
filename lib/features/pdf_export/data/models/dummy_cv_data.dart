@@ -13,7 +13,6 @@ CVData createDummyCvData() {
         profileImagePath: 'assets/images/face_AI.webp',
         summary:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pharetra in lorem at laoreet. Donec hendrerit libero eget tempor, quis tempus arcu elementum.',
-        // ✅✅ NEW: Added dummy data for new fields ✅✅
         birthDate: DateTime(1992, 8, 24),
         maritalStatus: 'Single',
         militaryServiceStatus: 'Completed'),
@@ -49,12 +48,13 @@ CVData createDummyCvData() {
         endDate: DateTime(2015, 1, 1),
       ),
     ],
+    // ✅✅ UPDATED: Skill levels are now descriptive strings ✅✅
     skills: [
-      Skill.create(name: 'Web Design', level: 90),
-      Skill.create(name: 'Branding', level: 85),
-      Skill.create(name: 'Graphic Design', level: 95),
-      Skill.create(name: 'SEO', level: 70),
-      Skill.create(name: 'Marketing', level: 80),
+      Skill.create(name: 'Web Design', level: 'Advanced'),
+      Skill.create(name: 'Branding', level: 'Advanced'),
+      Skill.create(name: 'Graphic Design', level: 'Expert'),
+      Skill.create(name: 'SEO', level: 'Intermediate'),
+      Skill.create(name: 'Marketing', level: 'Advanced'),
     ],
     languages: [
       Language.create(name: 'English', proficiency: 'Native'),

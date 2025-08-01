@@ -39,7 +39,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
     await _storageService.saveCV(state);
   }
 
-  // ✅✅ UPDATED: Added new optional parameters for personal details ✅✅
   void updatePersonalInfo({
     String? name,
     String? jobTitle,
@@ -136,7 +135,7 @@ class CvFormNotifier extends StateNotifier<CVData> {
     _saveStateToDb();
   }
 
-  void addSkill({required String name, required int level}) {
+  void addSkill({required String name, required String level}) {
     if (name.isNotEmpty) {
       state = state.copyWith(
           skills: [...state.skills, Skill.create(name: name, level: level)]);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 
 class SkillSection extends ConsumerStatefulWidget {
@@ -11,7 +12,14 @@ class SkillSection extends ConsumerStatefulWidget {
 
 class _SkillSectionState extends ConsumerState<SkillSection> {
   final _skillController = TextEditingController();
-  double _currentSkillLevel = 50.0;
+  String? _selectedSkillLevel;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set the default selection
+    _selectedSkillLevel = kSkillLevels[1]; // 'Intermediate'
+  }
 
   @override
   void dispose() {
@@ -20,14 +28,15 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
   }
 
   void _addSkill() {
-    if (_skillController.text.isNotEmpty) {
+    if (_skillController.text.isNotEmpty && _selectedSkillLevel != null) {
       ref.read(cvFormProvider.notifier).addSkill(
             name: _skillController.text,
-            level: _currentSkillLevel.round(),
+            level: _selectedSkillLevel!,
           );
       _skillController.clear();
       setState(() {
-        _currentSkillLevel = 50.0;
+        // Reset dropdown to default after adding
+        _selectedSkillLevel = kSkillLevels[1];
       });
     }
   }
@@ -56,37 +65,26 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               onFieldSubmitted: (value) => _addSkill(),
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  flex: 5,
-                  child: Slider(
-                    value: _currentSkillLevel,
-                    min: 0,
-                    max: 100,
-                    divisions: 100,
-                    label: '${_currentSkillLevel.round()}%',
-                    onChanged: (double value) {
-                      setState(() {
-                        _currentSkillLevel = value;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    '${_currentSkillLevel.round()}%',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+            // ✅✅ UPDATED: Replaced Slider with a DropdownButtonFormField ✅✅
+            DropdownButtonFormField<String>(
+              value: _selectedSkillLevel,
+              decoration: const InputDecoration(
+                labelText: 'Proficiency Level',
+                prefixIcon: Icon(Icons.assessment_outlined),
+              ),
+              items: kSkillLevels.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedSkillLevel = newValue;
+                });
+              },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _addSkill,
               child: const Text('Add Skill'),
@@ -98,7 +96,8 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               children: [
                 for (var i = 0; i < skills.length; i++)
                   Chip(
-                    label: Text('${skills[i].name} (${skills[i].level}%)'),
+                    // ✅✅ UPDATED: Display the skill name and its string level ✅✅
+                    label: Text('${skills[i].name} (${skills[i].level})'),
                     backgroundColor: Colors.blueGrey.shade50,
                     labelStyle: const TextStyle(color: Colors.blueGrey),
                     onDeleted: () {
