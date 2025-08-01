@@ -1,3 +1,5 @@
+// features/pdf_export/data/services/pdf_service_impl.dart
+
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_builder.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/creative_template_builder.dart';
 import 'package:flutter/services.dart';
@@ -12,8 +14,8 @@ enum CvTemplate { modern, corporateBlue }
 final selectedTemplateProvider =
     StateProvider<CvTemplate>((ref) => CvTemplate.modern);
 
-// ✅✅ NEW: Provider to manage the state of the "References available upon request" note ✅✅
-final showReferencesNoteProvider = StateProvider<bool>((ref) => false);
+// ✅✅ UPDATED: The default state is now true, as requested ✅✅
+final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
 class PdfServiceImpl implements PdfService {
   @override
@@ -32,14 +34,14 @@ class PdfServiceImpl implements PdfService {
         content = await buildModernTemplate(
           data: data,
           iconFont: iconTtf,
-          showReferencesNote: showReferencesNote, // ✅ NEW: Pass the option
+          showReferencesNote: showReferencesNote,
         );
         break;
       case CvTemplate.corporateBlue:
         content = await buildCorporateBlueTemplate(
           data: data,
           iconFont: iconTtf,
-          showReferencesNote: showReferencesNote, // ✅ NEW: Pass the option
+          showReferencesNote: showReferencesNote,
         );
         break;
     }

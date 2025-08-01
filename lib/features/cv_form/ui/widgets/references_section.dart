@@ -1,5 +1,6 @@
 // features/cv_form/ui/widgets/references_section.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
@@ -93,6 +94,8 @@ class ReferencesSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final references = ref.watch(cvFormProvider).references;
+    final showNote = ref.watch(showReferencesNoteProvider);
+    final theme = Theme.of(context);
 
     return Card(
       child: Padding(
@@ -106,54 +109,80 @@ class ReferencesSection extends ConsumerWidget {
                 const SizedBox(width: 8),
                 Text(
                   'References',
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: theme.textTheme.titleLarge,
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+
+            // ✅✅ NEW: The switch is now here with smart logic ✅✅
+            SwitchListTile(
+              title: const Text('Available upon request'),
+              subtitle: Text(
+                'Hides reference details and shows a note instead.',
+                style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12),
+              ),
+              value: showNote,
+              onChanged: (bool value) {
+                ref.read(showReferencesNoteProvider.notifier).state = value;
+              },
+              activeColor: theme.colorScheme.primary,
+              contentPadding: EdgeInsets.zero,
+            ),
+            const SizedBox(height: 8),
             OutlinedButton.icon(
               icon: const Icon(Icons.add),
               label: const Text('Add Reference'),
-              onPressed: () => _showReferenceDialog(context, ref),
+              onPressed:
+                  showNote ? null : () => _showReferenceDialog(context, ref),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
             ),
             if (references.isNotEmpty) const SizedBox(height: 16),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: references.length,
-              itemBuilder: (context, index) {
-                final refItem = references[index];
-                return Card(
-                  elevation: 2,
-                  margin: const EdgeInsets.only(bottom: 8.0),
-                  child: ListTile(
-                    leading: const Icon(Icons.person_pin, color: Colors.orange),
-                    title: Text(refItem.name,
-                        style: Theme.of(context).textTheme.titleMedium),
-                    subtitle: Text(refItem.company),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete_outline,
-                          color: Theme.of(context).colorScheme.error),
-                      onPressed: () => ref
-                          .read(cvFormProvider.notifier)
-                          .removeReference(index),
-                    ),
-                    onTap: () => _showReferenceDialog(context, ref,
-                        existingReference: refItem, index: index),
-                  ),
-                );
-              },
+            Opacity(
+              opacity: showNote ? 0.5 : 1.0,
+              child: IgnorePointer(
+                ignoring: showNote,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: references.length,
+                  itemBuilder: (context, index) {
+                    final refItem = references[index];
+                    return Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.only(bottom: 8.0),
+                      child: ListTile(
+                        leading: Icon(Icons.person_pin,
+                            color: showNote ? Colors.grey : Colors.orange),
+                        title: Text(refItem.name,
+                            style: theme.textTheme.titleMedium),
+                        subtitle: Text(refItem.company),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete_outline,
+                              color: showNote
+                                  ? Colors.grey
+                                  : theme.colorScheme.error),
+                          onPressed: () => ref
+                              .read(cvFormProvider.notifier)
+                              .removeReference(index),
+                        ),
+                        onTap: () => _showReferenceDialog(context, ref,
+                            existingReference: refItem, index: index),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-            if (references.isEmpty)
+            if (references.isEmpty && !showNote)
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Text(
-                  'No references added yet. Add some if needed.',
+                  'No references added yet. Add some, or toggle "Available upon request" on.',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium,
                 ),
               ),
           ],

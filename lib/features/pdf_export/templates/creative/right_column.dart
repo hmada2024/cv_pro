@@ -1,3 +1,5 @@
+// features/pdf_export/templates/creative/right_column.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'creative_template_colors.dart';
@@ -7,12 +9,12 @@ import 'widgets/section_header.dart';
 class RightColumn extends pw.StatelessWidget {
   final CVData data;
   final pw.Font iconFont;
-  final bool showReferencesNote; // ✅ NEW
+  final bool showReferencesNote;
 
   RightColumn({
     required this.data,
     required this.iconFont,
-    required this.showReferencesNote, // ✅ NEW
+    required this.showReferencesNote,
   });
 
   @override
@@ -68,8 +70,28 @@ class RightColumn extends pw.StatelessWidget {
   }
 
   pw.Widget _buildReferencesSection(CVData data, bool showReferencesNote) {
-    // Case 1: The user has added references. Display them.
-    if (data.references.isNotEmpty) {
+    // Case 1: The toggle is ON. The note must be shown.
+    if (showReferencesNote) {
+      return pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.SizedBox(height: 25),
+            SectionHeader(
+              title: 'REFERENCES',
+              titleColor: ModernTemplateColors.primary,
+              lineColor: ModernTemplateColors.accent,
+            ),
+            pw.Text(
+              'References available upon request.',
+              style: pw.TextStyle(
+                  fontSize: 10,
+                  fontStyle: pw.FontStyle.italic,
+                  color: ModernTemplateColors.darkText),
+            ),
+          ]);
+    }
+    // Case 2: Toggle is OFF AND there are references to show.
+    else if (data.references.isNotEmpty) {
       return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -88,28 +110,7 @@ class RightColumn extends pw.StatelessWidget {
         ],
       );
     }
-    // Case 2: No references, but the user wants to show the note.
-    else if (showReferencesNote) {
-      return pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        children: [
-          pw.SizedBox(height: 25),
-          SectionHeader(
-            title: 'REFERENCES',
-            titleColor: ModernTemplateColors.primary,
-            lineColor: ModernTemplateColors.accent,
-          ),
-          pw.Text(
-            'References available upon request.',
-            style: pw.TextStyle(
-                fontSize: 10,
-                fontStyle: pw.FontStyle.italic,
-                color: ModernTemplateColors.darkText),
-          ),
-        ],
-      );
-    }
-    // Case 3 (Default): No references and the switch is off. Show nothing.
+    // Case 3 (Default): Toggle is OFF and no references exist. Show nothing.
     return pw.SizedBox();
   }
 

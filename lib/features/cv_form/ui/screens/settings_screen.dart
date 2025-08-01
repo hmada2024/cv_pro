@@ -1,3 +1,5 @@
+// features/cv_form/ui/screens/settings_screen.dart
+
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,8 +14,6 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTemplate = ref.watch(selectedTemplateProvider);
     final currentThemeMode = ref.watch(themeModeProvider);
-    // ✅ NEW: Watch the new provider for the switch state
-    final showReferencesNote = ref.watch(showReferencesNoteProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -55,7 +55,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           const Text(
-            'Choose the template and options for the final CV.',
+            'Choose the template for the final CV.',
             style: TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 16),
@@ -86,19 +86,6 @@ class SettingsScreen extends ConsumerWidget {
                 ref.read(selectedTemplateProvider.notifier).state = value;
               }
             },
-          ),
-          const Divider(height: 20),
-
-          // ✅✅ NEW: The switch for the references note ✅✅
-          SwitchListTile(
-            title: const Text('Show "References available upon request"'),
-            subtitle:
-                const Text('Shows this note if you have no references listed.'),
-            value: showReferencesNote,
-            onChanged: (bool value) {
-              ref.read(showReferencesNoteProvider.notifier).state = value;
-            },
-            activeColor: Theme.of(context).colorScheme.primary,
           ),
         ],
       ),
