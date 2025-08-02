@@ -1,22 +1,21 @@
-// features/pdf_export/templates/creative/right_column.dart
-
+// features/pdf_export/templates/two_column_02/template_02_right_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'template_02_colors.dart';
+import 'template_02_colors.dart'; // ✅ UPDATED IMPORT
 import 'widgets/experience_item.dart';
 import 'widgets/section_header.dart';
 
-class RightColumn extends pw.StatelessWidget {
+class Template02RightColumn extends pw.StatelessWidget {
+  // ✅ UPDATED CLASS NAME
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
-
-  RightColumn({
+  Template02RightColumn({
+    // ✅ UPDATED CONSTRUCTOR
     required this.data,
     required this.iconFont,
     required this.showReferencesNote,
   });
-
   @override
   pw.Widget build(pw.Context context) {
     return pw.Container(
@@ -29,21 +28,21 @@ class RightColumn extends pw.StatelessWidget {
             style: pw.TextStyle(
               fontSize: 26,
               fontWeight: pw.FontWeight.bold,
-              color: ModernTemplateColors.primary,
+              color: Template02Colors.primary,
             ),
           ),
           pw.SizedBox(height: 4),
           pw.Text(
             data.personalInfo.jobTitle.toUpperCase(),
             style: const pw.TextStyle(
-                fontSize: 14, color: ModernTemplateColors.darkText),
+                fontSize: 14, color: Template02Colors.darkText),
           ),
           pw.SizedBox(height: 25),
           if (data.personalInfo.summary.isNotEmpty)
             SectionHeader(
                 title: 'PROFILE',
-                titleColor: ModernTemplateColors.primary,
-                lineColor: ModernTemplateColors.accent),
+                titleColor: Template02Colors.primary,
+                lineColor: Template02Colors.accent),
           if (data.personalInfo.summary.isNotEmpty)
             pw.Text(
               data.personalInfo.summary,
@@ -54,15 +53,13 @@ class RightColumn extends pw.StatelessWidget {
           if (data.experiences.isNotEmpty)
             SectionHeader(
                 title: 'WORK EXPERIENCE',
-                titleColor: ModernTemplateColors.primary,
-                lineColor: ModernTemplateColors.accent),
+                titleColor: Template02Colors.primary,
+                lineColor: Template02Colors.accent),
           ...data.experiences.map((exp) => ExperienceItem(
                 exp,
                 iconFont: iconFont,
-                positionColor: ModernTemplateColors.primary,
+                positionColor: Template02Colors.primary,
               )),
-
-          // ✅✅ UPDATED: The new smart logic for references ✅✅
           _buildReferencesSection(data, showReferencesNote),
         ],
       ),
@@ -70,7 +67,7 @@ class RightColumn extends pw.StatelessWidget {
   }
 
   pw.Widget _buildReferencesSection(CVData data, bool showReferencesNote) {
-    // Case 1: The toggle is ON. The note must be shown.
+// ... (rest of file is the same and correct)
     if (showReferencesNote) {
       return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -78,28 +75,26 @@ class RightColumn extends pw.StatelessWidget {
             pw.SizedBox(height: 25),
             SectionHeader(
               title: 'REFERENCES',
-              titleColor: ModernTemplateColors.primary,
-              lineColor: ModernTemplateColors.accent,
+              titleColor: Template02Colors.primary,
+              lineColor: Template02Colors.accent,
             ),
             pw.Text(
               'References available upon request.',
               style: pw.TextStyle(
                   fontSize: 10,
                   fontStyle: pw.FontStyle.italic,
-                  color: ModernTemplateColors.darkText),
+                  color: Template02Colors.darkText),
             ),
           ]);
-    }
-    // Case 2: Toggle is OFF AND there are references to show.
-    else if (data.references.isNotEmpty) {
+    } else if (data.references.isNotEmpty) {
       return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.SizedBox(height: 25),
           SectionHeader(
             title: 'REFERENCES',
-            titleColor: ModernTemplateColors.primary,
-            lineColor: ModernTemplateColors.accent,
+            titleColor: Template02Colors.primary,
+            lineColor: Template02Colors.accent,
           ),
           pw.Wrap(
             spacing: 20,
@@ -110,7 +105,6 @@ class RightColumn extends pw.StatelessWidget {
         ],
       );
     }
-    // Case 3 (Default): Toggle is OFF and no references exist. Show nothing.
     return pw.SizedBox();
   }
 
@@ -123,14 +117,14 @@ class RightColumn extends pw.StatelessWidget {
           reference.name,
           style: pw.TextStyle(
             fontWeight: pw.FontWeight.bold,
-            color: ModernTemplateColors.primary,
+            color: Template02Colors.primary,
           ),
         ),
         pw.Text(
           '${reference.position}, ${reference.company}',
           style: pw.TextStyle(
               fontSize: 9,
-              color: ModernTemplateColors.darkText,
+              color: Template02Colors.darkText,
               fontStyle: pw.FontStyle.italic),
         ),
         pw.SizedBox(height: 4),
@@ -138,7 +132,7 @@ class RightColumn extends pw.StatelessWidget {
           reference.email,
           style: const pw.TextStyle(
             fontSize: 9,
-            color: ModernTemplateColors.darkText,
+            color: Template02Colors.darkText,
           ),
         ),
         if (reference.phone != null && reference.phone!.isNotEmpty)
@@ -146,7 +140,7 @@ class RightColumn extends pw.StatelessWidget {
             reference.phone!,
             style: const pw.TextStyle(
               fontSize: 9,
-              color: ModernTemplateColors.darkText,
+              color: Template02Colors.darkText,
             ),
           ),
       ]),

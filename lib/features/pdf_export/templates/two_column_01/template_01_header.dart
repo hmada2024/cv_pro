@@ -1,13 +1,14 @@
+// features/pdf_export/templates/two_column_01/template_01_header.dart
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/two_column_01/corporate_blue_template_colors.dart';
+import 'template_01_colors.dart'; // ✅ UPDATED IMPORT
 
-class CorporateBlueHeader extends pw.StatelessWidget {
+class Template01Header extends pw.StatelessWidget { // ✅ UPDATED CLASS NAME
   final CVData data;
   final pw.ImageProvider? profileImage;
 
-  CorporateBlueHeader({
+  Template01Header({ // ✅ UPDATED CONSTRUCTOR
     required this.data,
     this.profileImage,
   });
@@ -18,33 +19,30 @@ class CorporateBlueHeader extends pw.StatelessWidget {
     const double avatarRadius = 50;
 
     return pw.Stack(
-      overflow: pw.Overflow.visible, // Allow avatar to overflow
+      overflow: pw.Overflow.visible,
       children: [
-        // Blue Gradient Background
         pw.Container(
           height: headerHeight,
           decoration: const pw.BoxDecoration(
             gradient: pw.LinearGradient(
               colors: [
-                CorporateBlueColors.primaryBlueDark,
-                CorporateBlueColors.primaryBlueLight,
+                Template01Colors.primaryBlueDark,
+                Template01Colors.primaryBlueLight,
               ],
               begin: pw.Alignment.topLeft,
               end: pw.Alignment.bottomRight,
             ),
           ),
         ),
-        // Main content (Avatar and Name)
         pw.Positioned.fill(
           child: pw.Padding(
             padding: const pw.EdgeInsets.symmetric(horizontal: 30),
             child: pw.Row(
               crossAxisAlignment: pw.CrossAxisAlignment.center,
               children: [
-                // Profile Image Avatar
                 if (profileImage != null)
                   pw.Container(
-                    width: (avatarRadius + 4) * 2, // Diameter + border*2
+                    width: (avatarRadius + 4) * 2,
                     height: (avatarRadius + 4) * 2,
                     decoration: const pw.BoxDecoration(
                       color: PdfColors.white,
@@ -58,7 +56,6 @@ class CorporateBlueHeader extends pw.StatelessWidget {
                     ),
                   ),
                 pw.SizedBox(width: 20),
-                // Name and Title
                 pw.Expanded(
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -67,7 +64,7 @@ class CorporateBlueHeader extends pw.StatelessWidget {
                       pw.Text(
                         data.personalInfo.name.toUpperCase(),
                         style: pw.TextStyle(
-                          color: CorporateBlueColors.lightText,
+                          color: Template01Colors.lightText,
                           fontSize: 28,
                           fontWeight: pw.FontWeight.bold,
                           lineSpacing: 1.2,
@@ -77,7 +74,7 @@ class CorporateBlueHeader extends pw.StatelessWidget {
                       pw.Text(
                         data.personalInfo.jobTitle,
                         style: const pw.TextStyle(
-                          color: CorporateBlueColors.accentBlue,
+                          color: Template01Colors.accentBlue,
                           fontSize: 14,
                         ),
                       ),

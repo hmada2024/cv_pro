@@ -1,14 +1,16 @@
+// features/pdf_export/templates/two_column_02/template_02_builder.dart
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'left_column.dart';
-import 'right_column.dart';
+import 'template_02_left_column.dart'; // ✅ UPDATED IMPORT
+import 'template_02_right_column.dart'; // ✅ UPDATED IMPORT
 
-Future<pw.Widget> buildModernTemplate({
+Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
+    {
   required CVData data,
   required pw.Font iconFont,
-  required bool showReferencesNote, // ✅ NEW
+  required bool showReferencesNote,
 }) async {
   pw.ImageProvider? profileImage;
   final imagePath = data.personalInfo.profileImagePath;
@@ -30,7 +32,7 @@ Future<pw.Widget> buildModernTemplate({
     children: [
       pw.Expanded(
         flex: 1,
-        child: LeftColumn(
+        child: Template02LeftColumn( // ✅ UPDATED
           data: data,
           profileImage: profileImage,
           iconFont: iconFont,
@@ -38,10 +40,10 @@ Future<pw.Widget> buildModernTemplate({
       ),
       pw.Expanded(
         flex: 2,
-        child: RightColumn(
+        child: Template02RightColumn( // ✅ UPDATED
           data: data,
           iconFont: iconFont,
-          showReferencesNote: showReferencesNote, // ✅ NEW: Pass down
+          showReferencesNote: showReferencesNote,
         ),
       ),
     ],

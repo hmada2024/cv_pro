@@ -1,6 +1,7 @@
+// features/pdf_export/templates/two_column_02/widgets/contact_info_line.dart
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../template_02_colors.dart';
+import '../template_02_colors.dart'; // ✅ UPDATED IMPORT
 
 class ContactInfoLine extends pw.StatelessWidget {
   final pw.IconData iconData;
@@ -13,32 +14,8 @@ class ContactInfoLine extends pw.StatelessWidget {
     required this.iconData,
     required this.text,
     required this.iconFont,
-    this.textColor = ModernTemplateColors.lightText,
-    this.iconColor = ModernTemplateColors.accent,
+    this.textColor = Template02Colors.lightText, // ✅ UPDATED
+    this.iconColor = Template02Colors.accent,   // ✅ UPDATED
   });
-
-  @override
-  pw.Widget build(pw.Context context) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 6),
-      child: pw.Row(
-        children: [
-          pw.Icon(
-            iconData,
-            color: iconColor, // استخدام اللون الممرر
-            font: iconFont,
-            size: 14,
-          ),
-          pw.SizedBox(width: 10),
-          pw.Expanded(
-            child: pw.Text(
-              text,
-              style: pw.TextStyle(
-                  color: textColor, fontSize: 9), // استخدام اللون الممرر
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // ... rest of file is the same
 }

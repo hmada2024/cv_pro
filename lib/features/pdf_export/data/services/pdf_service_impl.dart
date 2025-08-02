@@ -1,7 +1,6 @@
 // features/pdf_export/data/services/pdf_service_impl.dart
 
-import 'package:cv_pro/features/pdf_export/templates/two_column_01/template_01_builder.dart';
-import 'package:cv_pro/features/pdf_export/templates/creative/creative_template_builder.dart';
+import 'package:cv_pro/features/pdf_export/templates/templates_barrel.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/pdf.dart';
@@ -9,10 +8,10 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
-enum CvTemplate { twoColumn02, twoColumn01 }
+enum CvTemplate { twoColumn01, twoColumn02 }
 
 final selectedTemplateProvider =
-    StateProvider<CvTemplate>((ref) => CvTemplate.twoColumn02);
+    StateProvider<CvTemplate>((ref) => CvTemplate.twoColumn01);
 
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
@@ -29,15 +28,15 @@ class PdfServiceImpl implements PdfService {
     pw.Widget content;
 
     switch (template) {
-      case CvTemplate.twoColumn02:
-        content = await buildModernTemplate(
+      case CvTemplate.twoColumn01:
+        content = await buildTemplate01(
           data: data,
           iconFont: iconTtf,
           showReferencesNote: showReferencesNote,
         );
         break;
-      case CvTemplate.twoColumn01:
-        content = await buildCorporateBlueTemplate(
+      case CvTemplate.twoColumn02:
+        content = await buildTemplate02(
           data: data,
           iconFont: iconTtf,
           showReferencesNote: showReferencesNote,

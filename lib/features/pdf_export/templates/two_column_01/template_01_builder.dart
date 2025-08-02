@@ -1,13 +1,14 @@
+// features/pdf_export/templates/two_column_01/template_01_builder.dart
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/01/corporate_blue_header.dart';
-import 'package:cv_pro/features/pdf_export/templates/01/corporate_blue_left_column.dart';
-import 'package:cv_pro/features/pdf_export/templates/01/corporate_blue_right_column.dart';
+import 'template_01_header.dart';
+import 'template_01_left_column.dart';
+import 'template_01_right_column.dart';
 
-// ✅✅ UPDATED: Added the 'showReferencesNote' required named parameter ✅✅
-Future<pw.Widget> buildCorporateBlueTemplate({
+Future<pw.Widget> buildTemplate01( // ✅ UPDATED FUNCTION NAME
+    {
   required CVData data,
   required pw.Font iconFont,
   required bool showReferencesNote,
@@ -29,19 +30,20 @@ Future<pw.Widget> buildCorporateBlueTemplate({
 
   return pw.Column(
     children: [
-      CorporateBlueHeader(data: data, profileImage: profileImage),
+      Template01Header(data: data, profileImage: profileImage), // ✅ UPDATED
       pw.Expanded(
         child: pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
             pw.Expanded(
               flex: 2,
-              child: CorporateBlueLeftColumn(data: data, iconFont: iconFont),
+              child: Template01LeftColumn(
+                  data: data, iconFont: iconFont), // ✅ UPDATED
             ),
             pw.Expanded(
               flex: 3,
-              // ✅✅ UPDATED: Pass the new parameter down to the RightColumn ✅✅
-              child: CorporateBlueRightColumn(
+              child: Template01RightColumn(
+                // ✅ UPDATED
                 data: data,
                 iconFont: iconFont,
                 showReferencesNote: showReferencesNote,
