@@ -1,9 +1,9 @@
 // features/cv_form/ui/widgets/skill_section.dart
 
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 
 class SkillSection extends ConsumerStatefulWidget {
