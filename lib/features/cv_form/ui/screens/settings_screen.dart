@@ -1,10 +1,10 @@
 // features/cv_form/ui/screens/settings_screen.dart
 
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
+import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/theme/app_theme.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 
 class SettingsScreen extends ConsumerWidget {

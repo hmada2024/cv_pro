@@ -1,6 +1,7 @@
 // features/cv_form/ui/widgets/experience_section.dart
 
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
+import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -12,7 +13,6 @@ class ExperienceSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ✅✅ UPDATED: Watch the new sorted provider ✅✅
     final experiences = ref.watch(sortedExperiencesProvider);
     final theme = Theme.of(context);
 
@@ -45,7 +45,6 @@ class ExperienceSection extends ConsumerWidget {
               itemCount: experiences.length,
               itemBuilder: (context, index) {
                 final exp = experiences[index];
-                // Find original index for modification/deletion
                 final originalIndex =
                     ref.read(cvFormProvider).experiences.indexOf(exp);
                 return _buildExperienceCard(context, ref, exp, originalIndex);
@@ -99,7 +98,6 @@ class ExperienceSection extends ConsumerWidget {
     final isEditing = existingExperience != null;
     final formKey = GlobalKey<FormState>();
 
-    // Controllers
     final positionController = TextEditingController(
         text: isEditing ? existingExperience.position : '');
     final companyController = TextEditingController(
@@ -107,7 +105,6 @@ class ExperienceSection extends ConsumerWidget {
     final descriptionController = TextEditingController(
         text: isEditing ? existingExperience.description : '');
 
-    // State for dates
     DateTime? startDate = isEditing ? existingExperience.startDate : null;
     DateTime? endDate = isEditing ? existingExperience.endDate : null;
     bool isCurrent = isEditing ? existingExperience.isCurrent : true;
@@ -115,7 +112,6 @@ class ExperienceSection extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) {
-        // Use a StatefulBuilder to manage the dialog's own state.
         return StatefulBuilder(
           builder: (context, setDialogState) {
             Future<void> selectDate(bool isStartDate) async {
@@ -140,7 +136,12 @@ class ExperienceSection extends ConsumerWidget {
                     }
                   } else {
                     if (startDate != null && picked.isBefore(startDate!)) {
-                      // Handle error
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                                Text('End date cannot be before start date.'),
+                            backgroundColor: Colors.red),
+                      );
                     } else {
                       endDate = picked;
                     }
@@ -167,7 +168,6 @@ class ExperienceSection extends ConsumerWidget {
                           labelText: 'Company Name',
                           validator: (v) => v!.isEmpty ? 'Required' : null),
                       const SizedBox(height: 16),
-                      // Date Pickers
                       _buildDialogDatePicker(context, 'Start Date', startDate,
                           () => selectDate(true)),
                       const SizedBox(height: 12),
@@ -180,7 +180,11 @@ class ExperienceSection extends ConsumerWidget {
                         onChanged: (value) {
                           setDialogState(() {
                             isCurrent = value ?? false;
-                            if (isCurrent) endDate = null;
+                            if (isCurrent) {
+                              endDate = null;
+                            } else {
+                              endDate = endDate ?? DateTime.now();
+                            }
                           });
                         },
                         controlAffinity: ListTileControlAffinity.leading,
@@ -208,12 +212,12 @@ class ExperienceSection extends ConsumerWidget {
 
                       if (isEditing) {
                         final updatedExperience = existingExperience.copyWith(
-                          companyName: companyController.text,
-                          position: positionController.text,
-                          description: descriptionController.text,
-                          startDate: startDate,
-                          endDate: finalEndDate,
-                        );
+                            companyName: companyController.text,
+                            position: positionController.text,
+                            description: descriptionController.text,
+                            startDate: startDate,
+                            endDate: finalEndDate,
+                            isCurrent: isCurrent);
                         notifier.updateExperience(index!, updatedExperience);
                       } else {
                         notifier.addExperience(
@@ -225,6 +229,12 @@ class ExperienceSection extends ConsumerWidget {
                         );
                       }
                       Navigator.of(context).pop();
+                    } else if (startDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Please select a start date.'),
+                            backgroundColor: Colors.red),
+                      );
                     }
                   },
                   child: const Text('Save'),

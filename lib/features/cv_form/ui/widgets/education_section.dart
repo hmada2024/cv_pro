@@ -1,6 +1,7 @@
 // features/cv_form/ui/widgets/education_section.dart
 
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
+import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart'; // ✅ UPDATED IMPORT
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -88,12 +89,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       setState(() {
         if (isStartDate) {
           _startDate = picked;
-          // Ensure end date is not before start date
           if (_endDate != null && _endDate!.isBefore(_startDate!)) {
             _endDate = _startDate;
           }
         } else {
-          // Ensure end date is not before start date
           if (_startDate != null && picked.isBefore(_startDate!)) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -129,7 +128,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 ],
               ),
               const SizedBox(height: 16),
-              // --- New Input Form ---
               DropdownButtonFormField<EducationLevel>(
                 value: _selectedLevel,
                 decoration:
@@ -178,10 +176,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   setState(() {
                     _isCurrent = value ?? false;
                     if (_isCurrent) {
-                      _endDate = null; // Clear end date if current
+                      _endDate = null;
                     } else {
-                      _endDate = _endDate ??
-                          DateTime.now(); // Set a default if it was null
+                      _endDate = _endDate ?? DateTime.now();
                     }
                   });
                 },
@@ -201,7 +198,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 itemCount: educationList.length,
                 itemBuilder: (context, index) {
                   final edu = educationList[index];
-                  // This finds the original index in the unsorted list for removal
                   final originalIndex =
                       ref.read(cvFormProvider).education.indexOf(edu);
                   return _buildEducationCard(edu, originalIndex);
@@ -217,7 +213,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   Widget _buildDatePickerField(String label, DateTime? date, bool isStart) {
     return InkWell(
       onTap: () {
-        if (!isStart && _isCurrent) return; // Disabled if "current"
+        if (!isStart && _isCurrent) return;
         _selectDate(context, isStart);
       },
       child: InputDecorator(
