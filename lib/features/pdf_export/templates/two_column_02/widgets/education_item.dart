@@ -1,4 +1,4 @@
-// features/pdf_export/templates/creative/widgets/education_item.dart
+// features/pdf_export/templates/two_column_02/widgets/education_item.dart
 
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
@@ -36,7 +36,7 @@ class EducationItem extends pw.StatelessWidget {
           pw.Text(
             dateRange.toUpperCase(),
             style: const pw.TextStyle(
-                color: ModernTemplateColors.accent, fontSize: 8),
+                color: Template02Colors.accent, fontSize: 8), // ✅ FIXED
           ),
           pw.Text(
             '${_educationLevelToString(education.level)} ${education.degreeName}',
@@ -48,7 +48,7 @@ class EducationItem extends pw.StatelessWidget {
           pw.Text(
             education.school,
             style: const pw.TextStyle(
-                color: ModernTemplateColors.lightText, fontSize: 9),
+                color: Template02Colors.lightText, fontSize: 9), // ✅ FIXED
           ),
         ],
       ),

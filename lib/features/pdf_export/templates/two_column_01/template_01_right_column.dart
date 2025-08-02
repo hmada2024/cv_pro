@@ -7,107 +7,18 @@ import 'package:pdf/widgets.dart' as pw;
 import 'template_01_colors.dart';
 import 'widgets/section_header_pill.dart';
 
-class Template01RightColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAME
+class Template01RightColumn extends pw.StatelessWidget {
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
 
-  Template01RightColumn({ // ✅ UPDATED CONSTRUCTOR
+  Template01RightColumn({
     required this.data,
     required this.iconFont,
     required this.showReferencesNote,
   });
-  // ... (rest of the file content, no other logical changes needed inside here for now)
-}
-//... (The rest of the file content from your original `corporate_blue_right_column.dart` goes here, as it was already correct)
-// I will paste the full content for you to avoid any confusion.
-// NOTE: Make sure the imports at the top are correct as listed above.
-@override
-pw.Widget build(pw.Context context) {
-  // Sort education and experience lists
-  final sortedEducation = List<Education>.from(data.education)..sort((a, b) {
-    final levelComparison = b.level.index.compareTo(a.level.index);
-    if (levelComparison != 0) return levelComparison;
-    if (a.isCurrent && !b.isCurrent) return -1;
-    if (!a.isCurrent && b.isCurrent) return 1;
-    if (!a.isCurrent && !b.isCurrent) return b.endDate!.compareTo(a.endDate!);
-    return b.startDate.compareTo(a.startDate);
-  });
 
-  final sortedExperience = List<Experience>.from(data.experiences)..sort((a, b) {
-    if (a.isCurrent && !b.isCurrent) return -1;
-    if (!a.isCurrent && b.isCurrent) return 1;
-    if (!a.isCurrent && !b.isCurrent) return b.endDate!.compareTo(a.endDate!);
-    return b.startDate.compareTo(a.startDate);
-  });
-
-  return pw.Container(
-    padding: const pw.EdgeInsets.fromLTRB(20, 25, 20, 20),
-    child: pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        // Experience
-        if (sortedExperience.isNotEmpty)
-          SectionHeaderPill(
-            title: 'Experience',
-            backgroundColor: Template01Colors.primaryBlueDark,
-            textColor: Template01Colors.lightText,
-          ),
-        ...sortedExperience.map((exp) => ExperienceItem(
-              exp,
-              iconFont: iconFont,
-              positionColor: Template01Colors.darkText,
-              companyColor: Template01Colors.subtleText,
-            )),
-        if (sortedExperience.isNotEmpty) pw.SizedBox(height: 20),
-
-        // Education
-        if (sortedEducation.isNotEmpty)
-          SectionHeaderPill(
-            title: 'Education',
-            backgroundColor: Template01Colors.primaryBlueDark,
-            textColor: Template01Colors.lightText,
-          ),
-        ...sortedEducation.map((edu) {
-          final formatter = DateFormat('yyyy');
-          final dateRange = '${formatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : formatter.format(edu.endDate!)}';
-          return pw.Padding(
-            padding: const pw.EdgeInsets.only(bottom: 10),
-            child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Text(
-                    '${_educationLevelToString(edu.level)} ${edu.degreeName}',
-                    style: pw.TextStyle(
-                        fontWeight: pw.FontWeight.bold,
-                        color: Template01Colors.darkText),
-                  ),
-                  pw.Text(
-                    '${edu.school} / $dateRange',
-                    style: const pw.TextStyle(
-                        color: Template01Colors.subtleText, fontSize: 9),
-                  ),
-                ]),
-          );
-        }),
-        if (sortedEducation.isNotEmpty) pw.SizedBox(height: 20),
-
-        // Skills Summary
-        if (data.skills.isNotEmpty)
-          SectionHeaderPill(
-            title: 'Skills Summary',
-            backgroundColor: Template01Colors.primaryBlueDark,
-            textColor: Template01Colors.lightText,
-          ),
-        ...data.skills.map((skill) => SkillProgressItem(skill: skill)),
-        if (data.skills.isNotEmpty) pw.SizedBox(height: 20),
-
-        _buildReferencesSection(data, showReferencesNote),
-      ],
-    ),
-  );
-}
-String _educationLevelToString(EducationLevel level) {
+  String _educationLevelToString(EducationLevel level) {
     switch (level) {
       case EducationLevel.bachelor:
         return "Bachelor's Degree";
@@ -116,8 +27,96 @@ String _educationLevelToString(EducationLevel level) {
       case EducationLevel.doctor:
         return 'Doctorate';
     }
-}
-pw.Widget _buildReferencesSection(CVData data, bool showReferencesNote) {
+  }
+
+  // ✅✅ FIXED: The entire build method was missing. It has been restored. ✅✅
+  @override
+  pw.Widget build(pw.Context context) {
+    final sortedEducation = List<Education>.from(data.education)
+      ..sort((a, b) {
+        final levelComparison = b.level.index.compareTo(a.level.index);
+        if (levelComparison != 0) return levelComparison;
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        if (!a.isCurrent && !b.isCurrent) {
+          return b.endDate!.compareTo(a.endDate!);
+        }
+        return b.startDate.compareTo(a.startDate);
+      });
+
+    final sortedExperience = List<Experience>.from(data.experiences)
+      ..sort((a, b) {
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        if (!a.isCurrent && !b.isCurrent) {
+          return b.endDate!.compareTo(a.endDate!);
+        }
+        return b.startDate.compareTo(a.startDate);
+      });
+
+    return pw.Container(
+      padding: const pw.EdgeInsets.fromLTRB(20, 25, 20, 20),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          if (sortedExperience.isNotEmpty)
+            SectionHeaderPill(
+              title: 'Experience',
+              backgroundColor: Template01Colors.primaryBlueDark,
+              textColor: Template01Colors.lightText,
+            ),
+          ...sortedExperience.map((exp) => ExperienceItem(
+                exp,
+                iconFont: iconFont,
+                positionColor: Template01Colors.darkText,
+                companyColor: Template01Colors.subtleText,
+              )),
+          if (sortedExperience.isNotEmpty) pw.SizedBox(height: 20),
+          if (sortedEducation.isNotEmpty)
+            SectionHeaderPill(
+              title: 'Education',
+              backgroundColor: Template01Colors.primaryBlueDark,
+              textColor: Template01Colors.lightText,
+            ),
+          ...sortedEducation.map((edu) {
+            final formatter = DateFormat('yyyy');
+            final dateRange =
+                '${formatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : formatter.format(edu.endDate!)}';
+            return pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 10),
+              child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(
+                      '${_educationLevelToString(edu.level)} ${edu.degreeName}',
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          color: Template01Colors.darkText),
+                    ),
+                    pw.Text(
+                      '${edu.school} / $dateRange',
+                      style: const pw.TextStyle(
+                          color: Template01Colors.subtleText, fontSize: 9),
+                    ),
+                  ]),
+            );
+          }),
+          if (sortedEducation.isNotEmpty) pw.SizedBox(height: 20),
+          if (data.skills.isNotEmpty)
+            SectionHeaderPill(
+              title: 'Skills Summary',
+              backgroundColor: Template01Colors.primaryBlueDark,
+              textColor: Template01Colors.lightText,
+            ),
+          ...data.skills.map((skill) => SkillProgressItem(skill: skill)),
+          if (data.skills.isNotEmpty) pw.SizedBox(height: 20),
+          _buildReferencesSection(data, showReferencesNote),
+        ],
+      ),
+    );
+  }
+
+  pw.Widget _buildReferencesSection(CVData data, bool showReferencesNote) {
     if (showReferencesNote) {
       return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -156,8 +155,9 @@ pw.Widget _buildReferencesSection(CVData data, bool showReferencesNote) {
       );
     }
     return pw.SizedBox();
-}
-pw.Widget _buildReferenceItem(Reference reference) {
+  }
+
+  pw.Widget _buildReferenceItem(Reference reference) {
     return pw.SizedBox(
       width: 200,
       child: pw.Column(
@@ -197,4 +197,5 @@ pw.Widget _buildReferenceItem(Reference reference) {
         ],
       ),
     );
+  }
 }

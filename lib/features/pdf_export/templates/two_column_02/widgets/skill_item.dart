@@ -1,9 +1,10 @@
+// features/pdf_export/templates/two_column_02/widgets/skill_item.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../template_02_colors.dart';
 
 class SkillItem extends pw.StatelessWidget {
-  // ✅✅ UPDATED: Now accepts the full Skill object ✅✅
   final Skill skill;
 
   SkillItem(this.skill);
@@ -18,17 +19,16 @@ class SkillItem extends pw.StatelessWidget {
             width: 6,
             height: 6,
             decoration: const pw.BoxDecoration(
-              color: ModernTemplateColors.accent,
+              color: Template02Colors.accent, // ✅ FIXED
               shape: pw.BoxShape.circle,
             ),
           ),
           pw.SizedBox(width: 8),
-          // ✅✅ UPDATED: Displays both the name and the level ✅✅
           pw.Expanded(
             child: pw.Text(
               '${skill.name} (${skill.level})',
               style: const pw.TextStyle(
-                  color: ModernTemplateColors.lightText, fontSize: 10),
+                  color: Template02Colors.lightText, fontSize: 10), // ✅ FIXED
             ),
           ),
         ],

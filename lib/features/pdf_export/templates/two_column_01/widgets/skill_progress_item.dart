@@ -1,12 +1,11 @@
+// features/pdf_export/templates/two_column_01/widgets/skill_progress_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../corporate_blue_template_colors.dart';
+import '../template_01_colors.dart'; // ✅ FIXED IMPORT
 
 class SkillProgressItem extends pw.StatelessWidget {
   final Skill skill;
-
   SkillProgressItem({required this.skill});
-
   @override
   pw.Widget build(pw.Context context) {
     return pw.Padding(
@@ -17,7 +16,7 @@ class SkillProgressItem extends pw.StatelessWidget {
             width: 8,
             height: 8,
             decoration: const pw.BoxDecoration(
-              color: CorporateBlueColors.accentBlue,
+              color: Template01Colors.accentBlue, // ✅ FIXED CLASS NAME
               shape: pw.BoxShape.circle,
             ),
           ),
@@ -26,7 +25,7 @@ class SkillProgressItem extends pw.StatelessWidget {
             '${skill.name} - ',
             style: pw.TextStyle(
               fontSize: 10,
-              color: CorporateBlueColors.darkText,
+              color: Template01Colors.darkText, // ✅ FIXED CLASS NAME
               fontWeight: pw.FontWeight.bold,
             ),
           ),
@@ -34,7 +33,7 @@ class SkillProgressItem extends pw.StatelessWidget {
             skill.level,
             style: const pw.TextStyle(
               fontSize: 10,
-              color: CorporateBlueColors.subtleText,
+              color: Template01Colors.subtleText, // ✅ FIXED CLASS NAME
             ),
           ),
         ],

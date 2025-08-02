@@ -1,3 +1,5 @@
+// features/pdf_export/templates/two_column_02/widgets/language_item.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../template_02_colors.dart';
@@ -14,7 +16,7 @@ class LanguageItem extends pw.StatelessWidget {
       child: pw.Text(
         '${language.name} (${language.proficiency})',
         style: const pw.TextStyle(
-            color: ModernTemplateColors.lightText, fontSize: 10),
+            color: Template02Colors.lightText, fontSize: 10), // ✅ FIXED
       ),
     );
   }
