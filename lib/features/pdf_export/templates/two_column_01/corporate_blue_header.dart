@@ -1,7 +1,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
+import 'package:cv_pro/features/pdf_export/templates/two_column_01/corporate_blue_template_colors.dart';
 
 class CorporateBlueHeader extends pw.StatelessWidget {
   final CVData data;

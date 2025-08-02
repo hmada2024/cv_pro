@@ -2,9 +2,9 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_header.dart';
-import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_left_column.dart';
-import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_right_column.dart';
+import 'package:cv_pro/features/pdf_export/templates/01/corporate_blue_header.dart';
+import 'package:cv_pro/features/pdf_export/templates/01/corporate_blue_left_column.dart';
+import 'package:cv_pro/features/pdf_export/templates/01/corporate_blue_right_column.dart';
 
 // ✅✅ UPDATED: Added the 'showReferencesNote' required named parameter ✅✅
 Future<pw.Widget> buildCorporateBlueTemplate({

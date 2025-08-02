@@ -63,7 +63,7 @@ class SettingsScreen extends ConsumerWidget {
           _buildTemplateSelector(
             context: context,
             ref: ref,
-            title: 'Modern',
+            title: 'Two Column 02',
             subtitle: 'A creative two-column layout.',
             value: CvTemplate.modern,
             groupValue: selectedTemplate,
@@ -77,7 +77,7 @@ class SettingsScreen extends ConsumerWidget {
           _buildTemplateSelector(
             context: context,
             ref: ref,
-            title: 'Corporate Blue',
+            title: 'Two Column 01',
             subtitle: 'A professional design with a blue header.',
             value: CvTemplate.corporateBlue,
             groupValue: selectedTemplate,

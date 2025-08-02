@@ -1,7 +1,7 @@
 // features/pdf_export/templates/corporate_blue/corporate_blue_left_column.dart
 
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
+import 'package:cv_pro/features/pdf_export/templates/two_column_01/corporate_blue_template_colors.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/widgets/contact_info_line.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
