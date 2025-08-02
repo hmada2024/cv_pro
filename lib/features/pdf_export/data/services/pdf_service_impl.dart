@@ -9,12 +9,11 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
-enum CvTemplate { modern, corporateBlue }
+enum CvTemplate { twoColumn02, twoColumn01 }
 
 final selectedTemplateProvider =
-    StateProvider<CvTemplate>((ref) => CvTemplate.modern);
+    StateProvider<CvTemplate>((ref) => CvTemplate.twoColumn02);
 
-// ✅✅ UPDATED: The default state is now true, as requested ✅✅
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
 class PdfServiceImpl implements PdfService {
@@ -30,14 +29,14 @@ class PdfServiceImpl implements PdfService {
     pw.Widget content;
 
     switch (template) {
-      case CvTemplate.modern:
+      case CvTemplate.twoColumn02:
         content = await buildModernTemplate(
           data: data,
           iconFont: iconTtf,
           showReferencesNote: showReferencesNote,
         );
         break;
-      case CvTemplate.corporateBlue:
+      case CvTemplate.twoColumn01:
         content = await buildCorporateBlueTemplate(
           data: data,
           iconFont: iconTtf,

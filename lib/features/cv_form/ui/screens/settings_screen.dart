@@ -1,11 +1,11 @@
 // features/cv_form/ui/screens/settings_screen.dart
 
-import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/theme/app_theme.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
+import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -59,13 +59,14 @@ class SettingsScreen extends ConsumerWidget {
             style: TextStyle(color: Colors.grey),
           ),
           const SizedBox(height: 16),
-          // --- Template Selectors ---
+
           _buildTemplateSelector(
             context: context,
             ref: ref,
-            title: 'Two Column 02',
-            subtitle: 'A creative two-column layout.',
-            value: CvTemplate.modern,
+            title: 'Two Column 01',
+            subtitle:
+                'Features a prominent header and a clean, sidebar-based layout for contact details.',
+            value: CvTemplate.twoColumn01,
             groupValue: selectedTemplate,
             onChanged: (value) {
               if (value != null) {
@@ -74,12 +75,14 @@ class SettingsScreen extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 12),
+
           _buildTemplateSelector(
             context: context,
             ref: ref,
-            title: 'Two Column 01',
-            subtitle: 'A professional design with a blue header.',
-            value: CvTemplate.corporateBlue,
+            title: 'Two Column 02',
+            subtitle:
+                'A dynamic, asymmetrical layout that separates key info from the main content.',
+            value: CvTemplate.twoColumn02,
             groupValue: selectedTemplate,
             onChanged: (value) {
               if (value != null) {
