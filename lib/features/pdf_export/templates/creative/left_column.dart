@@ -32,6 +32,19 @@ class LeftColumn extends pw.StatelessWidget {
         personalInfo.maritalStatus != null ||
         personalInfo.militaryServiceStatus != null;
 
+    // Sort education list
+    final sortedEducation = List<Education>.from(data.education)
+      ..sort((a, b) {
+        final levelComparison = b.level.index.compareTo(a.level.index);
+        if (levelComparison != 0) return levelComparison;
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        if (!a.isCurrent && !b.isCurrent) {
+          return b.endDate!.compareTo(a.endDate!);
+        }
+        return b.startDate.compareTo(a.startDate);
+      });
+
     return pw.Container(
       color: ModernTemplateColors.primary,
       padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -77,7 +90,6 @@ class LeftColumn extends pw.StatelessWidget {
                 text: personalInfo.address!,
                 iconFont: iconFont),
           pw.SizedBox(height: 20),
-
           if (hasDetails)
             SectionHeader(
                 title: 'DETAILS',
@@ -101,17 +113,15 @@ class LeftColumn extends pw.StatelessWidget {
                 text: personalInfo.militaryServiceStatus!,
                 iconFont: iconFont),
           if (hasDetails) pw.SizedBox(height: 20),
-
-          if (data.education.isNotEmpty)
+          if (sortedEducation.isNotEmpty)
             SectionHeader(
                 title: 'EDUCATION',
                 titleColor: ModernTemplateColors.lightText,
                 lineColor: ModernTemplateColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
-          ...data.education.map((edu) => EducationItem(edu)),
-          if (data.education.isNotEmpty) pw.SizedBox(height: 20),
-
+          ...sortedEducation.map((edu) => EducationItem(edu)),
+          if (sortedEducation.isNotEmpty) pw.SizedBox(height: 20),
           if (data.skills.isNotEmpty)
             SectionHeader(
                 title: 'SKILLS',
@@ -119,10 +129,8 @@ class LeftColumn extends pw.StatelessWidget {
                 lineColor: ModernTemplateColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
-          // ✅✅ UPDATED: Passes the entire skill object to the widget ✅✅
           ...data.skills.map((skill) => SkillItem(skill)),
           if (data.skills.isNotEmpty) pw.SizedBox(height: 20),
-
           if (data.languages.isNotEmpty)
             SectionHeader(
                 title: 'LANGUAGES',

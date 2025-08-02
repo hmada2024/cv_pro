@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 
-///
 class EnglishOnlyTextField extends StatelessWidget {
   const EnglishOnlyTextField({
     super.key,
@@ -16,6 +15,8 @@ class EnglishOnlyTextField extends StatelessWidget {
     this.prefixIcon,
     this.onFieldSubmitted,
     this.focusNode,
+    this.validator,
+    this.enabled,
   });
 
   final TextEditingController? controller;
@@ -28,17 +29,20 @@ class EnglishOnlyTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final ValueChanged<String>? onFieldSubmitted;
   final FocusNode? focusNode;
+  final FormFieldValidator<String>? validator; // ✅✅ NEW: Type definition
+  final bool? enabled;
+
 
   @override
   Widget build(BuildContext context) {
-    // هذا التعبير النمطي يبحث عن أي حرف *ليس* من ضمن المجموعة المسموح بها.
-    final disallowedCharactersRegex = RegExp(r"[^a-zA-Z0-9\s.,-@()/#&+:']");
+    final disallowedCharactersRegex = RegExp(r"[^a-zA-Z0-9\s.,\-@()/#&+:’\']");
 
     return TextFormField(
       controller: controller,
-      focusNode: focusNode, // Pass focus node
+      focusNode: focusNode,
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
+      enabled: enabled,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
@@ -48,14 +52,19 @@ class EnglishOnlyTextField extends StatelessWidget {
       maxLines: maxLines,
       textInputAction: textInputAction,
       validator: (value) {
+        if (validator != null) {
+          final externalValidationResult = validator!(value);
+          if (externalValidationResult != null) {
+            return externalValidationResult; // Return external error immediately.
+          }
+        }
+        
+        // If the external validator passes, run the internal English-only check.
         if (value != null && disallowedCharactersRegex.hasMatch(value)) {
-          // إذا وجد أي حرف غير مسموح به، أظهر رسالة الخطأ هذه.
           return 'Please use English characters and numbers only.';
         }
-        // إذا كانت كل الأحرف مسموح بها، فلا يوجد خطأ.
         return null;
       },
-      // Automatically validate as the user types for immediate feedback.
       autovalidateMode: AutovalidateMode.onUserInteraction,
     );
   }

@@ -1,3 +1,5 @@
+// features/pdf_export/templates/creative/widgets/experience_item.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -6,21 +8,20 @@ import '../creative_template_colors.dart';
 
 class ExperienceItem extends pw.StatelessWidget {
   final Experience experience;
-  final pw.Font iconFont; // ✅ NEW: Added to use for custom bullets
+  final pw.Font iconFont;
   final DateFormat formatter = DateFormat('MMM yyyy');
   final PdfColor positionColor;
   final PdfColor companyColor;
 
   ExperienceItem(
     this.experience, {
-    required this.iconFont, // ✅ NEW: Made it required
+    required this.iconFont,
     this.positionColor = PdfColors.black,
     this.companyColor = ModernTemplateColors.darkText,
   });
 
   @override
   pw.Widget build(pw.Context context) {
-    // ✅ NEW: Logic to split description into lines with custom bullets
     final descriptionLines = experience.description
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
@@ -57,17 +58,21 @@ class ExperienceItem extends pw.StatelessWidget {
         children: [
           pw.Row(
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
-              pw.Text(
-                experience.position.toUpperCase(),
-                style: pw.TextStyle(
-                  fontSize: 12,
-                  fontWeight: pw.FontWeight.bold,
-                  color: positionColor,
+              pw.Expanded(
+                child: pw.Text(
+                  experience.position.toUpperCase(),
+                  style: pw.TextStyle(
+                    fontSize: 12,
+                    fontWeight: pw.FontWeight.bold,
+                    color: positionColor,
+                  ),
                 ),
               ),
+              pw.SizedBox(width: 10),
               pw.Text(
-                '${formatter.format(experience.startDate)} - ${formatter.format(experience.endDate)}',
+                '${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
                 style: const pw.TextStyle(
                     fontSize: 9, color: ModernTemplateColors.darkText),
               ),
@@ -82,7 +87,6 @@ class ExperienceItem extends pw.StatelessWidget {
             ),
           ),
           pw.SizedBox(height: 6),
-          // ✅ UPDATED: Use the new list of widgets instead of a single text widget
           ...descriptionLines,
         ],
       ),

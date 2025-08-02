@@ -5,108 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+import 'package:intl/intl.dart';
 
-class ExperienceSection extends ConsumerStatefulWidget {
+class ExperienceSection extends ConsumerWidget {
   const ExperienceSection({super.key});
 
   @override
-  ConsumerState<ExperienceSection> createState() => _ExperienceSectionState();
-}
-
-class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
-  final _companyController = TextEditingController();
-  final _positionController = TextEditingController();
-  final _descriptionController = TextEditingController();
-
-  @override
-  void dispose() {
-    _companyController.dispose();
-    _positionController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
-  }
-
-  void _showExperienceDialog({Experience? existingExperience, int? index}) {
-    final isEditing = existingExperience != null;
-
-    if (isEditing) {
-      _positionController.text = existingExperience.position;
-      _companyController.text = existingExperience.companyName;
-      _descriptionController.text = existingExperience.description;
-    } else {
-      _positionController.clear();
-      _companyController.clear();
-      _descriptionController.clear();
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(isEditing ? 'Edit Experience' : 'Add Experience'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
-                EnglishOnlyTextField(
-                    controller: _positionController,
-                    labelText: 'Position / Job Title'),
-                const SizedBox(height: 12),
-                // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
-                EnglishOnlyTextField(
-                    controller: _companyController, labelText: 'Company Name'),
-                const SizedBox(height: 12),
-                // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
-                EnglishOnlyTextField(
-                    controller: _descriptionController,
-                    labelText: 'Description',
-                    maxLines: 3),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (isEditing) {
-                  final updatedExperience = Experience.create(
-                    companyName: _companyController.text,
-                    position: _positionController.text,
-                    description: _descriptionController.text,
-                    startDate: existingExperience.startDate,
-                    endDate: existingExperience.endDate,
-                  );
-                  ref
-                      .read(cvFormProvider.notifier)
-                      .updateExperience(index!, updatedExperience);
-                } else {
-                  ref.read(cvFormProvider.notifier).addExperience(
-                        position: _positionController.text,
-                        companyName: _companyController.text,
-                        description: _descriptionController.text,
-                      );
-                }
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      _positionController.clear();
-      _companyController.clear();
-      _descriptionController.clear();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final experiences = ref.watch(cvFormProvider).experiences;
+  Widget build(BuildContext context, WidgetRef ref) {
+    // ✅✅ UPDATED: Watch the new sorted provider ✅✅
+    final experiences = ref.watch(sortedExperiencesProvider);
+    final theme = Theme.of(context);
 
     return Card(
       child: Padding(
@@ -118,17 +26,14 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
               children: [
                 const Icon(Icons.business_center, color: Colors.blueGrey),
                 const SizedBox(width: 8),
-                Text(
-                  'Work Experience',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
+                Text('Work Experience', style: theme.textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
             OutlinedButton.icon(
               icon: const Icon(Icons.add),
               label: const Text('Add Experience'),
-              onPressed: () => _showExperienceDialog(),
+              onPressed: () => _showExperienceDialog(context, ref),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 12),
               ),
@@ -140,7 +45,10 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
               itemCount: experiences.length,
               itemBuilder: (context, index) {
                 final exp = experiences[index];
-                return _buildExperienceCard(exp, index);
+                // Find original index for modification/deletion
+                final originalIndex =
+                    ref.read(cvFormProvider).experiences.indexOf(exp);
+                return _buildExperienceCard(context, ref, exp, originalIndex);
               },
             ),
             if (experiences.isEmpty)
@@ -149,7 +57,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                 child: Text(
                   'No work experience added yet.',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium,
                 ),
               ),
           ],
@@ -158,29 +66,196 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     );
   }
 
-  Widget _buildExperienceCard(Experience exp, int index) {
+  Widget _buildExperienceCard(
+      BuildContext context, WidgetRef ref, Experience exp, int index) {
+    final theme = Theme.of(context);
+    final formatter = DateFormat('MMM yyyy');
+    final dateRange =
+        '${formatter.format(exp.startDate)} - ${exp.isCurrent ? "Present" : formatter.format(exp.endDate!)}';
+
     return Card(
       elevation: 2,
       margin: const EdgeInsets.only(bottom: 8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
-        side: BorderSide(color: Colors.grey.shade200),
-      ),
       child: ListTile(
         leading: const Icon(Icons.check_circle_outline, color: Colors.green),
-        title:
-            Text(exp.position, style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(exp.companyName,
-            style: Theme.of(context).textTheme.bodyMedium),
+        title: Text(exp.position, style: theme.textTheme.titleMedium),
+        subtitle: Text('${exp.companyName}\n$dateRange',
+            style: theme.textTheme.bodyMedium),
+        isThreeLine: true,
         trailing: IconButton(
-          icon: Icon(Icons.delete_outline,
-              color: Theme.of(context).colorScheme.error),
+          icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
           onPressed: () {
             ref.read(cvFormProvider.notifier).removeExperience(index);
           },
         ),
-        onTap: () =>
-            _showExperienceDialog(existingExperience: exp, index: index),
+        onTap: () => _showExperienceDialog(context, ref,
+            existingExperience: exp, index: index),
+      ),
+    );
+  }
+
+  void _showExperienceDialog(BuildContext context, WidgetRef ref,
+      {Experience? existingExperience, int? index}) {
+    final isEditing = existingExperience != null;
+    final formKey = GlobalKey<FormState>();
+
+    // Controllers
+    final positionController = TextEditingController(
+        text: isEditing ? existingExperience.position : '');
+    final companyController = TextEditingController(
+        text: isEditing ? existingExperience.companyName : '');
+    final descriptionController = TextEditingController(
+        text: isEditing ? existingExperience.description : '');
+
+    // State for dates
+    DateTime? startDate = isEditing ? existingExperience.startDate : null;
+    DateTime? endDate = isEditing ? existingExperience.endDate : null;
+    bool isCurrent = isEditing ? existingExperience.isCurrent : true;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        // Use a StatefulBuilder to manage the dialog's own state.
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            Future<void> selectDate(bool isStartDate) async {
+              final now = DateTime.now();
+              final firstDate = DateTime(1960);
+              final initialDate =
+                  isStartDate ? (startDate ?? now) : (endDate ?? now);
+
+              final DateTime? picked = await showDatePicker(
+                context: context,
+                initialDate: initialDate,
+                firstDate: firstDate,
+                lastDate: now,
+              );
+
+              if (picked != null) {
+                setDialogState(() {
+                  if (isStartDate) {
+                    startDate = picked;
+                    if (endDate != null && endDate!.isBefore(startDate!)) {
+                      endDate = startDate;
+                    }
+                  } else {
+                    if (startDate != null && picked.isBefore(startDate!)) {
+                      // Handle error
+                    } else {
+                      endDate = picked;
+                    }
+                  }
+                });
+              }
+            }
+
+            return AlertDialog(
+              title: Text(isEditing ? 'Edit Experience' : 'Add Experience'),
+              content: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EnglishOnlyTextField(
+                          controller: positionController,
+                          labelText: 'Position / Job Title',
+                          validator: (v) => v!.isEmpty ? 'Required' : null),
+                      const SizedBox(height: 12),
+                      EnglishOnlyTextField(
+                          controller: companyController,
+                          labelText: 'Company Name',
+                          validator: (v) => v!.isEmpty ? 'Required' : null),
+                      const SizedBox(height: 16),
+                      // Date Pickers
+                      _buildDialogDatePicker(context, 'Start Date', startDate,
+                          () => selectDate(true)),
+                      const SizedBox(height: 12),
+                      _buildDialogDatePicker(
+                          context, 'End Date', endDate, () => selectDate(false),
+                          enabled: !isCurrent),
+                      CheckboxListTile(
+                        title: const Text('I currently work here'),
+                        value: isCurrent,
+                        onChanged: (value) {
+                          setDialogState(() {
+                            isCurrent = value ?? false;
+                            if (isCurrent) endDate = null;
+                          });
+                        },
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      const SizedBox(height: 12),
+                      EnglishOnlyTextField(
+                          controller: descriptionController,
+                          labelText: 'Description',
+                          maxLines: 3),
+                    ],
+                  ),
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    if (formKey.currentState!.validate() && startDate != null) {
+                      final notifier = ref.read(cvFormProvider.notifier);
+                      final finalEndDate = isCurrent ? null : endDate;
+
+                      if (isEditing) {
+                        final updatedExperience = existingExperience.copyWith(
+                          companyName: companyController.text,
+                          position: positionController.text,
+                          description: descriptionController.text,
+                          startDate: startDate,
+                          endDate: finalEndDate,
+                        );
+                        notifier.updateExperience(index!, updatedExperience);
+                      } else {
+                        notifier.addExperience(
+                          position: positionController.text,
+                          companyName: companyController.text,
+                          description: descriptionController.text,
+                          startDate: startDate!,
+                          endDate: finalEndDate,
+                        );
+                      }
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildDialogDatePicker(
+      BuildContext context, String label, DateTime? date, VoidCallback onTap,
+      {bool enabled = true}) {
+    final formatter = DateFormat('MMMM yyyy');
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: label,
+          enabled: enabled,
+        ),
+        child: Text(
+          date != null ? formatter.format(date) : 'Select Date',
+          style: TextStyle(
+            color: enabled
+                ? Theme.of(context).textTheme.bodyLarge?.color
+                : Colors.grey,
+          ),
+        ),
       ),
     );
   }

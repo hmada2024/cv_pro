@@ -2550,13 +2550,18 @@ const ExperienceSchema = Schema(
       name: r'endDate',
       type: IsarType.dateTime,
     ),
-    r'position': PropertySchema(
+    r'isCurrent': PropertySchema(
       id: 3,
+      name: r'isCurrent',
+      type: IsarType.bool,
+    ),
+    r'position': PropertySchema(
+      id: 4,
       name: r'position',
       type: IsarType.string,
     ),
     r'startDate': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'startDate',
       type: IsarType.dateTime,
     )
@@ -2588,8 +2593,9 @@ void _experienceSerialize(
   writer.writeString(offsets[0], object.companyName);
   writer.writeString(offsets[1], object.description);
   writer.writeDateTime(offsets[2], object.endDate);
-  writer.writeString(offsets[3], object.position);
-  writer.writeDateTime(offsets[4], object.startDate);
+  writer.writeBool(offsets[3], object.isCurrent);
+  writer.writeString(offsets[4], object.position);
+  writer.writeDateTime(offsets[5], object.startDate);
 }
 
 Experience _experienceDeserialize(
@@ -2601,9 +2607,9 @@ Experience _experienceDeserialize(
   final object = Experience();
   object.companyName = reader.readString(offsets[0]);
   object.description = reader.readString(offsets[1]);
-  object.endDate = reader.readDateTime(offsets[2]);
-  object.position = reader.readString(offsets[3]);
-  object.startDate = reader.readDateTime(offsets[4]);
+  object.endDate = reader.readDateTimeOrNull(offsets[2]);
+  object.position = reader.readString(offsets[4]);
+  object.startDate = reader.readDateTime(offsets[5]);
   return object;
 }
 
@@ -2619,10 +2625,12 @@ P _experienceDeserializeProp<P>(
     case 1:
       return (reader.readString(offset)) as P;
     case 2:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 3:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -2903,8 +2911,25 @@ extension ExperienceQueryFilter
     });
   }
 
+  QueryBuilder<Experience, Experience, QAfterFilterCondition> endDateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'endDate',
+      ));
+    });
+  }
+
+  QueryBuilder<Experience, Experience, QAfterFilterCondition>
+      endDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'endDate',
+      ));
+    });
+  }
+
   QueryBuilder<Experience, Experience, QAfterFilterCondition> endDateEqualTo(
-      DateTime value) {
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'endDate',
@@ -2915,7 +2940,7 @@ extension ExperienceQueryFilter
 
   QueryBuilder<Experience, Experience, QAfterFilterCondition>
       endDateGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -2928,7 +2953,7 @@ extension ExperienceQueryFilter
   }
 
   QueryBuilder<Experience, Experience, QAfterFilterCondition> endDateLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -2941,8 +2966,8 @@ extension ExperienceQueryFilter
   }
 
   QueryBuilder<Experience, Experience, QAfterFilterCondition> endDateBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -2953,6 +2978,16 @@ extension ExperienceQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Experience, Experience, QAfterFilterCondition> isCurrentEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isCurrent',
+        value: value,
       ));
     });
   }
@@ -3830,9 +3865,9 @@ const EducationSchema = Schema(
   name: r'Education',
   id: -5142417227312236372,
   properties: {
-    r'degree': PropertySchema(
+    r'degreeName': PropertySchema(
       id: 0,
-      name: r'degree',
+      name: r'degreeName',
       type: IsarType.string,
     ),
     r'endDate': PropertySchema(
@@ -3840,13 +3875,24 @@ const EducationSchema = Schema(
       name: r'endDate',
       type: IsarType.dateTime,
     ),
-    r'school': PropertySchema(
+    r'isCurrent': PropertySchema(
       id: 2,
+      name: r'isCurrent',
+      type: IsarType.bool,
+    ),
+    r'level': PropertySchema(
+      id: 3,
+      name: r'level',
+      type: IsarType.string,
+      enumMap: _EducationlevelEnumValueMap,
+    ),
+    r'school': PropertySchema(
+      id: 4,
       name: r'school',
       type: IsarType.string,
     ),
     r'startDate': PropertySchema(
-      id: 3,
+      id: 5,
       name: r'startDate',
       type: IsarType.dateTime,
     )
@@ -3863,7 +3909,8 @@ int _educationEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.degree.length * 3;
+  bytesCount += 3 + object.degreeName.length * 3;
+  bytesCount += 3 + object.level.name.length * 3;
   bytesCount += 3 + object.school.length * 3;
   return bytesCount;
 }
@@ -3874,10 +3921,12 @@ void _educationSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.degree);
+  writer.writeString(offsets[0], object.degreeName);
   writer.writeDateTime(offsets[1], object.endDate);
-  writer.writeString(offsets[2], object.school);
-  writer.writeDateTime(offsets[3], object.startDate);
+  writer.writeBool(offsets[2], object.isCurrent);
+  writer.writeString(offsets[3], object.level.name);
+  writer.writeString(offsets[4], object.school);
+  writer.writeDateTime(offsets[5], object.startDate);
 }
 
 Education _educationDeserialize(
@@ -3887,10 +3936,13 @@ Education _educationDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Education();
-  object.degree = reader.readString(offsets[0]);
-  object.endDate = reader.readDateTime(offsets[1]);
-  object.school = reader.readString(offsets[2]);
-  object.startDate = reader.readDateTime(offsets[3]);
+  object.degreeName = reader.readString(offsets[0]);
+  object.endDate = reader.readDateTimeOrNull(offsets[1]);
+  object.level =
+      _EducationlevelValueEnumMap[reader.readStringOrNull(offsets[3])] ??
+          EducationLevel.bachelor;
+  object.school = reader.readString(offsets[4]);
+  object.startDate = reader.readDateTime(offsets[5]);
   return object;
 }
 
@@ -3904,32 +3956,49 @@ P _educationDeserializeProp<P>(
     case 0:
       return (reader.readString(offset)) as P;
     case 1:
-      return (reader.readDateTime(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
-      return (reader.readString(offset)) as P;
+      return (reader.readBool(offset)) as P;
     case 3:
+      return (_EducationlevelValueEnumMap[reader.readStringOrNull(offset)] ??
+          EducationLevel.bachelor) as P;
+    case 4:
+      return (reader.readString(offset)) as P;
+    case 5:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
+const _EducationlevelEnumValueMap = {
+  r'bachelor': r'bachelor',
+  r'master': r'master',
+  r'doctor': r'doctor',
+};
+const _EducationlevelValueEnumMap = {
+  r'bachelor': EducationLevel.bachelor,
+  r'master': EducationLevel.master,
+  r'doctor': EducationLevel.doctor,
+};
+
 extension EducationQueryFilter
     on QueryBuilder<Education, Education, QFilterCondition> {
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeEqualTo(
+  QueryBuilder<Education, Education, QAfterFilterCondition> degreeNameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'degree',
+        property: r'degreeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeGreaterThan(
+  QueryBuilder<Education, Education, QAfterFilterCondition>
+      degreeNameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -3937,14 +4006,14 @@ extension EducationQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'degree',
+        property: r'degreeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeLessThan(
+  QueryBuilder<Education, Education, QAfterFilterCondition> degreeNameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -3952,14 +4021,14 @@ extension EducationQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'degree',
+        property: r'degreeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeBetween(
+  QueryBuilder<Education, Education, QAfterFilterCondition> degreeNameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -3968,7 +4037,7 @@ extension EducationQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'degree',
+        property: r'degreeName',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -3978,76 +4047,95 @@ extension EducationQueryFilter
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeStartsWith(
+  QueryBuilder<Education, Education, QAfterFilterCondition>
+      degreeNameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'degree',
+        property: r'degreeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeEndsWith(
+  QueryBuilder<Education, Education, QAfterFilterCondition> degreeNameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'degree',
+        property: r'degreeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeContains(
+  QueryBuilder<Education, Education, QAfterFilterCondition> degreeNameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'degree',
+        property: r'degreeName',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeMatches(
+  QueryBuilder<Education, Education, QAfterFilterCondition> degreeNameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'degree',
+        property: r'degreeName',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeIsEmpty() {
+  QueryBuilder<Education, Education, QAfterFilterCondition>
+      degreeNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'degree',
+        property: r'degreeName',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<Education, Education, QAfterFilterCondition> degreeIsNotEmpty() {
+  QueryBuilder<Education, Education, QAfterFilterCondition>
+      degreeNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'degree',
+        property: r'degreeName',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> endDateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'endDate',
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> endDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'endDate',
       ));
     });
   }
 
   QueryBuilder<Education, Education, QAfterFilterCondition> endDateEqualTo(
-      DateTime value) {
+      DateTime? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
         property: r'endDate',
@@ -4057,7 +4145,7 @@ extension EducationQueryFilter
   }
 
   QueryBuilder<Education, Education, QAfterFilterCondition> endDateGreaterThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -4070,7 +4158,7 @@ extension EducationQueryFilter
   }
 
   QueryBuilder<Education, Education, QAfterFilterCondition> endDateLessThan(
-    DateTime value, {
+    DateTime? value, {
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -4083,8 +4171,8 @@ extension EducationQueryFilter
   }
 
   QueryBuilder<Education, Education, QAfterFilterCondition> endDateBetween(
-    DateTime lower,
-    DateTime upper, {
+    DateTime? lower,
+    DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
@@ -4095,6 +4183,146 @@ extension EducationQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> isCurrentEqualTo(
+      bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'isCurrent',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelEqualTo(
+    EducationLevel value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'level',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelGreaterThan(
+    EducationLevel value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'level',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelLessThan(
+    EducationLevel value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'level',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelBetween(
+    EducationLevel lower,
+    EducationLevel upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'level',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'level',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'level',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'level',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'level',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'level',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Education, Education, QAfterFilterCondition> levelIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'level',
+        value: '',
       ));
     });
   }

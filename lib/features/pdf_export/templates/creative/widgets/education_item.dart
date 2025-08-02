@@ -1,6 +1,8 @@
+// features/pdf_export/templates/creative/widgets/education_item.dart
+
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
-import 'package:pdf/pdf.dart'; // ✅✅ تم التصحيح: استيراد مكتبة pdf.dart
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import '../creative_template_colors.dart';
 
@@ -10,22 +12,35 @@ class EducationItem extends pw.StatelessWidget {
 
   EducationItem(this.education);
 
+  String _educationLevelToString(EducationLevel level) {
+    switch (level) {
+      case EducationLevel.bachelor:
+        return "Bachelor";
+      case EducationLevel.master:
+        return "Master";
+      case EducationLevel.doctor:
+        return 'Doctorate';
+    }
+  }
+
   @override
   pw.Widget build(pw.Context context) {
+    final dateRange =
+        '${formatter.format(education.startDate)} - ${education.isCurrent ? "Present" : formatter.format(education.endDate!)}';
+
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 10),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Text(
-            '${formatter.format(education.startDate)} - ${formatter.format(education.endDate)}',
+            dateRange.toUpperCase(),
             style: const pw.TextStyle(
                 color: ModernTemplateColors.accent, fontSize: 8),
           ),
           pw.Text(
-            education.degree,
+            '${_educationLevelToString(education.level)} ${education.degreeName}',
             style: pw.TextStyle(
-                // ✅✅ تم التصحيح: إزالة البادئة pw. ✅✅
                 color: PdfColors.white,
                 fontSize: 10,
                 fontWeight: pw.FontWeight.bold),

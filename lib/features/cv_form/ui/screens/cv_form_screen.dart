@@ -1,3 +1,5 @@
+// features/cv_form/ui/screens/cv_form_screen.dart
+
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +9,7 @@ import 'package:cv_pro/features/cv_form/ui/widgets/education_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/experience_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/personal_info_section.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/references_section.dart'; // ✅ NEW: Import
+import 'package:cv_pro/features/cv_form/ui/widgets/references_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/skill_section.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 
@@ -63,15 +65,15 @@ class CvFormScreen extends ConsumerWidget {
           children: [
             PersonalInfoSection(),
             SizedBox(height: 16),
-            ExperienceSection(),
-            SizedBox(height: 16),
             EducationSection(),
+            SizedBox(height: 16),
+            ExperienceSection(),
             SizedBox(height: 16),
             SkillSection(),
             SizedBox(height: 16),
             LanguageSection(),
-            SizedBox(height: 16), // ✅ NEW: Add space
-            ReferencesSection(), // ✅✅ NEW: Add the new section here ✅✅
+            SizedBox(height: 16),
+            ReferencesSection(),
             SizedBox(height: 20),
           ],
         ),

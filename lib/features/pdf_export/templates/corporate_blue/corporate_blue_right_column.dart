@@ -4,6 +4,7 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/corporate_blue_template_colors.dart';
 import 'package:cv_pro/features/pdf_export/templates/corporate_blue/widgets/skill_progress_item.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/widgets/experience_item.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'widgets/section_header_pill.dart';
 
@@ -18,54 +19,93 @@ class CorporateBlueRightColumn extends pw.StatelessWidget {
     required this.showReferencesNote,
   });
 
+  String _educationLevelToString(EducationLevel level) {
+    switch (level) {
+      case EducationLevel.bachelor:
+        return "Bachelor's Degree";
+      case EducationLevel.master:
+        return "Master's Degree";
+      case EducationLevel.doctor:
+        return 'Doctorate';
+    }
+  }
+
   @override
   pw.Widget build(pw.Context context) {
+    // Sort education and experience lists
+    final sortedEducation = List<Education>.from(data.education)
+      ..sort((a, b) {
+        final levelComparison = b.level.index.compareTo(a.level.index);
+        if (levelComparison != 0) return levelComparison;
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        if (!a.isCurrent && !b.isCurrent) {
+          return b.endDate!.compareTo(a.endDate!);
+        }
+        return b.startDate.compareTo(a.startDate);
+      });
+
+    final sortedExperience = List<Experience>.from(data.experiences)
+      ..sort((a, b) {
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        if (!a.isCurrent && !b.isCurrent) {
+          return b.endDate!.compareTo(a.endDate!);
+        }
+        return b.startDate.compareTo(a.startDate);
+      });
+
     return pw.Container(
       padding: const pw.EdgeInsets.fromLTRB(20, 25, 20, 20),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           // Experience
-          if (data.experiences.isNotEmpty)
+          if (sortedExperience.isNotEmpty)
             SectionHeaderPill(
               title: 'Experience',
               backgroundColor: CorporateBlueColors.primaryBlueDark,
               textColor: CorporateBlueColors.lightText,
             ),
-          ...data.experiences.map((exp) => ExperienceItem(
+          ...sortedExperience.map((exp) => ExperienceItem(
                 exp,
                 iconFont: iconFont,
                 positionColor: CorporateBlueColors.darkText,
                 companyColor: CorporateBlueColors.subtleText,
               )),
-          if (data.experiences.isNotEmpty) pw.SizedBox(height: 20),
+          if (sortedExperience.isNotEmpty) pw.SizedBox(height: 20),
 
           // Education
-          if (data.education.isNotEmpty)
+          if (sortedEducation.isNotEmpty)
             SectionHeaderPill(
               title: 'Education',
               backgroundColor: CorporateBlueColors.primaryBlueDark,
               textColor: CorporateBlueColors.lightText,
             ),
-          ...data.education.map((edu) => pw.Padding(
-                padding: const pw.EdgeInsets.only(bottom: 10),
-                child: pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        edu.degree,
-                        style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                            color: CorporateBlueColors.darkText),
-                      ),
-                      pw.Text(
-                        '${edu.school} / ${edu.startDate.year} - ${edu.endDate.year}',
-                        style: const pw.TextStyle(
-                            color: CorporateBlueColors.subtleText, fontSize: 9),
-                      ),
-                    ]),
-              )),
-          if (data.education.isNotEmpty) pw.SizedBox(height: 20),
+          ...sortedEducation.map((edu) {
+            final formatter = DateFormat('yyyy');
+            final dateRange =
+                '${formatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : formatter.format(edu.endDate!)}';
+            return pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 10),
+              child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(
+                      '${_educationLevelToString(edu.level)} ${edu.degreeName}',
+                      style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          color: CorporateBlueColors.darkText),
+                    ),
+                    pw.Text(
+                      '${edu.school} / $dateRange',
+                      style: const pw.TextStyle(
+                          color: CorporateBlueColors.subtleText, fontSize: 9),
+                    ),
+                  ]),
+            );
+          }),
+          if (sortedEducation.isNotEmpty) pw.SizedBox(height: 20),
 
           // Skills Summary
           if (data.skills.isNotEmpty)
@@ -77,7 +117,6 @@ class CorporateBlueRightColumn extends pw.StatelessWidget {
           ...data.skills.map((skill) => SkillProgressItem(skill: skill)),
           if (data.skills.isNotEmpty) pw.SizedBox(height: 20),
 
-          // ✅✅ NEW: The new smart logic for references ✅✅
           _buildReferencesSection(data, showReferencesNote),
         ],
       ),
@@ -85,7 +124,6 @@ class CorporateBlueRightColumn extends pw.StatelessWidget {
   }
 
   pw.Widget _buildReferencesSection(CVData data, bool showReferencesNote) {
-    // Case 1: The toggle is ON. The note must be shown.
     if (showReferencesNote) {
       return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -105,9 +143,7 @@ class CorporateBlueRightColumn extends pw.StatelessWidget {
           ),
         ],
       );
-    }
-    // Case 2: Toggle is OFF AND there are references to show.
-    else if (data.references.isNotEmpty) {
+    } else if (data.references.isNotEmpty) {
       return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -125,7 +161,6 @@ class CorporateBlueRightColumn extends pw.StatelessWidget {
         ],
       );
     }
-    // Case 3 (Default): Toggle is OFF and no references exist. Show nothing.
     return pw.SizedBox();
   }
 

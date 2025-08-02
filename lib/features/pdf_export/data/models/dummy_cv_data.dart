@@ -21,7 +21,6 @@ CVData createDummyCvData() {
         position: 'Senior Graphic Designer',
         companyName: 'Fauget Studio',
         startDate: DateTime(2020, 1, 1),
-        endDate: DateTime(2023, 1, 1),
         description:
             '• create more than 100 graphic designs for big companies\n• complete a lot of complicated work',
       ),
@@ -29,23 +28,25 @@ CVData createDummyCvData() {
         position: 'Graphic Designer',
         companyName: 'Iarana, Inc',
         startDate: DateTime(2017, 1, 1),
-        endDate: DateTime(2019, 1, 1),
+        endDate: DateTime(2019, 12, 31),
         description:
             '• create more than 100 graphic designs for big companies\n• complete a lot of complicated work',
       ),
     ],
     education: [
       Education.create(
-        degree: 'Bachelor of Design',
-        school: 'Wardiere University',
-        startDate: DateTime(2014, 1, 1),
-        endDate: DateTime(2019, 1, 1),
+        level: EducationLevel.master,
+        degreeName: 'of Graphic Design',
+        school: 'Arts University',
+        startDate: DateTime(2015, 9, 1),
+        endDate: DateTime(2017, 6, 30),
       ),
       Education.create(
-        degree: 'Bachelor of Design',
+        level: EducationLevel.bachelor,
+        degreeName: 'of Fine Arts',
         school: 'Wardiere University',
-        startDate: DateTime(2011, 1, 1),
-        endDate: DateTime(2015, 1, 1),
+        startDate: DateTime(2011, 9, 1),
+        endDate: DateTime(2015, 6, 30),
       ),
     ],
     skills: [

@@ -76,14 +76,17 @@ class CvFormNotifier extends StateNotifier<CVData> {
     required String position,
     required String companyName,
     required String description,
+    required DateTime startDate,
+    DateTime? endDate,
   }) {
     if (companyName.isNotEmpty && position.isNotEmpty) {
       final newExperience = Experience.create(
-          companyName: companyName,
-          position: position,
-          description: description,
-          startDate: DateTime.now().subtract(const Duration(days: 365)),
-          endDate: DateTime.now());
+        companyName: companyName,
+        position: position,
+        description: description,
+        startDate: startDate,
+        endDate: endDate,
+      );
       state =
           state.copyWith(experiences: [...state.experiences, newExperience]);
       _saveStateToDb();
@@ -106,13 +109,20 @@ class CvFormNotifier extends StateNotifier<CVData> {
     _saveStateToDb();
   }
 
-  void addEducation({required String school, required String degree}) {
-    if (school.isNotEmpty && degree.isNotEmpty) {
+  void addEducation({
+    required EducationLevel level,
+    required String degreeName,
+    required String school,
+    required DateTime startDate,
+    DateTime? endDate,
+  }) {
+    if (school.isNotEmpty && degreeName.isNotEmpty) {
       final newEducation = Education.create(
+        level: level,
+        degreeName: degreeName,
         school: school,
-        degree: degree,
-        startDate: DateTime.now().subtract(const Duration(days: 365 * 4)),
-        endDate: DateTime.now().subtract(const Duration(days: 365)),
+        startDate: startDate,
+        endDate: endDate,
       );
       state = state.copyWith(education: [...state.education, newEducation]);
       _saveStateToDb();
@@ -243,6 +253,52 @@ final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
   final storageService = ref.watch(storageServiceProvider);
   final imageCropperService = ref.watch(imageCropperServiceProvider);
   return CvFormNotifier(storageService, imageCropperService);
+});
+
+final sortedExperiencesProvider = Provider<List<Experience>>((ref) {
+  final experiences = ref.watch(cvFormProvider).experiences;
+  final sortedList = List<Experience>.from(experiences);
+
+  sortedList.sort((a, b) {
+    // Current jobs come first
+    if (a.isCurrent && !b.isCurrent) return -1;
+    if (!a.isCurrent && b.isCurrent) return 1;
+
+    // If both are current, or both are past, sort by end date (newest first)
+    // For current jobs, endDate is null but they are already grouped at the top.
+    // For past jobs, endDate is not null.
+    if (!a.isCurrent && !b.isCurrent) {
+      return b.endDate!.compareTo(a.endDate!);
+    }
+
+    // If both are current, sort by start date
+    return b.startDate.compareTo(a.startDate);
+  });
+
+  return sortedList;
+});
+
+final sortedEducationProvider = Provider<List<Education>>((ref) {
+  final educationList = ref.watch(cvFormProvider).education;
+  final sortedList = List<Education>.from(educationList);
+
+  // Sort by level (Doctor > Master > Bachelor), then by end date
+  sortedList.sort((a, b) {
+    final levelComparison = b.level.index.compareTo(a.level.index);
+    if (levelComparison != 0) return levelComparison;
+
+    // If levels are the same, sort by end date (newest first)
+    if (a.isCurrent && !b.isCurrent) return -1;
+    if (!a.isCurrent && b.isCurrent) return 1;
+
+    if (!a.isCurrent && !b.isCurrent) {
+      return b.endDate!.compareTo(a.endDate!);
+    }
+
+    return b.startDate.compareTo(a.startDate);
+  });
+
+  return sortedList;
 });
 
 final pdfBytesProvider = FutureProvider.autoDispose

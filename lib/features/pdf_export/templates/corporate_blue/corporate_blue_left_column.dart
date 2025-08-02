@@ -26,7 +26,7 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
 
     return pw.Container(
       color: CorporateBlueColors.backgroundDark,
-      padding: const pw.EdgeInsets.fromLTRB(20, 40, 20, 20),
+      padding: const pw.EdgeInsets.fromLTRB(20, 25, 20, 20),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -51,7 +51,6 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
               ),
             ),
           if (personalInfo.summary.isNotEmpty) pw.SizedBox(height: 25),
-
           pw.Text(
             'Contact',
             style: pw.TextStyle(
@@ -85,7 +84,6 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
               iconColor: CorporateBlueColors.accentBlue,
             ),
           pw.SizedBox(height: 25),
-
           if (hasDetails)
             pw.Text(
               'Personal Details',
@@ -97,7 +95,6 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
           if (hasDetails)
             pw.Divider(color: CorporateBlueColors.accentBlue, height: 8),
           if (hasDetails) pw.SizedBox(height: 8),
-
           if (personalInfo.birthDate != null)
             ContactInfoLine(
               iconData: const pw.IconData(0xe7e9),
@@ -123,7 +120,6 @@ class CorporateBlueLeftColumn extends pw.StatelessWidget {
               iconColor: CorporateBlueColors.accentBlue,
             ),
           if (hasDetails) pw.SizedBox(height: 25),
-
           if (data.languages.isNotEmpty)
             pw.Text(
               'Language',
