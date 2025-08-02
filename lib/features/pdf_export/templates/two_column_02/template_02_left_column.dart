@@ -4,7 +4,7 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'creative_template_colors.dart';
+import 'template_02_colors.dart';
 import 'widgets/contact_info_line.dart';
 import 'widgets/education_item.dart';
 import 'widgets/language_item.dart';

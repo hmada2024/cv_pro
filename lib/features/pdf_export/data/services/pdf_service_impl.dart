@@ -1,6 +1,6 @@
 // features/pdf_export/data/services/pdf_service_impl.dart
 
-import 'package:cv_pro/features/pdf_export/templates/two_column_01/corporate_blue_template_builder.dart';
+import 'package:cv_pro/features/pdf_export/templates/two_column_01/template_01_builder.dart';
 import 'package:cv_pro/features/pdf_export/templates/creative/creative_template_builder.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
