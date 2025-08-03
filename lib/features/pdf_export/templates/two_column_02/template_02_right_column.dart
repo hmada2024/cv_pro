@@ -3,7 +3,7 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/templates/shared/widgets/experience_item.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'template_02_colors.dart';
-import 'widgets/section_header.dart';
+import '../shared/widgets/section_header.dart';
 
 class Template02RightColumn extends pw.StatelessWidget {
   final CVData data;

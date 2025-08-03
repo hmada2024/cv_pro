@@ -1,4 +1,3 @@
-// features/pdf_export/templates/shared/widgets/section_header.dart
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -31,9 +30,9 @@ class SectionHeader extends pw.StatelessWidget {
           ),
         ),
         pw.Container(
-          height: 1.5,
-          color: lineColor,
+          height: 2,
           width: lineWidth,
+          color: lineColor,
           margin: const pw.EdgeInsets.only(top: 4, bottom: 12),
         ),
       ],

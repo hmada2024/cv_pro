@@ -7,7 +7,7 @@ import 'template_02_colors.dart'; // ✅ UPDATED IMPORT
 import '../shared/widgets/contact_info_line.dart';
 import 'widgets/education_item.dart';
 import 'widgets/language_item.dart';
-import 'widgets/section_header.dart';
+import '../shared/widgets/section_header.dart';
 import 'widgets/skill_item.dart';
 
 class Template02LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAME
