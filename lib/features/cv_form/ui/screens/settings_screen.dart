@@ -90,6 +90,23 @@ class SettingsScreen extends ConsumerWidget {
               }
             },
           ),
+          const SizedBox(height: 12),
+
+          // ✅ NEW: Add the selector for the new template
+          _buildTemplateSelector(
+            context: context,
+            ref: ref,
+            title: 'Asymmetrical 03',
+            subtitle:
+                'A modern design with a diagonal header and a clear content hierarchy.',
+            value: CvTemplate.twoColumn03,
+            groupValue: selectedTemplate,
+            onChanged: (value) {
+              if (value != null) {
+                ref.read(selectedTemplateProvider.notifier).state = value;
+              }
+            },
+          ),
         ],
       ),
     );

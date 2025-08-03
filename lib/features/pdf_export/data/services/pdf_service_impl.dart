@@ -8,10 +8,11 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
-enum CvTemplate { twoColumn01, twoColumn02 }
+// ✅ NEW: Add the new template to the enum
+enum CvTemplate { twoColumn01, twoColumn02, twoColumn03 }
 
-final selectedTemplateProvider =
-    StateProvider<CvTemplate>((ref) => CvTemplate.twoColumn01);
+final selectedTemplateProvider = StateProvider<CvTemplate>((ref) =>
+    CvTemplate.twoColumn03); 
 
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
@@ -37,6 +38,14 @@ class PdfServiceImpl implements PdfService {
         break;
       case CvTemplate.twoColumn02:
         content = await buildTemplate02(
+          data: data,
+          iconFont: iconTtf,
+          showReferencesNote: showReferencesNote,
+        );
+        break;
+      // ✅ NEW: Add the case for the new template
+      case CvTemplate.twoColumn03:
+        content = await buildTemplate03(
           data: data,
           iconFont: iconTtf,
           showReferencesNote: showReferencesNote,
