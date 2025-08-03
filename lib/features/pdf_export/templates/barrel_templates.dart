@@ -1,4 +1,4 @@
-// features/pdf_export/templates/templates_barrel.dart
+// features/pdf_export/templates/barrel_templates.dart
 
 /// This file acts as a single entry point to all available PDF template builders.
 /// Any service that needs to generate a PDF can import this one file
@@ -7,4 +7,4 @@ library;
 
 export 'two_column_01/builder_template_01.dart';
 export 'two_column_02/builder_template_02.dart';
-export 'two_column_03/builder_template_03.dart'; 
+export 'two_column_03/builder_template_03.dart';
