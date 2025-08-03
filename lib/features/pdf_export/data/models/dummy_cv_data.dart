@@ -28,7 +28,7 @@ CVData createDummyCvData() {
         position: 'Graphic Designer',
         companyName: 'Iarana, Inc',
         startDate: DateTime(2017, 1, 1),
-        endDate: DateTime(2019, 12, 31),
+        endDate: DateTime(2019, 12, 1),
         description:
             '• create more than 100 graphic designs for big companies\n• complete a lot of complicated work',
       ),
@@ -38,15 +38,16 @@ CVData createDummyCvData() {
         level: EducationLevel.master,
         degreeName: 'of Graphic Design',
         school: 'Arts University',
-        startDate: DateTime(2015, 9, 1),
-        endDate: DateTime(2017, 6, 30),
+        // ✅ UPDATED: Dates set to the beginning of the year.
+        startDate: DateTime(2015, 1, 1),
+        endDate: DateTime(2017, 1, 1),
       ),
       Education.create(
         level: EducationLevel.bachelor,
         degreeName: 'of Fine Arts',
         school: 'Wardiere University',
-        startDate: DateTime(2011, 9, 1),
-        endDate: DateTime(2015, 6, 30),
+        startDate: DateTime(2011, 1, 1),
+        endDate: DateTime(2015, 1, 1),
       ),
     ],
     skills: [

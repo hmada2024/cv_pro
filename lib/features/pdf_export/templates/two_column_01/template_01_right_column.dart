@@ -1,7 +1,7 @@
 // features/pdf_export/templates/two_column_01/template_01_right_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/two_column_01/widgets/skill_progress_item.dart';
 import 'package:cv_pro/features/pdf_export/templates/shared/widgets/experience_item.dart';
+import 'package:cv_pro/features/pdf_export/templates/two_column_01/widgets/skill_progress_item.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'template_01_colors.dart';
@@ -69,6 +69,8 @@ class Template01RightColumn extends pw.StatelessWidget {
                 iconFont: iconFont,
                 positionColor: Template01Colors.darkText,
                 companyColor: Template01Colors.subtleText,
+                // ✅ UPDATED: Passing a clear, dark color for the date.
+                dateColor: Template01Colors.darkText,
               )),
           if (sortedExperience.isNotEmpty) pw.SizedBox(height: 20),
           if (sortedEducation.isNotEmpty)
@@ -77,27 +79,45 @@ class Template01RightColumn extends pw.StatelessWidget {
               backgroundColor: Template01Colors.primaryBlueDark,
               textColor: Template01Colors.lightText,
             ),
+          // ✅ UPDATED: Education section layout now matches the reference image.
           ...sortedEducation.map((edu) {
             final formatter = DateFormat('yyyy');
             final dateRange =
                 '${formatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : formatter.format(edu.endDate!)}';
             return pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 10),
-              child: pw.Column(
-                  crossAxisAlignment: pw.CrossAxisAlignment.start,
-                  children: [
-                    pw.Text(
-                      '${_educationLevelToString(edu.level)} ${edu.degreeName}',
-                      style: pw.TextStyle(
-                          fontWeight: pw.FontWeight.bold,
-                          color: Template01Colors.darkText),
+              padding: const pw.EdgeInsets.only(bottom: 12),
+              child: pw.Row(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  pw.Expanded(
+                    child: pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        children: [
+                          pw.Text(
+                            '${_educationLevelToString(edu.level)} ${edu.degreeName}',
+                            style: pw.TextStyle(
+                                fontWeight: pw.FontWeight.bold,
+                                color: Template01Colors.darkText),
+                          ),
+                          pw.Text(
+                            edu.school,
+                            style: const pw.TextStyle(
+                                color: Template01Colors.subtleText,
+                                fontSize: 9),
+                          ),
+                        ]),
+                  ),
+                  pw.SizedBox(width: 10),
+                  pw.Text(
+                    dateRange,
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                      color: Template01Colors.darkText,
+                      fontSize: 10,
                     ),
-                    pw.Text(
-                      '${edu.school} / $dateRange',
-                      style: const pw.TextStyle(
-                          color: Template01Colors.subtleText, fontSize: 9),
-                    ),
-                  ]),
+                  ),
+                ],
+              ),
             );
           }),
           if (sortedEducation.isNotEmpty) pw.SizedBox(height: 20),

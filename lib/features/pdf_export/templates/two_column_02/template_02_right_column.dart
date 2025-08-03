@@ -1,8 +1,8 @@
 // features/pdf_export/templates/two_column_02/template_02_right_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/templates/shared/widgets/experience_item.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'template_02_colors.dart';
-import '../shared/widgets/experience_item.dart';
 import 'widgets/section_header.dart';
 
 class Template02RightColumn extends pw.StatelessWidget {
@@ -16,8 +16,6 @@ class Template02RightColumn extends pw.StatelessWidget {
   });
   @override
   pw.Widget build(pw.Context context) {
-    // ✅ NEW: Added sorting logic for experiences to ensure correct order.
-    // This sorts current jobs first, then sorts past jobs by end date (newest first).
     final sortedExperience = List<Experience>.from(data.experiences)
       ..sort((a, b) {
         if (a.isCurrent && !b.isCurrent) return -1;
@@ -65,11 +63,11 @@ class Template02RightColumn extends pw.StatelessWidget {
                 title: 'WORK EXPERIENCE',
                 titleColor: Template02Colors.primary,
                 lineColor: Template02Colors.accent),
-          // ✅ UPDATED: Now mapping over the 'sortedExperience' list.
           ...sortedExperience.map((exp) => ExperienceItem(
                 exp,
                 iconFont: iconFont,
                 positionColor: Template02Colors.primary,
+                dateColor: Template02Colors.primary,
               )),
           _buildReferencesSection(data, showReferencesNote),
         ],

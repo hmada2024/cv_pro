@@ -1,24 +1,26 @@
 // features/pdf_export/templates/two_column_02/widgets/experience_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/templates/two_column_02/template_02_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../../two_column_02/template_02_colors.dart';
 
 class ExperienceItem extends pw.StatelessWidget {
   final Experience experience;
   final pw.Font iconFont;
-  // ✅ UPDATED: Formatter now uses short month name (e.g., "Jan")
   final DateFormat formatter = DateFormat('MMM yyyy');
   final PdfColor positionColor;
   final PdfColor companyColor;
+  final PdfColor dateColor;
 
   ExperienceItem(
     this.experience, {
     required this.iconFont,
     this.positionColor = PdfColors.black,
     this.companyColor = Template02Colors.darkText,
-  });
+    // ✅ NEW: The date color will default to the company color if not specified.
+    PdfColor? dateColor,
+  }) : dateColor = dateColor ?? companyColor;
 
   @override
   pw.Widget build(pw.Context context) {
@@ -33,7 +35,7 @@ class ExperienceItem extends pw.StatelessWidget {
                   pw.Container(
                     margin: const pw.EdgeInsets.only(top: 3, right: 8),
                     child: pw.Icon(
-                      const pw.IconData(0xe834), // Material Icon: check_box
+                      const pw.IconData(0xe834),
                       font: iconFont,
                       size: 9,
                       color: companyColor,
@@ -56,36 +58,43 @@ class ExperienceItem extends pw.StatelessWidget {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
+          // ✅ UPDATED: The header is now a Row to align the date to the right.
           pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Expanded(
-                child: pw.Text(
-                  experience.position.toUpperCase(),
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    fontWeight: pw.FontWeight.bold,
-                    color: positionColor,
-                  ),
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  children: [
+                    pw.Text(
+                      experience.position.toUpperCase(),
+                      style: pw.TextStyle(
+                        fontSize: 12,
+                        fontWeight: pw.FontWeight.bold,
+                        color: positionColor,
+                      ),
+                    ),
+                    pw.Text(
+                      experience.companyName,
+                      style: pw.TextStyle(
+                        fontSize: 11,
+                        color: companyColor,
+                        fontStyle: pw.FontStyle.italic,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               pw.SizedBox(width: 10),
-              // ✅ UPDATED: Date range now uses the new formatter.
               pw.Text(
                 '${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
-                style: const pw.TextStyle(
-                    fontSize: 9, color: Template02Colors.darkText),
+                style: pw.TextStyle(
+                  fontSize: 10,
+                  color: dateColor, // Use the new dateColor property
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
             ],
-          ),
-          pw.Text(
-            experience.companyName,
-            style: pw.TextStyle(
-              fontSize: 11,
-              color: companyColor,
-              fontStyle: pw.FontStyle.italic,
-            ),
           ),
           pw.SizedBox(height: 6),
           ...descriptionLines,
