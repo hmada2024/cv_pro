@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'template_01_header.dart';
-import 'template_01_left_column.dart';
-import 'template_01_right_column.dart';
+import 'header_template_01.dart';
+import 'column_template_01_left.dart';
+import 'right_column_template_01.dart';
 
 Future<pw.Widget> buildTemplate01( // ✅ UPDATED FUNCTION NAME
     {

@@ -5,6 +5,6 @@
 /// to get access to all templates, without needing to know their specific locations.
 library;
 
-export 'two_column_01/template_01_builder.dart';
+export 'two_column_01/builder_template_01.dart';
 export 'two_column_02/builder_template_02.dart';
 export 'two_column_03/template_03_builder.dart'; 

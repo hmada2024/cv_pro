@@ -4,7 +4,7 @@ import 'package:cv_pro/features/pdf_export/templates/shared/widgets/experience_i
 import 'package:cv_pro/features/pdf_export/templates/two_column_01/widgets/skill_progress_item.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'template_01_colors.dart';
+import 'colors_template_01.dart';
 import 'widgets/section_header_pill.dart';
 
 class Template01RightColumn extends pw.StatelessWidget {

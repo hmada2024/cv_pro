@@ -2,7 +2,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'template_01_colors.dart'; // ✅ UPDATED IMPORT
+import 'colors_template_01.dart'; // ✅ UPDATED IMPORT
 
 class Template01Header extends pw.StatelessWidget { // ✅ UPDATED CLASS NAME
   final CVData data;
