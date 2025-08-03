@@ -1,7 +1,7 @@
 // features/pdf_export/templates/two_column_02/widgets/contact_info_line.dart
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../template_02_colors.dart';
+import '../../two_column_02/template_02_colors.dart';
 
 class ContactInfoLine extends pw.StatelessWidget {
   final pw.IconData iconData;

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'template_02_colors.dart'; // ✅ UPDATED IMPORT
-import 'widgets/contact_info_line.dart';
+import '../shared/widgets/contact_info_line.dart';
 import 'widgets/education_item.dart';
 import 'widgets/language_item.dart';
 import 'widgets/section_header.dart';

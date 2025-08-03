@@ -1,6 +1,6 @@
 // features/pdf_export/templates/two_column_01/template_01_left_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/two_column_02/widgets/contact_info_line.dart'; // ✅ UPDATED IMPORT
+import 'package:cv_pro/features/pdf_export/templates/shared/widgets/contact_info_line.dart'; // ✅ UPDATED IMPORT
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'template_01_colors.dart'; // ✅ UPDATED IMPORT
