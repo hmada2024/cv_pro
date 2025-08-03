@@ -66,9 +66,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       });
     } else if (_startDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Please select a start date.'),
-            backgroundColor: Colors.red),
+        SnackBar(
+            content: const Text('Please select a start date.'),
+            backgroundColor: Theme.of(context).colorScheme.error),
       );
     }
   }
@@ -95,9 +95,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
         } else {
           if (_startDate != null && picked.isBefore(_startDate!)) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                  content: Text('End date cannot be before start date.'),
-                  backgroundColor: Colors.red),
+              SnackBar(
+                  content: const Text('End date cannot be before start date.'),
+                  backgroundColor: Theme.of(context).colorScheme.error),
             );
           } else {
             _endDate = picked;
@@ -110,6 +110,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   @override
   Widget build(BuildContext context) {
     final educationList = ref.watch(sortedEducationProvider);
+    final theme = Theme.of(context);
 
     return Card(
       child: Padding(
@@ -121,10 +122,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             children: [
               Row(
                 children: [
-                  const Icon(Icons.school, color: Colors.blueGrey),
+                  Icon(Icons.school, color: theme.colorScheme.secondary),
                   const SizedBox(width: 8),
-                  Text('Education',
-                      style: Theme.of(context).textTheme.titleLarge),
+                  Text('Education', style: theme.textTheme.titleLarge),
                 ],
               ),
               const SizedBox(height: 16),
@@ -184,7 +184,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 },
                 controlAffinity: ListTileControlAffinity.leading,
                 contentPadding: EdgeInsets.zero,
-                activeColor: Theme.of(context).primaryColor,
+                activeColor: theme.primaryColor,
               ),
               const SizedBox(height: 8),
               ElevatedButton(
@@ -200,7 +200,8 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   final edu = educationList[index];
                   final originalIndex =
                       ref.read(cvFormProvider).education.indexOf(edu);
-                  return _buildEducationCard(edu, originalIndex);
+                  return _buildEducationCard(
+                      context, theme, edu, originalIndex);
                 },
               ),
             ],
@@ -211,6 +212,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   }
 
   Widget _buildDatePickerField(String label, DateTime? date, bool isStart) {
+    final theme = Theme.of(context);
     return InkWell(
       onTap: () {
         if (!isStart && _isCurrent) return;
@@ -225,30 +227,34 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           date != null ? _dateFormatter.format(date) : 'Select Date',
           style: TextStyle(
             color: (isStart || !_isCurrent)
-                ? Theme.of(context).textTheme.bodyLarge?.color
-                : Colors.grey,
+                ? theme.textTheme.bodyLarge?.color
+                : theme.disabledColor,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildEducationCard(Education edu, int index) {
+  Widget _buildEducationCard(
+      BuildContext context, ThemeData theme, Education edu, int index) {
     final title = '${_educationLevelToString(edu.level)} ${edu.degreeName}';
     final subtitle =
         '${edu.school}\n${_dateFormatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : _dateFormatter.format(edu.endDate!)}';
 
     return Card(
-      elevation: 2,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: theme.dividerColor, width: 1),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ListTile(
-        leading: const Icon(Icons.menu_book, color: Colors.purple),
-        title: Text(title, style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(subtitle, style: Theme.of(context).textTheme.bodyMedium),
+        leading: Icon(Icons.menu_book, color: theme.colorScheme.primary),
+        title: Text(title, style: theme.textTheme.titleMedium),
+        subtitle: Text(subtitle, style: theme.textTheme.bodyMedium),
         isThreeLine: true,
         trailing: IconButton(
-          icon: Icon(Icons.delete_outline,
-              color: Theme.of(context).colorScheme.error),
+          icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
           onPressed: () {
             ref.read(cvFormProvider.notifier).removeEducation(index);
           },

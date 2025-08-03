@@ -45,6 +45,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
   @override
   Widget build(BuildContext context) {
     final skills = ref.watch(cvFormProvider).skills;
+    final theme = Theme.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,13 +54,12 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
           children: [
             Row(
               children: [
-                const Icon(Icons.star, color: Colors.blueGrey),
+                Icon(Icons.star, color: theme.colorScheme.secondary),
                 const SizedBox(width: 8),
-                Text('Skills', style: Theme.of(context).textTheme.titleLarge),
+                Text('Skills', style: theme.textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
-            // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
             EnglishOnlyTextField(
               controller: _skillController,
               labelText: 'Skill Name (e.g., Flutter)',
@@ -92,13 +92,11 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
             if (skills.isNotEmpty) const SizedBox(height: 16),
             Wrap(
               spacing: 8.0,
-              runSpacing: 4.0,
+              runSpacing: 8.0,
               children: [
                 for (var i = 0; i < skills.length; i++)
                   Chip(
                     label: Text('${skills[i].name} (${skills[i].level})'),
-                    backgroundColor: Colors.blueGrey.shade50,
-                    labelStyle: const TextStyle(color: Colors.blueGrey),
                     onDeleted: () {
                       ref.read(cvFormProvider.notifier).removeSkill(i);
                     },

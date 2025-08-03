@@ -24,7 +24,7 @@ class ExperienceSection extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.business_center, color: Colors.blueGrey),
+                Icon(Icons.business_center, color: theme.colorScheme.secondary),
                 const SizedBox(width: 8),
                 Text('Work Experience', style: theme.textTheme.titleLarge),
               ],
@@ -73,10 +73,14 @@ class ExperienceSection extends ConsumerWidget {
         '${formatter.format(exp.startDate)} - ${exp.isCurrent ? "Present" : formatter.format(exp.endDate!)}';
 
     return Card(
-      elevation: 2,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(color: theme.dividerColor, width: 1),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ListTile(
-        leading: const Icon(Icons.check_circle_outline, color: Colors.green),
+        leading: Icon(Icons.check_circle_outline, color: Colors.green.shade600),
         title: Text(exp.position, style: theme.textTheme.titleMedium),
         subtitle: Text('${exp.companyName}\n$dateRange',
             style: theme.textTheme.bodyMedium),
@@ -137,10 +141,11 @@ class ExperienceSection extends ConsumerWidget {
                   } else {
                     if (startDate != null && picked.isBefore(startDate!)) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content:
-                                Text('End date cannot be before start date.'),
-                            backgroundColor: Colors.red),
+                        SnackBar(
+                            content: const Text(
+                                'End date cannot be before start date.'),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error),
                       );
                     } else {
                       endDate = picked;
@@ -231,9 +236,10 @@ class ExperienceSection extends ConsumerWidget {
                       Navigator.of(context).pop();
                     } else if (startDate == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Please select a start date.'),
-                            backgroundColor: Colors.red),
+                        SnackBar(
+                            content: const Text('Please select a start date.'),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.error),
                       );
                     }
                   },
@@ -251,6 +257,7 @@ class ExperienceSection extends ConsumerWidget {
       BuildContext context, String label, DateTime? date, VoidCallback onTap,
       {bool enabled = true}) {
     final formatter = DateFormat('MMMM yyyy');
+    final theme = Theme.of(context);
     return InkWell(
       onTap: enabled ? onTap : null,
       child: InputDecorator(
@@ -262,8 +269,8 @@ class ExperienceSection extends ConsumerWidget {
           date != null ? formatter.format(date) : 'Select Date',
           style: TextStyle(
             color: enabled
-                ? Theme.of(context).textTheme.bodyLarge?.color
-                : Colors.grey,
+                ? theme.textTheme.bodyLarge?.color
+                : theme.disabledColor,
           ),
         ),
       ),

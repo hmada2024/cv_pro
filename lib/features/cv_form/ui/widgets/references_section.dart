@@ -103,7 +103,7 @@ class ReferencesSection extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.group, color: Colors.blueGrey),
+                Icon(Icons.group, color: theme.colorScheme.secondary),
                 const SizedBox(width: 8),
                 Text(
                   'References',
@@ -147,18 +147,24 @@ class ReferencesSection extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final refItem = references[index];
                     return Card(
-                      elevation: 2,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: theme.dividerColor, width: 1),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
                       margin: const EdgeInsets.only(bottom: 8.0),
                       child: ListTile(
                         leading: Icon(Icons.person_pin,
-                            color: showNote ? Colors.grey : Colors.orange),
+                            color: showNote
+                                ? theme.disabledColor
+                                : Colors.orange.shade700),
                         title: Text(refItem.name,
                             style: theme.textTheme.titleMedium),
                         subtitle: Text(refItem.company),
                         trailing: IconButton(
                           icon: Icon(Icons.delete_outline,
                               color: showNote
-                                  ? Colors.grey
+                                  ? theme.disabledColor
                                   : theme.colorScheme.error),
                           onPressed: () => ref
                               .read(cvFormProvider.notifier)

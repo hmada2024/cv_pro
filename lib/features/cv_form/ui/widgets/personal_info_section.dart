@@ -115,7 +115,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
           children: [
             Row(
               children: [
-                const Icon(Icons.person, color: Colors.blueGrey),
+                Icon(Icons.person, color: theme.colorScheme.secondary),
                 const SizedBox(width: 8),
                 Text('Personal Information', style: theme.textTheme.titleLarge),
               ],
@@ -126,13 +126,13 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundColor: Colors.grey.shade200,
+                    backgroundColor: theme.dividerColor,
                     backgroundImage: personalInfo.profileImagePath != null
                         ? FileImage(File(personalInfo.profileImagePath!))
                         : null,
                     child: personalInfo.profileImagePath == null
-                        ? const Icon(Icons.camera_alt,
-                            size: 40, color: Colors.grey)
+                        ? Icon(Icons.camera_alt,
+                            size: 40, color: Colors.grey.shade600)
                         : null,
                   ),
                   Positioned(
@@ -148,10 +148,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                               activeControlsWidgetColor: AppColors.accent,
                             );
                       },
-                      child: const CircleAvatar(
+                      child: CircleAvatar(
                         radius: 18,
-                        backgroundColor: Colors.blue,
-                        child: Icon(Icons.edit, color: Colors.white, size: 20),
+                        backgroundColor: theme.colorScheme.primary,
+                        child: const Icon(Icons.edit,
+                            color: Colors.white, size: 20),
                       ),
                     ),
                   ),
@@ -250,7 +251,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     );
   }
 
-  // ✅✅ UPDATED: Method now accepts FocusNode and IconData for better UX ✅✅
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -271,8 +271,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
         labelText: label,
         prefixIcon: Icon(
           iconData,
-          // Change color based on focus state
-          color: isFocused ? theme.colorScheme.primary : Colors.grey,
+          color: isFocused
+              ? theme.colorScheme.primary
+              : theme.colorScheme.onSurface.withOpacity(0.6),
         ),
         keyboardType: keyboardType,
         maxLines: maxLines,
@@ -288,13 +289,15 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     required List<String> items,
     required void Function(String?) onChanged,
   }) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: DropdownButtonFormField<String>(
         value: value,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: Colors.grey),
+          prefixIcon:
+              Icon(icon, color: theme.colorScheme.onSurface.withOpacity(0.6)),
         ),
         items: items.map<DropdownMenuItem<String>>((String item) {
           return DropdownMenuItem<String>(
@@ -314,13 +317,15 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     required IconData icon,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: Colors.grey),
+          prefixIcon:
+              Icon(icon, color: theme.colorScheme.onSurface.withOpacity(0.6)),
         ),
         readOnly: true,
         onTap: onTap,

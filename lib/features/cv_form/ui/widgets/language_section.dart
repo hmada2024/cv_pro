@@ -47,6 +47,7 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
   @override
   Widget build(BuildContext context) {
     final languages = ref.watch(cvFormProvider).languages;
+    final theme = Theme.of(context);
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -55,14 +56,12 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
           children: [
             Row(
               children: [
-                const Icon(Icons.language, color: Colors.blueGrey),
+                Icon(Icons.language, color: theme.colorScheme.secondary),
                 const SizedBox(width: 8),
-                Text('Languages',
-                    style: Theme.of(context).textTheme.titleLarge),
+                Text('Languages', style: theme.textTheme.titleLarge),
               ],
             ),
             const SizedBox(height: 16),
-            // ✅✅ UPDATED: Using EnglishOnlyTextField ✅✅
             EnglishOnlyTextField(
               controller: _languageController,
               labelText: 'Language (e.g., English)',
@@ -93,30 +92,36 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
               child: const Text('Add Language'),
             ),
             if (languages.isNotEmpty) const SizedBox(height: 16),
-            for (var i = 0; i < languages.length; i++)
-              _buildLanguageCard(languages[i], i),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: languages.length,
+              itemBuilder: (context, index) {
+                final lang = languages[index];
+                return _buildLanguageCard(context, theme, lang, index);
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLanguageCard(Language lang, int index) {
+  Widget _buildLanguageCard(
+      BuildContext context, ThemeData theme, Language lang, int index) {
     return Card(
-      elevation: 2,
+      elevation: 0,
       margin: const EdgeInsets.only(bottom: 8.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
-        side: BorderSide(color: Colors.grey.shade200),
+        side: BorderSide(color: theme.dividerColor),
       ),
       child: ListTile(
-        leading: const Icon(Icons.translate, color: Colors.blue),
-        title: Text(lang.name, style: Theme.of(context).textTheme.titleMedium),
-        subtitle: Text(lang.proficiency,
-            style: Theme.of(context).textTheme.bodyMedium),
+        leading: Icon(Icons.translate, color: theme.colorScheme.primary),
+        title: Text(lang.name, style: theme.textTheme.titleMedium),
+        subtitle: Text(lang.proficiency, style: theme.textTheme.bodyMedium),
         trailing: IconButton(
-          icon: Icon(Icons.delete_outline,
-              color: Theme.of(context).colorScheme.error),
+          icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
           onPressed: () {
             ref.read(cvFormProvider.notifier).removeLanguage(index);
           },
