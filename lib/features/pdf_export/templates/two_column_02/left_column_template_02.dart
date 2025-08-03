@@ -3,7 +3,7 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'template_02_colors.dart'; // ✅ UPDATED IMPORT
+import 'colors_template_02.dart'; // ✅ UPDATED IMPORT
 import '../shared/widgets/contact_info_line.dart';
 import 'widgets/education_item.dart';
 import 'widgets/language_item.dart';

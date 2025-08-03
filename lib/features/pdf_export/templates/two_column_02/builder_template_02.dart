@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'template_02_left_column.dart'; // ✅ UPDATED IMPORT
-import 'template_02_right_column.dart'; // ✅ UPDATED IMPORT
+import 'left_column_template_02.dart'; // ✅ UPDATED IMPORT
+import 'right_column_template_02.dart'; // ✅ UPDATED IMPORT
 
 Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
     {
