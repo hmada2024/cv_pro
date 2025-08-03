@@ -1,23 +1,33 @@
 // features/pdf_export/templates/two_column_02/template_02_right_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'template_02_colors.dart'; // ✅ UPDATED IMPORT
+import 'template_02_colors.dart';
 import 'widgets/experience_item.dart';
 import 'widgets/section_header.dart';
 
 class Template02RightColumn extends pw.StatelessWidget {
-  // ✅ UPDATED CLASS NAME
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
   Template02RightColumn({
-    // ✅ UPDATED CONSTRUCTOR
     required this.data,
     required this.iconFont,
     required this.showReferencesNote,
   });
   @override
   pw.Widget build(pw.Context context) {
+    // ✅ NEW: Added sorting logic for experiences to ensure correct order.
+    // This sorts current jobs first, then sorts past jobs by end date (newest first).
+    final sortedExperience = List<Experience>.from(data.experiences)
+      ..sort((a, b) {
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        if (!a.isCurrent && !b.isCurrent) {
+          return b.endDate!.compareTo(a.endDate!);
+        }
+        return b.startDate.compareTo(a.startDate);
+      });
+
     return pw.Container(
       padding: const pw.EdgeInsets.fromLTRB(25, 35, 25, 25),
       child: pw.Column(
@@ -50,12 +60,13 @@ class Template02RightColumn extends pw.StatelessWidget {
               textAlign: pw.TextAlign.justify,
             ),
           if (data.personalInfo.summary.isNotEmpty) pw.SizedBox(height: 25),
-          if (data.experiences.isNotEmpty)
+          if (sortedExperience.isNotEmpty)
             SectionHeader(
                 title: 'WORK EXPERIENCE',
                 titleColor: Template02Colors.primary,
                 lineColor: Template02Colors.accent),
-          ...data.experiences.map((exp) => ExperienceItem(
+          // ✅ UPDATED: Now mapping over the 'sortedExperience' list.
+          ...sortedExperience.map((exp) => ExperienceItem(
                 exp,
                 iconFont: iconFont,
                 positionColor: Template02Colors.primary,
@@ -67,7 +78,6 @@ class Template02RightColumn extends pw.StatelessWidget {
   }
 
   pw.Widget _buildReferencesSection(CVData data, bool showReferencesNote) {
-// ... (rest of file is the same and correct)
     if (showReferencesNote) {
       return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,

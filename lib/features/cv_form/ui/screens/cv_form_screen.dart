@@ -2,7 +2,9 @@
 
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
-import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart'; // ✅ UPDATED IMPORT
+import 'package:cv_pro/features/cv_form/ui/widgets/cv_completion_progress.dart';
+import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
+import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
@@ -12,7 +14,6 @@ import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/personal_info_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/references_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/skill_section.dart';
-import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
@@ -59,6 +60,8 @@ class CvFormScreen extends ConsumerWidget {
           ),
           const SizedBox(width: 16),
         ],
+        // ✅ NEW: Add the completion progress bar widget here.
+        bottom: const CvCompletionProgress(),
       ),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),

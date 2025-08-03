@@ -68,7 +68,8 @@ class ExperienceSection extends ConsumerWidget {
   Widget _buildExperienceCard(
       BuildContext context, WidgetRef ref, Experience exp, int index) {
     final theme = Theme.of(context);
-    final formatter = DateFormat('MMM yyyy');
+    // ✅ UPDATED: Formatter now shows Month and Year for better display
+    final formatter = DateFormat('MMMM yyyy');
     final dateRange =
         '${formatter.format(exp.startDate)} - ${exp.isCurrent ? "Present" : formatter.format(exp.endDate!)}';
 
@@ -129,6 +130,8 @@ class ExperienceSection extends ConsumerWidget {
                 initialDate: initialDate,
                 firstDate: firstDate,
                 lastDate: now,
+                // ✅ NEW: Start the picker in year view for faster navigation
+                initialDatePickerMode: DatePickerMode.year,
               );
 
               if (picked != null) {
@@ -256,6 +259,7 @@ class ExperienceSection extends ConsumerWidget {
   Widget _buildDialogDatePicker(
       BuildContext context, String label, DateTime? date, VoidCallback onTap,
       {bool enabled = true}) {
+    // ✅ UPDATED: Formatter now shows Month and Year for better display
     final formatter = DateFormat('MMMM yyyy');
     final theme = Theme.of(context);
     return InkWell(

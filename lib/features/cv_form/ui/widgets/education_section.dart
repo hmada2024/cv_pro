@@ -1,7 +1,7 @@
 // features/cv_form/ui/widgets/education_section.dart
 
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart'; // ✅ UPDATED IMPORT
+import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -25,7 +25,8 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   DateTime? _endDate;
   bool _isCurrent = true;
 
-  final DateFormat _dateFormatter = DateFormat('MMMM yyyy');
+  // ✅ UPDATED: Formatter now only shows the year.
+  final DateFormat _dateFormatter = DateFormat('yyyy');
 
   @override
   void dispose() {
@@ -73,34 +74,52 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     }
   }
 
-  Future<void> _selectDate(BuildContext context, bool isStartDate) async {
+  // ✅ UPDATED: This now uses a YearPicker for a much better UX.
+  Future<void> _selectYear(BuildContext context, bool isStartDate) async {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
     final initialDate = isStartDate ? (_startDate ?? now) : (_endDate ?? now);
 
-    final DateTime? picked = await showDatePicker(
+    DateTime? pickedDate;
+
+    await showDialog(
       context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: now,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(isStartDate ? 'Select Start Year' : 'Select End Year'),
+          content: SizedBox(
+            height: 300,
+            width: 300,
+            child: YearPicker(
+              firstDate: firstDate,
+              lastDate: now,
+              selectedDate: initialDate,
+              onChanged: (DateTime date) {
+                pickedDate = date;
+                Navigator.of(context).pop();
+              },
+            ),
+          ),
+        );
+      },
     );
 
-    if (picked != null) {
+    if (pickedDate != null) {
       setState(() {
         if (isStartDate) {
-          _startDate = picked;
+          _startDate = pickedDate;
           if (_endDate != null && _endDate!.isBefore(_startDate!)) {
             _endDate = _startDate;
           }
         } else {
-          if (_startDate != null && picked.isBefore(_startDate!)) {
+          if (_startDate != null && pickedDate!.isBefore(_startDate!)) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                  content: const Text('End date cannot be before start date.'),
+                  content: const Text('End year cannot be before start year.'),
                   backgroundColor: Theme.of(context).colorScheme.error),
             );
           } else {
-            _endDate = picked;
+            _endDate = pickedDate;
           }
         }
       });
@@ -161,11 +180,11 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 children: [
                   Expanded(
                     child:
-                        _buildDatePickerField('Start Date', _startDate, true),
+                        _buildDatePickerField('Start Year', _startDate, true),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _buildDatePickerField('End Date', _endDate, false),
+                    child: _buildDatePickerField('End Year', _endDate, false),
                   ),
                 ],
               ),
@@ -216,7 +235,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     return InkWell(
       onTap: () {
         if (!isStart && _isCurrent) return;
-        _selectDate(context, isStart);
+        _selectYear(context, isStart); // ✅ UPDATED: Call the new year picker
       },
       child: InputDecorator(
         decoration: InputDecoration(
@@ -224,7 +243,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
           enabled: isStart || !_isCurrent,
         ),
         child: Text(
-          date != null ? _dateFormatter.format(date) : 'Select Date',
+          date != null ? _dateFormatter.format(date) : 'Select Year',
           style: TextStyle(
             color: (isStart || !_isCurrent)
                 ? theme.textTheme.bodyLarge?.color
@@ -237,6 +256,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   Widget _buildEducationCard(
       BuildContext context, ThemeData theme, Education edu, int index) {
+    // ✅ UPDATED: Use the new year-only formatter for display
     final title = '${_educationLevelToString(edu.level)} ${edu.degreeName}';
     final subtitle =
         '${edu.school}\n${_dateFormatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : _dateFormatter.format(edu.endDate!)}';

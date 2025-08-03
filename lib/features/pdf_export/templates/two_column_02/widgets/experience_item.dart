@@ -3,11 +3,12 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../template_02_colors.dart'; // ✅ FIXED IMPORT
+import '../template_02_colors.dart';
 
 class ExperienceItem extends pw.StatelessWidget {
   final Experience experience;
   final pw.Font iconFont;
+  // ✅ UPDATED: Formatter now uses short month name (e.g., "Jan")
   final DateFormat formatter = DateFormat('MMM yyyy');
   final PdfColor positionColor;
   final PdfColor companyColor;
@@ -16,12 +17,11 @@ class ExperienceItem extends pw.StatelessWidget {
     this.experience, {
     required this.iconFont,
     this.positionColor = PdfColors.black,
-    this.companyColor = Template02Colors.darkText, // ✅ FIXED CLASS NAME
+    this.companyColor = Template02Colors.darkText,
   });
 
   @override
   pw.Widget build(pw.Context context) {
-    // ... same content as before, it was correct ...
     final descriptionLines = experience.description
         .split('\n')
         .where((line) => line.trim().isNotEmpty)
@@ -71,10 +71,11 @@ class ExperienceItem extends pw.StatelessWidget {
                 ),
               ),
               pw.SizedBox(width: 10),
+              // ✅ UPDATED: Date range now uses the new formatter.
               pw.Text(
                 '${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
                 style: const pw.TextStyle(
-                    fontSize: 9, color: Template02Colors.darkText), // ✅ FIXED
+                    fontSize: 9, color: Template02Colors.darkText),
               ),
             ],
           ),

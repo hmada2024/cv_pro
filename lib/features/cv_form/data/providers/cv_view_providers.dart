@@ -53,3 +53,26 @@ final sortedEducationProvider = Provider<List<Education>>((ref) {
 
   return sortedList;
 });
+
+/// ✅ NEW: Provider to calculate the completion percentage of the CV.
+/// This gives the user a sense of progress and encourages completion.
+final cvCompletionProvider = Provider<double>((ref) {
+  final cvData = ref.watch(cvFormProvider);
+  int completedSections = 0;
+  // We consider 6 main sections for completion tracking.
+  const totalSections = 6;
+
+  // A section is "complete" if it has at least one entry.
+  // For personal info, having a name is the minimum requirement.
+  if (cvData.personalInfo.name.isNotEmpty) completedSections++;
+  if (cvData.education.isNotEmpty) completedSections++;
+  if (cvData.experiences.isNotEmpty) completedSections++;
+  if (cvData.skills.isNotEmpty) completedSections++;
+  if (cvData.languages.isNotEmpty) completedSections++;
+  if (cvData.references.isNotEmpty) completedSections++;
+
+  // Avoid division by zero, although totalSections is constant.
+  if (totalSections == 0) return 0.0;
+
+  return completedSections / totalSections;
+});

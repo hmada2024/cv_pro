@@ -8,6 +8,7 @@ import '../template_02_colors.dart';
 
 class EducationItem extends pw.StatelessWidget {
   final Education education;
+  // ✅ UPDATED: Formatter now only uses the year.
   final DateFormat formatter = DateFormat('yyyy');
 
   EducationItem(this.education);
@@ -25,30 +26,40 @@ class EducationItem extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
+    // ✅ UPDATED: Date range now uses the year-only formatter.
     final dateRange =
         '${formatter.format(education.startDate)} - ${education.isCurrent ? "Present" : formatter.format(education.endDate!)}';
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 10),
-      child: pw.Column(
+      // ✅ UPDATED: Layout changed to match reference image (Text on left, Date on right).
+      child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
+          pw.Expanded(
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  '${_educationLevelToString(education.level)} ${education.degreeName}',
+                  style: pw.TextStyle(
+                      color: PdfColors.white,
+                      fontSize: 10,
+                      fontWeight: pw.FontWeight.bold),
+                ),
+                pw.Text(
+                  education.school,
+                  style: const pw.TextStyle(
+                      color: Template02Colors.lightText, fontSize: 9),
+                ),
+              ],
+            ),
+          ),
+          pw.SizedBox(width: 10),
           pw.Text(
             dateRange.toUpperCase(),
             style: const pw.TextStyle(
-                color: Template02Colors.accent, fontSize: 8), // ✅ FIXED
-          ),
-          pw.Text(
-            '${_educationLevelToString(education.level)} ${education.degreeName}',
-            style: pw.TextStyle(
-                color: PdfColors.white,
-                fontSize: 10,
-                fontWeight: pw.FontWeight.bold),
-          ),
-          pw.Text(
-            education.school,
-            style: const pw.TextStyle(
-                color: Template02Colors.lightText, fontSize: 9), // ✅ FIXED
+                color: Template02Colors.accent, fontSize: 8),
           ),
         ],
       ),

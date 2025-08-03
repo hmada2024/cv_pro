@@ -29,7 +29,6 @@ class Template01RightColumn extends pw.StatelessWidget {
     }
   }
 
-  // ✅✅ FIXED: The entire build method was missing. It has been restored. ✅✅
   @override
   pw.Widget build(pw.Context context) {
     final sortedEducation = List<Education>.from(data.education)
