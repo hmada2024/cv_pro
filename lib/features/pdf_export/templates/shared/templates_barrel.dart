@@ -6,5 +6,5 @@
 library;
 
 
-export 'two_column_01/template_01_builder.dart';
-export 'two_column_02/template_02_builder.dart';
+export '../two_column_01/template_01_builder.dart';
+export '../two_column_02/template_02_builder.dart';
