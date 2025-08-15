@@ -1,3 +1,4 @@
+// lib/features/cv_form/ui/screens/pdf_preview_screen.dart
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,7 +14,6 @@ class PdfPreviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the provider that was passed in
     final pdfBytesAsync = ref.watch(pdfProvider);
 
     return Scaffold(
@@ -33,6 +33,7 @@ class PdfPreviewScreen extends ConsumerWidget {
         ),
         data: (pdfBytes) => PdfPreview(
           build: (format) => pdfBytes,
+          useActions: true,
           canChangeOrientation: false,
           canChangePageFormat: false,
           canDebug: false,
