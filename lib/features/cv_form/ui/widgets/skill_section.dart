@@ -1,5 +1,4 @@
 // features/cv_form/ui/widgets/skill_section.dart
-
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
   @override
   void dispose() {
     _skillController.dispose();
-    _selectedSkillLevel.dispose(); // Important to dispose notifiers
+    _selectedSkillLevel.dispose();
     super.dispose();
   }
 
@@ -38,7 +37,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
             level: _selectedSkillLevel.value,
           );
       _skillController.clear();
-      // Reset the notifier to its default value without a setState call.
       _selectedSkillLevel.value = kSkillLevels[1];
     }
   }
@@ -67,8 +65,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               onFieldSubmitted: (value) => _addSkill(),
             ),
             const SizedBox(height: 12),
-            // ✅ REFACTORED: Wrapped the Dropdown in a ValueListenableBuilder.
-            // Now, only this dropdown rebuilds when the level changes, not the entire card.
             ValueListenableBuilder<String>(
               valueListenable: _selectedSkillLevel,
               builder: (context, currentValue, child) {
@@ -87,7 +83,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
                   }).toList(),
                   onChanged: (String? newValue) {
                     if (newValue != null) {
-                      // Just update the notifier's value. No setState needed!
                       _selectedSkillLevel.value = newValue;
                     }
                   },
@@ -99,7 +94,20 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               onPressed: _addSkill,
               child: const Text('Add Skill'),
             ),
-            if (skills.isNotEmpty) const SizedBox(height: 16),
+            if (skills.isNotEmpty)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: Divider(),
+              ),
+            if (skills.isEmpty)
+              const Padding(
+                padding: EdgeInsets.only(top: 16.0),
+                child: _EmptyStateWidget(
+                  icon: Icons.star_border,
+                  title: 'No skills added yet',
+                  subtitle: 'Highlight your key abilities to catch attention.',
+                ),
+              ),
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
@@ -115,6 +123,43 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyStateWidget extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _EmptyStateWidget({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Column(
+        children: [
+          Icon(icon, size: 40, color: theme.colorScheme.secondary),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

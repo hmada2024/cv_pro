@@ -1,4 +1,5 @@
 // features/cv_form/ui/screens/cv_form_screen.dart
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/cv_completion_progress.dart';
@@ -17,8 +18,60 @@ import '../widgets/driving_license_section.dart';
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
 
+  void _showAchievementSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Logic for showing motivational snackbars upon adding the first item to a section.
+    ref.listen<List<Education>>(cvFormProvider.select((cv) => cv.education),
+        (prev, next) {
+      if ((prev?.isEmpty ?? true) && next.isNotEmpty) {
+        _showAchievementSnackBar(
+            context, 'Great! Your academic background is taking shape.');
+      }
+    });
+
+    ref.listen<List<Experience>>(cvFormProvider.select((cv) => cv.experiences),
+        (prev, next) {
+      if ((prev?.isEmpty ?? true) && next.isNotEmpty) {
+        _showAchievementSnackBar(context,
+            'Excellent start! Experience is what employers look for first.');
+      }
+    });
+
+    ref.listen<List<Skill>>(cvFormProvider.select((cv) => cv.skills),
+        (prev, next) {
+      if ((prev?.isEmpty ?? true) && next.isNotEmpty) {
+        _showAchievementSnackBar(
+            context, 'Nice one! Skills make your profile stand out.');
+      }
+    });
+
+    ref.listen<List<Language>>(cvFormProvider.select((cv) => cv.languages),
+        (prev, next) {
+      if ((prev?.isEmpty ?? true) && next.isNotEmpty) {
+        _showAchievementSnackBar(
+            context, 'Perfect. Language skills open up more opportunities.');
+      }
+    });
+
+    ref.listen<List<Reference>>(cvFormProvider.select((cv) => cv.references),
+        (prev, next) {
+      if ((prev?.isEmpty ?? true) && next.isNotEmpty) {
+        _showAchievementSnackBar(
+            context, 'Good choice. Strong references build trust.');
+      }
+    });
+
     final canCreate = ref
         .watch(cvFormProvider.select((cv) => cv.personalInfo.name.isNotEmpty));
 

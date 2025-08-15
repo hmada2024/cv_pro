@@ -1,5 +1,4 @@
 // features/cv_form/ui/widgets/experience_section.dart
-
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
@@ -29,15 +28,6 @@ class ExperienceSection extends ConsumerWidget {
                 Text('Work Experience', style: theme.textTheme.titleLarge),
               ],
             ),
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              icon: const Icon(Icons.add),
-              label: const Text('Add Experience'),
-              onPressed: () => _showExperienceDialog(context, ref),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-              ),
-            ),
             if (experiences.isNotEmpty) const SizedBox(height: 16),
             ListView.builder(
               shrinkWrap: true,
@@ -51,14 +41,23 @@ class ExperienceSection extends ConsumerWidget {
               },
             ),
             if (experiences.isEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  'No work experience added yet.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
+              const Padding(
+                padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
+                child: _EmptyStateWidget(
+                  icon: Icons.work_outline,
+                  title: 'Add your first work experience',
+                  subtitle:
+                      'This is the most important section for recruiters.',
                 ),
               ),
+            OutlinedButton.icon(
+              icon: const Icon(Icons.add),
+              label: const Text('Add Experience'),
+              onPressed: () => _showExperienceDialog(context, ref),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+              ),
+            ),
           ],
         ),
       ),
@@ -68,7 +67,6 @@ class ExperienceSection extends ConsumerWidget {
   Widget _buildExperienceCard(
       BuildContext context, WidgetRef ref, Experience exp, int index) {
     final theme = Theme.of(context);
-    // ✅ UPDATED: Formatter now shows Month and Year for better display
     final formatter = DateFormat('MMMM yyyy');
     final dateRange =
         '${formatter.format(exp.startDate)} - ${exp.isCurrent ? "Present" : formatter.format(exp.endDate!)}';
@@ -110,7 +108,10 @@ class ExperienceSection extends ConsumerWidget {
     final descriptionController = TextEditingController(
         text: isEditing ? existingExperience.description : '');
 
-    DateTime? startDate = isEditing ? existingExperience.startDate : null;
+    final now = DateTime.now();
+    final lastYear = DateTime(now.year - 1, now.month, now.day);
+
+    DateTime? startDate = isEditing ? existingExperience.startDate : lastYear;
     DateTime? endDate = isEditing ? existingExperience.endDate : null;
     bool isCurrent = isEditing ? existingExperience.isCurrent : true;
 
@@ -120,7 +121,6 @@ class ExperienceSection extends ConsumerWidget {
         return StatefulBuilder(
           builder: (context, setDialogState) {
             Future<void> selectDate(bool isStartDate) async {
-              final now = DateTime.now();
               final firstDate = DateTime(1960);
               final initialDate =
                   isStartDate ? (startDate ?? now) : (endDate ?? now);
@@ -130,7 +130,6 @@ class ExperienceSection extends ConsumerWidget {
                 initialDate: initialDate,
                 firstDate: firstDate,
                 lastDate: now,
-                // ✅ NEW: Start the picker in year view for faster navigation
                 initialDatePickerMode: DatePickerMode.year,
               );
 
@@ -259,7 +258,6 @@ class ExperienceSection extends ConsumerWidget {
   Widget _buildDialogDatePicker(
       BuildContext context, String label, DateTime? date, VoidCallback onTap,
       {bool enabled = true}) {
-    // ✅ UPDATED: Formatter now shows Month and Year for better display
     final formatter = DateFormat('MMMM yyyy');
     final theme = Theme.of(context);
     return InkWell(
@@ -277,6 +275,43 @@ class ExperienceSection extends ConsumerWidget {
                 : theme.disabledColor,
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyStateWidget extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _EmptyStateWidget({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+      child: Column(
+        children: [
+          Icon(icon, size: 48, color: theme.colorScheme.secondary),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

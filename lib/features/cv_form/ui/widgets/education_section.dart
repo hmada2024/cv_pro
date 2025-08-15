@@ -1,5 +1,4 @@
 // features/cv_form/ui/widgets/education_section.dart
-
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +64,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   Future<void> _selectYear(BuildContext context, bool isStartDate) async {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
-    final initialDate = isStartDate ? (_startDate ?? now) : (_endDate ?? now);
+    final lastYear = DateTime(now.year - 1, now.month, now.day);
+    final initialDate = isStartDate
+        ? (_startDate ?? lastYear) // Smart Default
+        : (_endDate ?? now);
 
     DateTime? pickedDate;
 
@@ -134,6 +136,32 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 ],
               ),
               const SizedBox(height: 16),
+              // Enhanced Empty State
+              if (educationList.isEmpty)
+                const _EmptyStateWidget(
+                  icon: Icons.school_outlined,
+                  title: 'Add your first qualification',
+                  subtitle:
+                      'Your academic background is a key part of your CV.',
+                ),
+              if (educationList.isNotEmpty)
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: educationList.length,
+                  itemBuilder: (context, index) {
+                    final edu = educationList[index];
+                    final originalIndex =
+                        ref.read(cvFormProvider).education.indexOf(edu);
+                    return _buildEducationCard(
+                        context, theme, edu, originalIndex);
+                  },
+                ),
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 16),
+              Text('Add New Qualification', style: theme.textTheme.titleMedium),
+              const SizedBox(height: 16),
               DropdownButtonFormField<EducationLevel>(
                 value: _selectedLevel,
                 decoration:
@@ -193,22 +221,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 activeColor: theme.primaryColor,
               ),
               const SizedBox(height: 8),
-              ElevatedButton(
+              ElevatedButton.icon(
                 onPressed: _addEducation,
-                child: const Text('Add Education'),
-              ),
-              if (educationList.isNotEmpty) const SizedBox(height: 16),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: educationList.length,
-                itemBuilder: (context, index) {
-                  final edu = educationList[index];
-                  final originalIndex =
-                      ref.read(cvFormProvider).education.indexOf(edu);
-                  return _buildEducationCard(
-                      context, theme, edu, originalIndex);
-                },
+                icon: const Icon(Icons.add),
+                label: const Text('Add Education'),
               ),
             ],
           ),
@@ -265,6 +281,47 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             ref.read(cvFormProvider.notifier).removeEducation(index);
           },
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyStateWidget extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _EmptyStateWidget({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: theme.scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 48, color: theme.colorScheme.secondary),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

@@ -179,16 +179,54 @@ class ReferencesSection extends ConsumerWidget {
               ),
             ),
             if (references.isEmpty && !showNote)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Text(
-                  'No references added yet. Add some, or toggle "Available upon request" on.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
+              const Padding(
+                padding: EdgeInsets.only(top: 16.0),
+                child: _EmptyStateWidget(
+                  icon: Icons.group_outlined,
+                  title: 'No references added yet',
+                  subtitle:
+                      'Add a reference or toggle "Available upon request".',
                 ),
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _EmptyStateWidget extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _EmptyStateWidget({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      child: Column(
+        children: [
+          Icon(icon, size: 40, color: theme.colorScheme.secondary),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: theme.textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }
