@@ -14,8 +14,8 @@ class SkillSection extends ConsumerStatefulWidget {
 
 class _SkillSectionState extends ConsumerState<SkillSection> {
   final _skillController = TextEditingController();
-
   late final ValueNotifier<String> _selectedSkillLevel;
+  bool _isFormVisible = false;
 
   @override
   void initState() {
@@ -30,14 +30,21 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     super.dispose();
   }
 
+  void _resetForm() {
+    setState(() {
+      _skillController.clear();
+      _selectedSkillLevel.value = kSkillLevels[1];
+      _isFormVisible = false;
+    });
+  }
+
   void _addSkill() {
     if (_skillController.text.isNotEmpty) {
       ref.read(cvFormProvider.notifier).addSkill(
             name: _skillController.text,
             level: _selectedSkillLevel.value,
           );
-      _skillController.clear();
-      _selectedSkillLevel.value = kSkillLevels[1];
+      _resetForm();
     }
   }
 
@@ -59,71 +66,103 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               ],
             ),
             const SizedBox(height: 16),
-            EnglishOnlyTextField(
-              controller: _skillController,
-              labelText: 'Skill Name (e.g., Flutter)',
-              onFieldSubmitted: (value) => _addSkill(),
-            ),
-            const SizedBox(height: 12),
-            ValueListenableBuilder<String>(
-              valueListenable: _selectedSkillLevel,
-              builder: (context, currentValue, child) {
-                return DropdownButtonFormField<String>(
-                  value: currentValue,
-                  decoration: const InputDecoration(
-                    labelText: 'Proficiency Level',
-                    prefixIcon: Icon(Icons.assessment_outlined),
-                  ),
-                  items: kSkillLevels
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      _selectedSkillLevel.value = newValue;
-                    }
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _addSkill,
-              child: const Text('Add Skill'),
-            ),
             if (skills.isNotEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
-                child: Divider(),
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: [
+                  for (var i = 0; i < skills.length; i++)
+                    Chip(
+                      label: Text('${skills[i].name} (${skills[i].level})'),
+                      onDeleted: () {
+                        ref.read(cvFormProvider.notifier).removeSkill(i);
+                      },
+                    )
+                ],
               ),
-            if (skills.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 16.0),
-                child: _EmptyStateWidget(
+            if (_isFormVisible)
+              _buildFormFields()
+            else ...[
+              if (skills.isEmpty) ...[
+                const _EmptyStateWidget(
                   icon: Icons.star_border,
                   title: 'No skills added yet',
                   subtitle: 'Highlight your key abilities to catch attention.',
                 ),
-              ),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: [
-                for (var i = 0; i < skills.length; i++)
-                  Chip(
-                    label: Text('${skills[i].name} (${skills[i].level})'),
-                    onDeleted: () {
-                      ref.read(cvFormProvider.notifier).removeSkill(i);
-                    },
-                  )
-              ],
-            ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () => setState(() => _isFormVisible = true),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add First Skill'),
+                ),
+              ] else ...[
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () => setState(() => _isFormVisible = true),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add New Skill'),
+                ),
+              ]
+            ]
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFormFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Divider(height: 32),
+        EnglishOnlyTextField(
+          controller: _skillController,
+          labelText: 'Skill Name (e.g., Flutter)',
+          onFieldSubmitted: (value) => _addSkill(),
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<String>(
+          valueListenable: _selectedSkillLevel,
+          builder: (context, currentValue, child) {
+            return DropdownButtonFormField<String>(
+              value: currentValue,
+              decoration: const InputDecoration(
+                labelText: 'Proficiency Level',
+                prefixIcon: Icon(Icons.assessment_outlined),
+              ),
+              items: kSkillLevels.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  _selectedSkillLevel.value = newValue;
+                }
+              },
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: _resetForm,
+                child: const Text('Cancel'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _addSkill,
+                child: const Text('Save Skill'),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

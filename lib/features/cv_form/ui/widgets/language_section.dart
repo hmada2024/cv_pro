@@ -15,8 +15,8 @@ class LanguageSection extends ConsumerStatefulWidget {
 
 class _LanguageSectionState extends ConsumerState<LanguageSection> {
   final _languageController = TextEditingController();
-
   late final ValueNotifier<String> _selectedProficiencyLevel;
+  bool _isFormVisible = false;
 
   @override
   void initState() {
@@ -32,14 +32,21 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
     super.dispose();
   }
 
+  void _resetForm() {
+    setState(() {
+      _languageController.clear();
+      _selectedProficiencyLevel.value = kSkillLevels[1];
+      _isFormVisible = false;
+    });
+  }
+
   void _addLanguage() {
     if (_languageController.text.isNotEmpty) {
       ref.read(cvFormProvider.notifier).addLanguage(
             name: _languageController.text,
             proficiency: _selectedProficiencyLevel.value,
           );
-      _languageController.clear();
-      _selectedProficiencyLevel.value = kSkillLevels[1];
+      _resetForm();
     }
   }
 
@@ -61,55 +68,6 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
               ],
             ),
             const SizedBox(height: 16),
-            EnglishOnlyTextField(
-              controller: _languageController,
-              labelText: 'Language (e.g., English)',
-              onFieldSubmitted: (_) => _addLanguage(),
-            ),
-            const SizedBox(height: 12),
-            ValueListenableBuilder<String>(
-              valueListenable: _selectedProficiencyLevel,
-              builder: (context, currentValue, child) {
-                return DropdownButtonFormField<String>(
-                  value: currentValue,
-                  decoration: const InputDecoration(
-                    labelText: 'Proficiency Level',
-                    prefixIcon: Icon(Icons.bar_chart_outlined),
-                  ),
-                  items: kSkillLevels
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    if (newValue != null) {
-                      _selectedProficiencyLevel.value = newValue;
-                    }
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _addLanguage,
-              child: const Text('Add Language'),
-            ),
-            if (languages.isNotEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 16.0),
-                child: Divider(),
-              ),
-            if (languages.isEmpty)
-              const Padding(
-                padding: EdgeInsets.only(top: 16.0),
-                child: _EmptyStateWidget(
-                  icon: Icons.translate,
-                  title: 'No languages added',
-                  subtitle: 'Showcase your language skills to employers.',
-                ),
-              ),
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -119,9 +77,89 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
                 return _buildLanguageCard(context, theme, lang, index);
               },
             ),
+            if (_isFormVisible)
+              _buildFormFields()
+            else ...[
+              if (languages.isEmpty) ...[
+                const _EmptyStateWidget(
+                  icon: Icons.translate,
+                  title: 'No languages added',
+                  subtitle: 'Showcase your language skills to employers.',
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () => setState(() => _isFormVisible = true),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add First Language'),
+                ),
+              ] else ...[
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
+                  onPressed: () => setState(() => _isFormVisible = true),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add New Language'),
+                ),
+              ],
+            ]
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildFormFields() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Divider(height: 32),
+        EnglishOnlyTextField(
+          controller: _languageController,
+          labelText: 'Language (e.g., English)',
+          onFieldSubmitted: (_) => _addLanguage(),
+        ),
+        const SizedBox(height: 12),
+        ValueListenableBuilder<String>(
+          valueListenable: _selectedProficiencyLevel,
+          builder: (context, currentValue, child) {
+            return DropdownButtonFormField<String>(
+              value: currentValue,
+              decoration: const InputDecoration(
+                labelText: 'Proficiency Level',
+                prefixIcon: Icon(Icons.bar_chart_outlined),
+              ),
+              items: kSkillLevels.map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  _selectedProficiencyLevel.value = newValue;
+                }
+              },
+            );
+          },
+        ),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: _resetForm,
+                child: const Text('Cancel'),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: _addLanguage,
+                child: const Text('Save Language'),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 
