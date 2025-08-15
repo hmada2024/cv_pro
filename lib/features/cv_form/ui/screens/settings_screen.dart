@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/theme/app_theme.dart';
-import 'package:cv_pro/features/data/providers/pdf_providers.dart';
+import 'package:cv_pro/features/dummy_view/providers/pdf_providers.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
