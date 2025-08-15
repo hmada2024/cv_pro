@@ -15,40 +15,38 @@ class SkillSection extends ConsumerStatefulWidget {
 
 class _SkillSectionState extends ConsumerState<SkillSection> {
   final _skillController = TextEditingController();
-  String? _selectedSkillLevel;
+
+  late final ValueNotifier<String> _selectedSkillLevel;
 
   @override
   void initState() {
     super.initState();
-    _selectedSkillLevel = kSkillLevels[1]; // 'Intermediate'
+    _selectedSkillLevel = ValueNotifier(kSkillLevels[1]); // 'Intermediate'
   }
 
   @override
   void dispose() {
     _skillController.dispose();
+    _selectedSkillLevel.dispose(); // Important to dispose notifiers
     super.dispose();
   }
 
   void _addSkill() {
-    if (_skillController.text.isNotEmpty && _selectedSkillLevel != null) {
-      // ✅ CORRECT: Using `ref.read` for actions is efficient.
+    if (_skillController.text.isNotEmpty) {
       ref.read(cvFormProvider.notifier).addSkill(
             name: _skillController.text,
-            level: _selectedSkillLevel!,
+            level: _selectedSkillLevel.value,
           );
       _skillController.clear();
-      setState(() {
-        _selectedSkillLevel = kSkillLevels[1];
-      });
+      // Reset the notifier to its default value without a setState call.
+      _selectedSkillLevel.value = kSkillLevels[1];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // ✅ OPTIMIZED: This widget now only rebuilds when the list of skills changes.
     final skills = ref.watch(cvFormProvider.select((cv) => cv.skills));
     final theme = Theme.of(context);
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,22 +67,31 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               onFieldSubmitted: (value) => _addSkill(),
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: _selectedSkillLevel,
-              decoration: const InputDecoration(
-                labelText: 'Proficiency Level',
-                prefixIcon: Icon(Icons.assessment_outlined),
-              ),
-              items: kSkillLevels.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
+            // ✅ REFACTORED: Wrapped the Dropdown in a ValueListenableBuilder.
+            // Now, only this dropdown rebuilds when the level changes, not the entire card.
+            ValueListenableBuilder<String>(
+              valueListenable: _selectedSkillLevel,
+              builder: (context, currentValue, child) {
+                return DropdownButtonFormField<String>(
+                  value: currentValue,
+                  decoration: const InputDecoration(
+                    labelText: 'Proficiency Level',
+                    prefixIcon: Icon(Icons.assessment_outlined),
+                  ),
+                  items: kSkillLevels
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      // Just update the notifier's value. No setState needed!
+                      _selectedSkillLevel.value = newValue;
+                    }
+                  },
                 );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedSkillLevel = newValue;
-                });
               },
             ),
             const SizedBox(height: 16),

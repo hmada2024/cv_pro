@@ -16,41 +16,38 @@ class LanguageSection extends ConsumerStatefulWidget {
 
 class _LanguageSectionState extends ConsumerState<LanguageSection> {
   final _languageController = TextEditingController();
-  String? _selectedProficiencyLevel;
+
+  late final ValueNotifier<String> _selectedProficiencyLevel;
 
   @override
   void initState() {
     super.initState();
-    _selectedProficiencyLevel = kSkillLevels[1]; // "Intermediate"
+    _selectedProficiencyLevel =
+        ValueNotifier(kSkillLevels[1]); // "Intermediate"
   }
 
   @override
   void dispose() {
     _languageController.dispose();
+    _selectedProficiencyLevel.dispose();
     super.dispose();
   }
 
   void _addLanguage() {
-    if (_languageController.text.isNotEmpty &&
-        _selectedProficiencyLevel != null) {
-      // ✅ CORRECT: Using `ref.read` for actions is efficient.
+    if (_languageController.text.isNotEmpty) {
       ref.read(cvFormProvider.notifier).addLanguage(
             name: _languageController.text,
-            proficiency: _selectedProficiencyLevel!,
+            proficiency: _selectedProficiencyLevel.value,
           );
       _languageController.clear();
-      setState(() {
-        _selectedProficiencyLevel = kSkillLevels[1];
-      });
+      _selectedProficiencyLevel.value = kSkillLevels[1];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // ✅ OPTIMIZED: This widget now only rebuilds when the list of languages changes.
     final languages = ref.watch(cvFormProvider.select((cv) => cv.languages));
     final theme = Theme.of(context);
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -71,22 +68,29 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
               onFieldSubmitted: (_) => _addLanguage(),
             ),
             const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: _selectedProficiencyLevel,
-              decoration: const InputDecoration(
-                labelText: 'Proficiency Level',
-                prefixIcon: Icon(Icons.bar_chart_outlined),
-              ),
-              items: kSkillLevels.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
+            // ✅ REFACTORED: Wrapped the Dropdown in a ValueListenableBuilder.
+            ValueListenableBuilder<String>(
+              valueListenable: _selectedProficiencyLevel,
+              builder: (context, currentValue, child) {
+                return DropdownButtonFormField<String>(
+                  value: currentValue,
+                  decoration: const InputDecoration(
+                    labelText: 'Proficiency Level',
+                    prefixIcon: Icon(Icons.bar_chart_outlined),
+                  ),
+                  items: kSkillLevels
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      _selectedProficiencyLevel.value = newValue;
+                    }
+                  },
                 );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedProficiencyLevel = newValue;
-                });
               },
             ),
             const SizedBox(height: 16),
