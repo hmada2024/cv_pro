@@ -1,9 +1,9 @@
 // features/pdf_export/layout/pdf_left_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/layout/pdf_layout_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'pdf_layout_colors.dart';
 import 'widget_contact_info_line.dart';
 import 'widget_education_item.dart';
 import 'widget_language_item.dart';
@@ -20,6 +20,51 @@ class PdfLeftColumn extends pw.StatelessWidget {
     this.profileImage,
     required this.iconFont,
   });
+
+  /// ✅ NEW: Helper widget to build the driving license section in the PDF.
+  pw.Widget _buildLicenseSection(PersonalInfo info, pw.Font iconFont) {
+    // Determine the text based on the license type
+    List<String> licenseTexts = [];
+    switch (info.licenseType) {
+      case LicenseType.local:
+        licenseTexts.add('Local Driving License');
+        break;
+      case LicenseType.international:
+        licenseTexts.add('International Driving License');
+        break;
+      case LicenseType.both:
+        licenseTexts.add('Local Driving License');
+        licenseTexts.add('International Driving License');
+        break;
+      case LicenseType.none:
+        break;
+    }
+
+    if (licenseTexts.isEmpty) {
+      return pw.SizedBox(); // Return empty if no license
+    }
+
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.SizedBox(height: 20),
+        SectionHeader(
+            title: 'LICENSE',
+            titleColor: PdfLayoutColors.lightText,
+            lineColor: PdfLayoutColors.accent,
+            fontSize: 14,
+            lineWidth: 30),
+        ...licenseTexts.map(
+          (text) => ContactInfoLine(
+            // Material Icon for 'directions_car' is 0xe1d7
+            iconData: const pw.IconData(0xe1d7),
+            text: text,
+            iconFont: iconFont,
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   pw.Widget build(pw.Context context) {
@@ -137,6 +182,9 @@ class PdfLeftColumn extends pw.StatelessWidget {
                 fontSize: 14,
                 lineWidth: 30),
           ...data.languages.map((lang) => LanguageItem(lang)),
+          // ✅ NEW: Conditionally build and add the license section
+          if (personalInfo.hasDriverLicense)
+            _buildLicenseSection(personalInfo, iconFont),
         ],
       ),
     );

@@ -2,6 +2,15 @@
 
 part of 'cv_data.dart';
 
+/// ✅ NEW: Enum to define the types of driving licenses.
+/// Using an enum is safer and cleaner than using plain strings.
+enum LicenseType {
+  none,
+  local,
+  international,
+  both,
+}
+
 @embedded
 class PersonalInfo {
   final String name;
@@ -16,6 +25,13 @@ class PersonalInfo {
   final String? maritalStatus;
   final String? militaryServiceStatus;
 
+  /// ✅ NEW: Flag to indicate if the user has a license. Defaults to false.
+  final bool hasDriverLicense;
+
+  /// ✅ NEW: Field to store the type of license.
+  @Enumerated(EnumType.name)
+  final LicenseType licenseType;
+
   PersonalInfo({
     this.name = '',
     this.jobTitle = '',
@@ -27,6 +43,9 @@ class PersonalInfo {
     this.birthDate,
     this.maritalStatus,
     this.militaryServiceStatus,
+    // Initialize new fields with default values.
+    this.hasDriverLicense = false,
+    this.licenseType = LicenseType.none,
   });
 
   PersonalInfo copyWith({
@@ -40,6 +59,8 @@ class PersonalInfo {
     DateTime? birthDate,
     String? maritalStatus,
     String? militaryServiceStatus,
+    bool? hasDriverLicense,
+    LicenseType? licenseType,
   }) {
     return PersonalInfo(
       name: name ?? this.name,
@@ -53,6 +74,8 @@ class PersonalInfo {
       maritalStatus: maritalStatus ?? this.maritalStatus,
       militaryServiceStatus:
           militaryServiceStatus ?? this.militaryServiceStatus,
+      hasDriverLicense: hasDriverLicense ?? this.hasDriverLicense,
+      licenseType: licenseType ?? this.licenseType,
     );
   }
 }

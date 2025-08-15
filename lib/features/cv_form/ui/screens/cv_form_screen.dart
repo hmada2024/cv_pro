@@ -12,6 +12,7 @@ import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/personal_info_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/references_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/skill_section.dart';
+import '../widgets/driving_license_section.dart'; // ✅ NEW: Import the new section
 
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
@@ -45,11 +46,9 @@ class CvFormScreen extends ConsumerWidget {
             tooltip: 'Create Final CV',
             onPressed: canCreate
                 ? () {
-                    // ❌ REMOVED: لم نعد بحاجة لقراءة selectedTemplateProvider.
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => PdfPreviewScreen(
-                          // ✅ UPDATED: استدعاء الـ provider المبسط.
                           pdfProvider: pdfBytesProvider,
                         ),
                       ),
@@ -74,6 +73,9 @@ class CvFormScreen extends ConsumerWidget {
             SkillSection(),
             SizedBox(height: 16),
             LanguageSection(),
+            SizedBox(height: 16),
+            // ✅ NEW: Add the driving license section here
+            DrivingLicenseSection(),
             SizedBox(height: 16),
             ReferencesSection(),
             SizedBox(height: 20),

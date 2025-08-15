@@ -1,5 +1,4 @@
 // features/cv_form/data/providers/cv_form_provider.dart
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -75,6 +74,32 @@ class CvFormNotifier extends StateNotifier<CVData> {
       ),
     );
     _saveStateWithDebounce();
+  }
+
+  /// ✅ NEW: Updates the driving license information with smart logic.
+  void updateLicenseInfo({bool? hasLicense, LicenseType? type}) {
+    bool currentHasLicense = hasLicense ?? state.personalInfo.hasDriverLicense;
+    LicenseType newType;
+
+    if (currentHasLicense) {
+      // If a type is provided, use it. Otherwise, keep the old one,
+      // but ensure it's not 'none'. Default to 'local' if needed.
+      newType = type ?? state.personalInfo.licenseType;
+      if (newType == LicenseType.none) {
+        newType = LicenseType.local;
+      }
+    } else {
+      // If the user doesn't have a license, always reset the type to 'none'.
+      newType = LicenseType.none;
+    }
+
+    state = state.copyWith(
+      personalInfo: state.personalInfo.copyWith(
+        hasDriverLicense: currentHasLicense,
+        licenseType: newType,
+      ),
+    );
+    _saveStateImmediately();
   }
 
   Future<void> pickProfileImage({

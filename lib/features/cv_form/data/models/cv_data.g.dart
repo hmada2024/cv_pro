@@ -983,38 +983,49 @@ const PersonalInfoSchema = Schema(
       name: r'email',
       type: IsarType.string,
     ),
-    r'jobTitle': PropertySchema(
+    r'hasDriverLicense': PropertySchema(
       id: 3,
+      name: r'hasDriverLicense',
+      type: IsarType.bool,
+    ),
+    r'jobTitle': PropertySchema(
+      id: 4,
       name: r'jobTitle',
       type: IsarType.string,
     ),
+    r'licenseType': PropertySchema(
+      id: 5,
+      name: r'licenseType',
+      type: IsarType.string,
+      enumMap: _PersonalInfolicenseTypeEnumValueMap,
+    ),
     r'maritalStatus': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'maritalStatus',
       type: IsarType.string,
     ),
     r'militaryServiceStatus': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'militaryServiceStatus',
       type: IsarType.string,
     ),
     r'name': PropertySchema(
-      id: 6,
+      id: 8,
       name: r'name',
       type: IsarType.string,
     ),
     r'phone': PropertySchema(
-      id: 7,
+      id: 9,
       name: r'phone',
       type: IsarType.string,
     ),
     r'profileImagePath': PropertySchema(
-      id: 8,
+      id: 10,
       name: r'profileImagePath',
       type: IsarType.string,
     ),
     r'summary': PropertySchema(
-      id: 9,
+      id: 11,
       name: r'summary',
       type: IsarType.string,
     )
@@ -1039,6 +1050,7 @@ int _personalInfoEstimateSize(
   }
   bytesCount += 3 + object.email.length * 3;
   bytesCount += 3 + object.jobTitle.length * 3;
+  bytesCount += 3 + object.licenseType.name.length * 3;
   {
     final value = object.maritalStatus;
     if (value != null) {
@@ -1077,13 +1089,15 @@ void _personalInfoSerialize(
   writer.writeString(offsets[0], object.address);
   writer.writeDateTime(offsets[1], object.birthDate);
   writer.writeString(offsets[2], object.email);
-  writer.writeString(offsets[3], object.jobTitle);
-  writer.writeString(offsets[4], object.maritalStatus);
-  writer.writeString(offsets[5], object.militaryServiceStatus);
-  writer.writeString(offsets[6], object.name);
-  writer.writeString(offsets[7], object.phone);
-  writer.writeString(offsets[8], object.profileImagePath);
-  writer.writeString(offsets[9], object.summary);
+  writer.writeBool(offsets[3], object.hasDriverLicense);
+  writer.writeString(offsets[4], object.jobTitle);
+  writer.writeString(offsets[5], object.licenseType.name);
+  writer.writeString(offsets[6], object.maritalStatus);
+  writer.writeString(offsets[7], object.militaryServiceStatus);
+  writer.writeString(offsets[8], object.name);
+  writer.writeString(offsets[9], object.phone);
+  writer.writeString(offsets[10], object.profileImagePath);
+  writer.writeString(offsets[11], object.summary);
 }
 
 PersonalInfo _personalInfoDeserialize(
@@ -1096,13 +1110,17 @@ PersonalInfo _personalInfoDeserialize(
     address: reader.readStringOrNull(offsets[0]),
     birthDate: reader.readDateTimeOrNull(offsets[1]),
     email: reader.readStringOrNull(offsets[2]) ?? '',
-    jobTitle: reader.readStringOrNull(offsets[3]) ?? '',
-    maritalStatus: reader.readStringOrNull(offsets[4]),
-    militaryServiceStatus: reader.readStringOrNull(offsets[5]),
-    name: reader.readStringOrNull(offsets[6]) ?? '',
-    phone: reader.readStringOrNull(offsets[7]),
-    profileImagePath: reader.readStringOrNull(offsets[8]),
-    summary: reader.readStringOrNull(offsets[9]) ?? '',
+    hasDriverLicense: reader.readBoolOrNull(offsets[3]) ?? false,
+    jobTitle: reader.readStringOrNull(offsets[4]) ?? '',
+    licenseType: _PersonalInfolicenseTypeValueEnumMap[
+            reader.readStringOrNull(offsets[5])] ??
+        LicenseType.none,
+    maritalStatus: reader.readStringOrNull(offsets[6]),
+    militaryServiceStatus: reader.readStringOrNull(offsets[7]),
+    name: reader.readStringOrNull(offsets[8]) ?? '',
+    phone: reader.readStringOrNull(offsets[9]),
+    profileImagePath: reader.readStringOrNull(offsets[10]),
+    summary: reader.readStringOrNull(offsets[11]) ?? '',
   );
   return object;
 }
@@ -1121,23 +1139,42 @@ P _personalInfoDeserializeProp<P>(
     case 2:
       return (reader.readStringOrNull(offset) ?? '') as P;
     case 3:
-      return (reader.readStringOrNull(offset) ?? '') as P;
+      return (reader.readBoolOrNull(offset) ?? false) as P;
     case 4:
-      return (reader.readStringOrNull(offset)) as P;
-    case 5:
-      return (reader.readStringOrNull(offset)) as P;
-    case 6:
       return (reader.readStringOrNull(offset) ?? '') as P;
+    case 5:
+      return (_PersonalInfolicenseTypeValueEnumMap[
+              reader.readStringOrNull(offset)] ??
+          LicenseType.none) as P;
+    case 6:
+      return (reader.readStringOrNull(offset)) as P;
     case 7:
       return (reader.readStringOrNull(offset)) as P;
     case 8:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 9:
+      return (reader.readStringOrNull(offset)) as P;
+    case 10:
+      return (reader.readStringOrNull(offset)) as P;
+    case 11:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
+
+const _PersonalInfolicenseTypeEnumValueMap = {
+  r'none': r'none',
+  r'local': r'local',
+  r'international': r'international',
+  r'both': r'both',
+};
+const _PersonalInfolicenseTypeValueEnumMap = {
+  r'none': LicenseType.none,
+  r'local': LicenseType.local,
+  r'international': LicenseType.international,
+  r'both': LicenseType.both,
+};
 
 extension PersonalInfoQueryFilter
     on QueryBuilder<PersonalInfo, PersonalInfo, QFilterCondition> {
@@ -1504,6 +1541,16 @@ extension PersonalInfoQueryFilter
   }
 
   QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      hasDriverLicenseEqualTo(bool value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'hasDriverLicense',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
       jobTitleEqualTo(
     String value, {
     bool caseSensitive = true,
@@ -1634,6 +1681,142 @@ extension PersonalInfoQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'jobTitle',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeEqualTo(
+    LicenseType value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'licenseType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeGreaterThan(
+    LicenseType value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'licenseType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeLessThan(
+    LicenseType value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'licenseType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeBetween(
+    LicenseType lower,
+    LicenseType upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'licenseType',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'licenseType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'licenseType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'licenseType',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'licenseType',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'licenseType',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<PersonalInfo, PersonalInfo, QAfterFilterCondition>
+      licenseTypeIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'licenseType',
         value: '',
       ));
     });
