@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/pdf_export/data/dummy_view/cv_data_dummy.dart';
+import 'package:cv_pro/features/pdf_export/data/dummy_data/cv_data_dummy.dart';
 
 typedef PdfFontAssets = ({
   ByteData fontData,
