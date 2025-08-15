@@ -15,9 +15,11 @@ class EducationSection extends ConsumerStatefulWidget {
 }
 
 class _EducationSectionState extends ConsumerState<EducationSection> {
-  final _formKey = GlobalKey<FormState>();
+  late GlobalKey<FormState> _formKey;
   final _degreeNameController = TextEditingController();
   final _schoolController = TextEditingController();
+
+  bool _isFormVisible = false;
 
   EducationLevel _selectedLevel = EducationLevel.bachelor;
   DateTime? _startDate;
@@ -27,10 +29,30 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   final DateFormat _dateFormatter = DateFormat('yyyy');
 
   @override
+  void initState() {
+    super.initState();
+    _formKey = GlobalKey<FormState>();
+  }
+
+  @override
   void dispose() {
     _degreeNameController.dispose();
     _schoolController.dispose();
     super.dispose();
+  }
+
+  void _resetForm() {
+    setState(() {
+      // Create a new key to completely reset the form's state, including validation.
+      _formKey = GlobalKey<FormState>();
+      _degreeNameController.clear();
+      _schoolController.clear();
+      _selectedLevel = EducationLevel.bachelor;
+      _startDate = null;
+      _endDate = null;
+      _isCurrent = true;
+      _isFormVisible = false; // Hide form after action
+    });
   }
 
   void _addEducation() {
@@ -42,16 +64,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             startDate: _startDate!,
             endDate: _isCurrent ? null : _endDate,
           );
-      // Reset form
-      _formKey.currentState!.reset();
-      _degreeNameController.clear();
-      _schoolController.clear();
-      setState(() {
-        _selectedLevel = EducationLevel.bachelor;
-        _startDate = null;
-        _endDate = null;
-        _isCurrent = true;
-      });
+      _resetForm(); // Reset and hide the form
     } else if (_startDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -123,112 +136,145 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.school, color: theme.colorScheme.secondary),
-                  const SizedBox(width: 8),
-                  Text('Education', style: theme.textTheme.titleLarge),
-                ],
-              ),
-              const SizedBox(height: 16),
-              // Enhanced Empty State
-              if (educationList.isEmpty)
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.school, color: theme.colorScheme.secondary),
+                const SizedBox(width: 8),
+                Text('Education', style: theme.textTheme.titleLarge),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: educationList.length,
+              itemBuilder: (context, index) {
+                final edu = educationList[index];
+                final originalIndex =
+                    ref.read(cvFormProvider).education.indexOf(edu);
+                return _buildEducationCard(context, theme, edu, originalIndex);
+              },
+            ),
+            // Conditionally show the form or the "Add" button
+            if (_isFormVisible)
+              _buildFormFields(theme)
+            else ...[
+              if (educationList.isEmpty) ...[
                 const _EmptyStateWidget(
                   icon: Icons.school_outlined,
                   title: 'Add your first qualification',
                   subtitle:
                       'Your academic background is a key part of your CV.',
                 ),
-              if (educationList.isNotEmpty)
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: educationList.length,
-                  itemBuilder: (context, index) {
-                    final edu = educationList[index];
-                    final originalIndex =
-                        ref.read(cvFormProvider).education.indexOf(edu);
-                    return _buildEducationCard(
-                        context, theme, edu, originalIndex);
-                  },
+                const SizedBox(height: 16),
+                ElevatedButton.icon(
+                  onPressed: () => setState(() => _isFormVisible = true),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add First Qualification'),
                 ),
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 16),
-              Text('Add New Qualification', style: theme.textTheme.titleMedium),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<EducationLevel>(
-                value: _selectedLevel,
-                decoration:
-                    const InputDecoration(labelText: 'Qualification Level'),
-                items: EducationLevel.values
-                    .map((level) => DropdownMenuItem(
-                          value: level,
-                          child: Text(level.toDisplayString()),
-                        ))
-                    .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => _selectedLevel = value);
-                  }
-                },
+              ] else ...[
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () => setState(() => _isFormVisible = true),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add New Qualification'),
+                ),
+              ],
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  // A new widget to build the form fields for better organization
+  Widget _buildFormFields(ThemeData theme) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Divider(height: 32),
+          Text('Add New Qualification', style: theme.textTheme.titleMedium),
+          const SizedBox(height: 16),
+          DropdownButtonFormField<EducationLevel>(
+            value: _selectedLevel,
+            decoration: const InputDecoration(labelText: 'Qualification Level'),
+            items: EducationLevel.values
+                .map((level) => DropdownMenuItem(
+                      value: level,
+                      child: Text(level.toDisplayString()),
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value != null) {
+                setState(() => _selectedLevel = value);
+              }
+            },
+          ),
+          const SizedBox(height: 12),
+          EnglishOnlyTextField(
+            controller: _degreeNameController,
+            labelText: 'Degree Name (e.g., of Computer Science)',
+            validator: (val) => (val?.isEmpty ?? true) ? 'Required' : null,
+          ),
+          const SizedBox(height: 12),
+          EnglishOnlyTextField(
+            controller: _schoolController,
+            labelText: 'School / University',
+            validator: (val) => (val?.isEmpty ?? true) ? 'Required' : null,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: _buildDatePickerField('Start Year', _startDate, true),
               ),
-              const SizedBox(height: 12),
-              EnglishOnlyTextField(
-                controller: _degreeNameController,
-                labelText: 'Degree Name (e.g., of Computer Science)',
-                validator: (val) => (val?.isEmpty ?? true) ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              EnglishOnlyTextField(
-                controller: _schoolController,
-                labelText: 'School / University',
-                validator: (val) => (val?.isEmpty ?? true) ? 'Required' : null,
-              ),
-              const SizedBox(height: 12),
-              Row(
-                children: [
-                  Expanded(
-                    child:
-                        _buildDatePickerField('Start Year', _startDate, true),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildDatePickerField('End Year', _endDate, false),
-                  ),
-                ],
-              ),
-              CheckboxListTile(
-                title: const Text('I currently study here'),
-                value: _isCurrent,
-                onChanged: (value) {
-                  setState(() {
-                    _isCurrent = value ?? false;
-                    if (_isCurrent) {
-                      _endDate = null;
-                    } else {
-                      _endDate = _endDate ?? DateTime.now();
-                    }
-                  });
-                },
-                controlAffinity: ListTileControlAffinity.leading,
-                contentPadding: EdgeInsets.zero,
-                activeColor: theme.primaryColor,
-              ),
-              const SizedBox(height: 8),
-              ElevatedButton.icon(
-                onPressed: _addEducation,
-                icon: const Icon(Icons.add),
-                label: const Text('Add Education'),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildDatePickerField('End Year', _endDate, false),
               ),
             ],
           ),
-        ),
+          CheckboxListTile(
+            title: const Text('I currently study here'),
+            value: _isCurrent,
+            onChanged: (value) {
+              setState(() {
+                _isCurrent = value ?? false;
+                if (_isCurrent) {
+                  _endDate = null;
+                } else {
+                  _endDate = _endDate ?? DateTime.now();
+                }
+              });
+            },
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
+            activeColor: theme.primaryColor,
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: _resetForm,
+                  child: const Text('Cancel'),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _addEducation,
+                  child: const Text('Save'),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
