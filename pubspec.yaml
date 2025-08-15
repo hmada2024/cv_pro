@@ -37,3 +37,5 @@ flutter:
     - assets/images/
     - assets/fonts/MaterialIcons-Regular.ttf
     - assets/images/face_AI.webp
+    - assets/fonts/Lato-Regular.ttf
+    - assets/fonts/Lato-Bold.ttf
