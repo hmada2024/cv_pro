@@ -22,6 +22,10 @@ class PdfServiceImpl implements PdfService {
         break;
       case CvTemplate.twoColumn02:
         break;
+      case CvTemplate.twoColumn03:
+        break;
     }
+    throw UnimplementedError(
+        'generateCv not implemented for template: $template');
   }
 }
