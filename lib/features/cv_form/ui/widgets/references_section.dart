@@ -1,4 +1,6 @@
 // features/cv_form/ui/widgets/references_section.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
+import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
@@ -35,18 +37,18 @@ class ReferencesSection extends ConsumerWidget {
               children: [
                 EnglishOnlyTextField(
                     controller: nameController, labelText: 'Full Name'),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSizes.p12),
                 EnglishOnlyTextField(
                     controller: companyController, labelText: 'Company'),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSizes.p12),
                 EnglishOnlyTextField(
                     controller: positionController, labelText: 'Position'),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSizes.p12),
                 EnglishOnlyTextField(
                     controller: emailController,
                     keyboardType: TextInputType.emailAddress,
                     labelText: 'Email Address'),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSizes.p12),
                 EnglishOnlyTextField(
                     controller: phoneController,
                     keyboardType: TextInputType.phone,
@@ -97,26 +99,26 @@ class ReferencesSection extends ConsumerWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 Icon(Icons.group, color: theme.colorScheme.secondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSizes.p8),
                 Text(
                   'References',
                   style: theme.textTheme.titleLarge,
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSizes.p8),
             SwitchListTile(
               title: const Text('Available upon request'),
               subtitle: Text(
                 'Hides reference details and shows a note instead.',
-                style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12),
+                style: theme.textTheme.bodySmall,
               ),
               value: showNote,
               onChanged: (bool value) {
@@ -125,17 +127,17 @@ class ReferencesSection extends ConsumerWidget {
               activeColor: theme.colorScheme.primary,
               contentPadding: EdgeInsets.zero,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSizes.p8),
             OutlinedButton.icon(
               icon: const Icon(Icons.add),
               label: const Text('Add Reference'),
               onPressed:
                   showNote ? null : () => _showReferenceDialog(context, ref),
               style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.p12),
               ),
             ),
-            if (references.isNotEmpty) const SizedBox(height: 16),
+            if (references.isNotEmpty) const SizedBox(height: AppSizes.p16),
             Opacity(
               opacity: showNote ? 0.5 : 1.0,
               child: IgnorePointer(
@@ -150,9 +152,10 @@ class ReferencesSection extends ConsumerWidget {
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         side: BorderSide(color: theme.dividerColor, width: 1),
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius:
+                            BorderRadius.circular(AppSizes.buttonRadius),
                       ),
-                      margin: const EdgeInsets.only(bottom: 8.0),
+                      margin: const EdgeInsets.only(bottom: AppSizes.p8),
                       child: ListTile(
                         leading: Icon(Icons.person_pin,
                             color: showNote
@@ -180,8 +183,8 @@ class ReferencesSection extends ConsumerWidget {
             ),
             if (references.isEmpty && !showNote)
               const Padding(
-                padding: EdgeInsets.only(top: 16.0),
-                child: _EmptyStateWidget(
+                padding: EdgeInsets.only(top: AppSizes.p16),
+                child: EmptyStateWidget(
                   icon: Icons.group_outlined,
                   title: 'No references added yet',
                   subtitle:
@@ -190,43 +193,6 @@ class ReferencesSection extends ConsumerWidget {
               ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _EmptyStateWidget extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _EmptyStateWidget({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Column(
-        children: [
-          Icon(icon, size: 40, color: theme.colorScheme.secondary),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }

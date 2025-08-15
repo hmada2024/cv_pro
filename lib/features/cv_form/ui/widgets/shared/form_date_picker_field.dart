@@ -1,4 +1,5 @@
 // lib/features/cv_form/ui/widgets/shared/form_date_picker_field.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 
 class FormDatePickerField extends StatelessWidget {
@@ -19,7 +20,7 @@ class FormDatePickerField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: AppSizes.p12),
       child: TextFormField(
         controller: controller,
         decoration: InputDecoration(

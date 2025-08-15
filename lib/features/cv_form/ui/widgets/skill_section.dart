@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/skill_section.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
@@ -55,22 +56,22 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     final theme = Theme.of(context);
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 Icon(Icons.star, color: theme.colorScheme.secondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSizes.p8),
                 Text('Skills', style: theme.textTheme.titleLarge),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.p16),
             if (skills.isNotEmpty)
               Wrap(
-                spacing: 8.0,
-                runSpacing: 8.0,
+                spacing: AppSizes.p8,
+                runSpacing: AppSizes.p8,
                 children: [
                   for (var i = 0; i < skills.length; i++)
                     Chip(
@@ -90,14 +91,14 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
                   title: 'No skills added yet',
                   subtitle: 'Highlight your key abilities to catch attention.',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSizes.p16),
                 ElevatedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
                   label: const Text('Add First Skill'),
                 ),
               ] else ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSizes.p16),
                 OutlinedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
@@ -115,13 +116,13 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Divider(height: 32),
+        const Divider(height: AppSizes.p32),
         EnglishOnlyTextField(
           controller: _skillController,
           labelText: 'Skill Name (e.g., Flutter)',
           onFieldSubmitted: (value) => _addSkill(),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSizes.p12),
         ValueListenableBuilder<String>(
           valueListenable: _selectedSkillLevel,
           builder: (context, currentValue, child) {
@@ -145,7 +146,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
             );
           },
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSizes.p16),
         Row(
           children: [
             Expanded(
@@ -154,7 +155,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
                 child: const Text('Cancel'),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSizes.p8),
             Expanded(
               child: ElevatedButton(
                 onPressed: _addSkill,

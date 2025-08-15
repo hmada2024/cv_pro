@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/language_section.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
@@ -57,18 +58,18 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
     final theme = Theme.of(context);
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 Icon(Icons.language, color: theme.colorScheme.secondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSizes.p8),
                 Text('Languages', style: theme.textTheme.titleLarge),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.p16),
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -87,14 +88,14 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
                   title: 'No languages added',
                   subtitle: 'Showcase your language skills to employers.',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSizes.p16),
                 ElevatedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
                   label: const Text('Add First Language'),
                 ),
               ] else ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSizes.p16),
                 OutlinedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
@@ -112,13 +113,13 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const Divider(height: 32),
+        const Divider(height: AppSizes.p32),
         EnglishOnlyTextField(
           controller: _languageController,
           labelText: 'Language (e.g., English)',
           onFieldSubmitted: (_) => _addLanguage(),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSizes.p12),
         ValueListenableBuilder<String>(
           valueListenable: _selectedProficiencyLevel,
           builder: (context, currentValue, child) {
@@ -142,7 +143,7 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
             );
           },
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSizes.p16),
         Row(
           children: [
             Expanded(
@@ -151,7 +152,7 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
                 child: const Text('Cancel'),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSizes.p8),
             Expanded(
               child: ElevatedButton(
                 onPressed: _addLanguage,
@@ -168,9 +169,9 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
       BuildContext context, ThemeData theme, Language lang, int index) {
     return Card(
       elevation: 0,
-      margin: const EdgeInsets.only(bottom: 8.0),
+      margin: const EdgeInsets.only(bottom: AppSizes.p8),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
         side: BorderSide(color: theme.dividerColor),
       ),
       child: ListTile(

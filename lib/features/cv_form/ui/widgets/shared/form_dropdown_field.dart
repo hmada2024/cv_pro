@@ -1,4 +1,5 @@
 // lib/features/cv_form/ui/widgets/shared/form_dropdown_field.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 
 class FormDropdownField extends StatelessWidget {
@@ -21,7 +22,7 @@ class FormDropdownField extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: AppSizes.p12),
       child: DropdownButtonFormField<String>(
         value: value,
         decoration: InputDecoration(
