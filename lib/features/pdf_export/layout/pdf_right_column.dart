@@ -133,9 +133,10 @@ class PdfRightColumn extends pw.StatelessWidget {
         pw.Text(
           '${reference.position}, ${reference.company}',
           style: pw.TextStyle(
-              fontSize: 9,
-              color: PdfLayoutColors.darkText,
-              fontStyle: pw.FontStyle.italic),
+            fontSize: 9,
+            color: PdfLayoutColors.darkText,
+            fontStyle: pw.FontStyle.italic,
+          ),
         ),
         pw.SizedBox(height: 4),
         pw.Text(
