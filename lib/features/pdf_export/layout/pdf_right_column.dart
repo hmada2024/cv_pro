@@ -88,10 +88,8 @@ class PdfRightColumn extends pw.StatelessWidget {
             ),
             pw.Text(
               'References available upon request.',
-              style: pw.TextStyle(
-                  fontSize: 10,
-                  fontStyle: pw.FontStyle.italic,
-                  color: PdfLayoutColors.darkText),
+              style: const pw.TextStyle(
+                  fontSize: 10, color: PdfLayoutColors.darkText),
             ),
           ]);
     } else if (data.references.isNotEmpty) {
@@ -130,10 +128,8 @@ class PdfRightColumn extends pw.StatelessWidget {
         ),
         pw.Text(
           '${reference.position}, ${reference.company}',
-          style: pw.TextStyle(
-              fontSize: 9,
-              color: PdfLayoutColors.darkText,
-              fontStyle: pw.FontStyle.italic),
+          style:
+              const pw.TextStyle(fontSize: 9, color: PdfLayoutColors.darkText),
         ),
         pw.SizedBox(height: 4),
         pw.Text(
