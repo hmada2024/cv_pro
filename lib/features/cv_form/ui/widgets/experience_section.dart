@@ -1,7 +1,6 @@
 // features/cv_form/ui/widgets/experience_section.dart
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -149,7 +148,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
 
   @override
   Widget build(BuildContext context) {
-    final experiences = ref.watch(sortedExperiencesProvider);
+    final experiences = ref.watch(cvFormProvider.select((s) => s.experiences));
     final theme = Theme.of(context);
 
     return Card(
@@ -166,17 +165,22 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
               ],
             ),
             if (experiences.isNotEmpty) const SizedBox(height: 16),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: experiences.length,
-              itemBuilder: (context, index) {
-                final exp = experiences[index];
-                final originalIndex =
-                    ref.read(cvFormProvider).experiences.indexOf(exp);
-                return _buildExperienceCard(context, exp, originalIndex);
-              },
-            ),
+            if (experiences.isNotEmpty)
+              ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: experiences.length,
+                itemBuilder: (context, index) {
+                  final exp = experiences[index];
+                  return _buildExperienceCard(context, exp, index,
+                      key: ValueKey(exp.hashCode));
+                },
+                onReorder: (oldIndex, newIndex) {
+                  ref
+                      .read(cvFormProvider.notifier)
+                      .reorderExperience(oldIndex, newIndex);
+                },
+              ),
             if (_isFormVisible)
               _buildFormFields(theme)
             else ...[
@@ -283,13 +287,15 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     );
   }
 
-  Widget _buildExperienceCard(BuildContext context, Experience exp, int index) {
+  Widget _buildExperienceCard(BuildContext context, Experience exp, int index,
+      {required Key key}) {
     final theme = Theme.of(context);
     final formatter = DateFormat('MMMM yyyy');
     final dateRange =
         '${formatter.format(exp.startDate)} - ${exp.isCurrent ? "Present" : formatter.format(exp.endDate!)}';
 
     return Card(
+      key: key,
       elevation: 0,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: theme.dividerColor, width: 1),
@@ -297,8 +303,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
       ),
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ListTile(
-        leading:
-            Icon(Icons.check_circle_outline, color: theme.colorScheme.primary),
+        leading: const Icon(Icons.drag_handle),
         title: Text(exp.position, style: theme.textTheme.titleMedium),
         subtitle: Text('${exp.companyName}\n$dateRange',
             style: theme.textTheme.bodyMedium),

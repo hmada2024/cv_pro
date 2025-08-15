@@ -19,16 +19,6 @@ class PdfRightColumn extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
-    final sortedExperience = List<Experience>.from(data.experiences)
-      ..sort((a, b) {
-        if (a.isCurrent && !b.isCurrent) return -1;
-        if (!a.isCurrent && b.isCurrent) return 1;
-        if (!a.isCurrent && !b.isCurrent) {
-          return b.endDate!.compareTo(a.endDate!);
-        }
-        return b.startDate.compareTo(a.startDate);
-      });
-
     return pw.Container(
       padding: const pw.EdgeInsets.fromLTRB(25, 35, 25, 25),
       child: pw.Column(
@@ -61,12 +51,12 @@ class PdfRightColumn extends pw.StatelessWidget {
               textAlign: pw.TextAlign.justify,
             ),
           if (data.personalInfo.summary.isNotEmpty) pw.SizedBox(height: 25),
-          if (sortedExperience.isNotEmpty)
+          if (data.experiences.isNotEmpty)
             SectionHeader(
                 title: 'WORK EXPERIENCE',
                 titleColor: PdfLayoutColors.primary,
                 lineColor: PdfLayoutColors.accent),
-          ...sortedExperience.map((exp) => ExperienceItem(
+          ...data.experiences.map((exp) => ExperienceItem(
                 exp,
                 iconFont: iconFont,
                 positionColor: PdfLayoutColors.primary,

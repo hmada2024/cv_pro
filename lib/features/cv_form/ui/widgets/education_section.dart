@@ -1,7 +1,6 @@
 // features/cv_form/ui/widgets/education_section.dart
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -129,7 +128,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   @override
   Widget build(BuildContext context) {
-    final educationList = ref.watch(sortedEducationProvider);
+    final educationList = ref.watch(cvFormProvider.select((s) => s.education));
     final theme = Theme.of(context);
 
     return Card(
@@ -146,17 +145,22 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               ],
             ),
             const SizedBox(height: 16),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: educationList.length,
-              itemBuilder: (context, index) {
-                final edu = educationList[index];
-                final originalIndex =
-                    ref.read(cvFormProvider).education.indexOf(edu);
-                return _buildEducationCard(context, theme, edu, originalIndex);
-              },
-            ),
+            if (educationList.isNotEmpty)
+              ReorderableListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: educationList.length,
+                itemBuilder: (context, index) {
+                  final edu = educationList[index];
+                  return _buildEducationCard(context, theme, edu, index,
+                      key: ValueKey(edu.hashCode));
+                },
+                onReorder: (oldIndex, newIndex) {
+                  ref
+                      .read(cvFormProvider.notifier)
+                      .reorderEducation(oldIndex, newIndex);
+                },
+              ),
             if (_isFormVisible)
               _buildFormFields(theme)
             else ...[
@@ -301,12 +305,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   }
 
   Widget _buildEducationCard(
-      BuildContext context, ThemeData theme, Education edu, int index) {
+      BuildContext context, ThemeData theme, Education edu, int index,
+      {required Key key}) {
     final title = '${edu.level.toDisplayString()} ${edu.degreeName}';
     final subtitle =
         '${edu.school}\n${_dateFormatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : _dateFormatter.format(edu.endDate!)}';
 
     return Card(
+      key: key,
       elevation: 0,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: theme.dividerColor, width: 1),
@@ -314,7 +320,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       ),
       margin: const EdgeInsets.only(bottom: 8.0),
       child: ListTile(
-        leading: Icon(Icons.menu_book, color: theme.colorScheme.primary),
+        leading: const Icon(Icons.drag_handle),
         title: Text(title, style: theme.textTheme.titleMedium),
         subtitle: Text(subtitle, style: theme.textTheme.bodyMedium),
         isThreeLine: true,

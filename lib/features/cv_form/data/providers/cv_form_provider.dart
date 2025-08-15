@@ -32,7 +32,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
     }
   }
 
-  // Saves the current state to the database, debounced to avoid frequent writes.
   void _saveStateWithDebounce() {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
@@ -40,13 +39,11 @@ class CvFormNotifier extends StateNotifier<CVData> {
     });
   }
 
-  // Saves the state immediately, used for operations that need to be instant.
   Future<void> _saveStateImmediately() async {
     _debounce?.cancel();
     await _storageService.saveCV(state);
   }
 
-  // --- Personal Info ---
   void updatePersonalInfo({
     String? name,
     String? jobTitle,
@@ -76,20 +73,16 @@ class CvFormNotifier extends StateNotifier<CVData> {
     _saveStateWithDebounce();
   }
 
-  /// ✅ NEW: Updates the driving license information with smart logic.
   void updateLicenseInfo({bool? hasLicense, LicenseType? type}) {
     bool currentHasLicense = hasLicense ?? state.personalInfo.hasDriverLicense;
     LicenseType newType;
 
     if (currentHasLicense) {
-      // If a type is provided, use it. Otherwise, keep the old one,
-      // but ensure it's not 'none'. Default to 'local' if needed.
       newType = type ?? state.personalInfo.licenseType;
       if (newType == LicenseType.none) {
         newType = LicenseType.local;
       }
     } else {
-      // If the user doesn't have a license, always reset the type to 'none'.
       newType = LicenseType.none;
     }
 
@@ -167,6 +160,17 @@ class CvFormNotifier extends StateNotifier<CVData> {
     _saveStateImmediately();
   }
 
+  void reorderExperience(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final items = List<Experience>.from(state.experiences);
+    final item = items.removeAt(oldIndex);
+    items.insert(newIndex, item);
+    state = state.copyWith(experiences: items);
+    _saveStateImmediately();
+  }
+
   // --- Education ---
   void addEducation({
     required EducationLevel level,
@@ -201,6 +205,17 @@ class CvFormNotifier extends StateNotifier<CVData> {
     final currentEducation = List<Education>.from(state.education);
     currentEducation.removeAt(index);
     state = state.copyWith(education: currentEducation);
+    _saveStateImmediately();
+  }
+
+  void reorderEducation(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+    final items = List<Education>.from(state.education);
+    final item = items.removeAt(oldIndex);
+    items.insert(newIndex, item);
+    state = state.copyWith(education: items);
     _saveStateImmediately();
   }
 

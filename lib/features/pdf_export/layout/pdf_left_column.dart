@@ -21,9 +21,7 @@ class PdfLeftColumn extends pw.StatelessWidget {
     required this.iconFont,
   });
 
-  /// ✅ NEW: Helper widget to build the driving license section in the PDF.
   pw.Widget _buildLicenseSection(PersonalInfo info, pw.Font iconFont) {
-    // Determine the text based on the license type
     List<String> licenseTexts = [];
     switch (info.licenseType) {
       case LicenseType.local:
@@ -41,7 +39,7 @@ class PdfLeftColumn extends pw.StatelessWidget {
     }
 
     if (licenseTexts.isEmpty) {
-      return pw.SizedBox(); // Return empty if no license
+      return pw.SizedBox();
     }
 
     return pw.Column(
@@ -56,7 +54,6 @@ class PdfLeftColumn extends pw.StatelessWidget {
             lineWidth: 30),
         ...licenseTexts.map(
           (text) => ContactInfoLine(
-            // Material Icon for 'directions_car' is 0xe1d7
             iconData: const pw.IconData(0xe1d7),
             text: text,
             iconFont: iconFont,
@@ -75,18 +72,6 @@ class PdfLeftColumn extends pw.StatelessWidget {
     final bool hasDetails = personalInfo.birthDate != null ||
         personalInfo.maritalStatus != null ||
         personalInfo.militaryServiceStatus != null;
-
-    final sortedEducation = List<Education>.from(data.education)
-      ..sort((a, b) {
-        final levelComparison = b.level.index.compareTo(a.level.index);
-        if (levelComparison != 0) return levelComparison;
-        if (a.isCurrent && !b.isCurrent) return -1;
-        if (!a.isCurrent && b.isCurrent) return 1;
-        if (!a.isCurrent && !b.isCurrent) {
-          return b.endDate!.compareTo(a.endDate!);
-        }
-        return b.startDate.compareTo(a.startDate);
-      });
 
     return pw.Container(
       color: PdfLayoutColors.primary,
@@ -156,15 +141,15 @@ class PdfLeftColumn extends pw.StatelessWidget {
                 text: personalInfo.militaryServiceStatus!,
                 iconFont: iconFont),
           if (hasDetails) pw.SizedBox(height: 20),
-          if (sortedEducation.isNotEmpty)
+          if (data.education.isNotEmpty)
             SectionHeader(
                 title: 'EDUCATION',
                 titleColor: PdfLayoutColors.lightText,
                 lineColor: PdfLayoutColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
-          ...sortedEducation.map((edu) => EducationItem(edu)),
-          if (sortedEducation.isNotEmpty) pw.SizedBox(height: 20),
+          ...data.education.map((edu) => EducationItem(edu)),
+          if (data.education.isNotEmpty) pw.SizedBox(height: 20),
           if (data.skills.isNotEmpty)
             SectionHeader(
                 title: 'SKILLS',
@@ -182,7 +167,6 @@ class PdfLeftColumn extends pw.StatelessWidget {
                 fontSize: 14,
                 lineWidth: 30),
           ...data.languages.map((lang) => LanguageItem(lang)),
-          // ✅ NEW: Conditionally build and add the license section
           if (personalInfo.hasDriverLicense)
             _buildLicenseSection(personalInfo, iconFont),
         ],
