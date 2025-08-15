@@ -25,7 +25,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   DateTime? _endDate;
   bool _isCurrent = true;
 
-  // ✅ UPDATED: Formatter now only shows the year.
   final DateFormat _dateFormatter = DateFormat('yyyy');
 
   @override
@@ -33,17 +32,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     _degreeNameController.dispose();
     _schoolController.dispose();
     super.dispose();
-  }
-
-  String _educationLevelToString(EducationLevel level) {
-    switch (level) {
-      case EducationLevel.bachelor:
-        return 'Bachelor';
-      case EducationLevel.master:
-        return 'Master';
-      case EducationLevel.doctor:
-        return 'Doctorate';
-    }
   }
 
   void _addEducation() {
@@ -74,7 +62,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     }
   }
 
-  // ✅ UPDATED: This now uses a YearPicker for a much better UX.
   Future<void> _selectYear(BuildContext context, bool isStartDate) async {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
@@ -154,7 +141,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 items: EducationLevel.values
                     .map((level) => DropdownMenuItem(
                           value: level,
-                          child: Text(_educationLevelToString(level)),
+                          child: Text(level.toDisplayString()),
                         ))
                     .toList(),
                 onChanged: (value) {
@@ -235,7 +222,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     return InkWell(
       onTap: () {
         if (!isStart && _isCurrent) return;
-        _selectYear(context, isStart); // ✅ UPDATED: Call the new year picker
+        _selectYear(context, isStart);
       },
       child: InputDecorator(
         decoration: InputDecoration(
@@ -256,8 +243,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   Widget _buildEducationCard(
       BuildContext context, ThemeData theme, Education edu, int index) {
-    // ✅ UPDATED: Use the new year-only formatter for display
-    final title = '${_educationLevelToString(edu.level)} ${edu.degreeName}';
+    final title = '${edu.level.toDisplayString()} ${edu.degreeName}';
     final subtitle =
         '${edu.school}\n${_dateFormatter.format(edu.startDate)} - ${edu.isCurrent ? "Present" : _dateFormatter.format(edu.endDate!)}';
 

@@ -9,6 +9,21 @@ enum LicenseType {
   both,
 }
 
+extension LicenseTypeExtension on LicenseType {
+  String toDisplayString() {
+    switch (this) {
+      case LicenseType.local:
+        return 'Local';
+      case LicenseType.international:
+        return 'International';
+      case LicenseType.both:
+        return 'Both';
+      case LicenseType.none:
+        return '';
+    }
+  }
+}
+
 @embedded
 class PersonalInfo {
   final String name;

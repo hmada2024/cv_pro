@@ -2,12 +2,23 @@
 
 part of 'cv_data.dart';
 
-/// Defines the academic level of an educational qualification.
-/// This allows for structured sorting, ensuring doctorates appear before masters, etc.
 enum EducationLevel {
   bachelor,
   master,
   doctor,
+}
+
+extension EducationLevelExtension on EducationLevel {
+  String toDisplayString() {
+    switch (this) {
+      case EducationLevel.bachelor:
+        return 'Bachelor';
+      case EducationLevel.master:
+        return 'Master';
+      case EducationLevel.doctor:
+        return 'Doctorate';
+    }
+  }
 }
 
 @embedded

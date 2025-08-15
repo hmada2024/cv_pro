@@ -7,19 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DrivingLicenseSection extends ConsumerWidget {
   const DrivingLicenseSection({super.key});
 
-  String _licenseTypeToString(LicenseType type) {
-    switch (type) {
-      case LicenseType.local:
-        return 'Local';
-      case LicenseType.international:
-        return 'International';
-      case LicenseType.both:
-        return 'Both';
-      case LicenseType.none:
-        return '';
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final licenseInfo = ref.watch(cvFormProvider.select((cv) => (
@@ -78,7 +65,7 @@ class DrivingLicenseSection extends ConsumerWidget {
                             color:
                                 isSelected ? theme.colorScheme.primary : null,
                           ),
-                          label: Text(_licenseTypeToString(type)),
+                          label: Text(type.toDisplayString()),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: isSelected
                                 ? theme.colorScheme.primary.withOpacity(0.12)

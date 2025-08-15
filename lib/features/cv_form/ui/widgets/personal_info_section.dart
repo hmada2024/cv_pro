@@ -1,9 +1,12 @@
 // features/cv_form/ui/widgets/personal_info_section.dart
+
 import 'dart:io';
 import 'package:cv_pro/core/theme/app_colors.dart';
-import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/cv_form/ui/widgets/shared/form_date_picker_field.dart';
+import 'package:cv_pro/features/cv_form/ui/widgets/shared/form_dropdown_field.dart';
+import 'package:cv_pro/features/cv_form/ui/widgets/shared/form_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
@@ -18,7 +21,6 @@ class PersonalInfoSection extends ConsumerStatefulWidget {
 }
 
 class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
-  // Controllers manage the text field's state locally for performance.
   final _nameController = TextEditingController();
   final _jobTitleController = TextEditingController();
   final _emailController = TextEditingController();
@@ -29,7 +31,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
   final DateFormat _dateFormatter = DateFormat('d MMMM yyyy');
 
-  // Focus nodes to enhance UI feedback.
   final _nameFocus = FocusNode();
   final _jobTitleFocus = FocusNode();
   final _emailFocus = FocusNode();
@@ -40,10 +41,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   @override
   void initState() {
     super.initState();
-    // Initialize controllers with the current state from the provider.
     _syncControllers(ref.read(cvFormProvider).personalInfo);
 
-    // Add listeners to rebuild for focus-based UI changes (e.g., icon color).
     _nameFocus.addListener(() => setState(() {}));
     _jobTitleFocus.addListener(() => setState(() {}));
     _emailFocus.addListener(() => setState(() {}));
@@ -93,7 +92,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   }
 
   Future<void> _selectBirthDate(BuildContext context) async {
-    // ✅ CORRECT: Use `ref.read` inside a callback.
     final notifier = ref.read(cvFormProvider.notifier);
     final initialDate = ref.read(cvFormProvider).personalInfo.birthDate ??
         DateTime.now().subtract(const Duration(days: 365 * 25));
@@ -107,11 +105,9 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
     if (picked != null && picked != initialDate) {
       notifier.updatePersonalInfo(birthDate: picked);
-      // The `ref.listen` below will handle updating the controller text.
     }
   }
 
-  // ✅ NEW: Encapsulated image picker action for reusability.
   void _pickImage(ThemeData theme) {
     ref.read(cvFormProvider.notifier).pickProfileImage(
           toolbarColor: theme.appBarTheme.backgroundColor!,
@@ -197,7 +193,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               ),
             ),
             const SizedBox(height: 16),
-            _buildTextField(
+            FormTextField(
               controller: _nameController,
               label: 'Full Name',
               iconData: Icons.badge_outlined,
@@ -206,7 +202,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(name: value),
             ),
-            _buildTextField(
+            FormTextField(
               controller: _jobTitleController,
               label: 'Job Title',
               iconData: Icons.work_outline,
@@ -215,13 +211,13 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(jobTitle: value),
             ),
-            _buildDatePickerField(
+            FormDatePickerField(
               controller: _birthDateController,
               label: 'Date of Birth',
               icon: Icons.cake_outlined,
               onTap: () => _selectBirthDate(context),
             ),
-            _buildTextField(
+            FormTextField(
               controller: _emailController,
               label: 'Email Address',
               iconData: Icons.email_outlined,
@@ -231,7 +227,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(email: value),
             ),
-            _buildTextField(
+            FormTextField(
               controller: _phoneController,
               label: 'Phone Number',
               iconData: Icons.phone_outlined,
@@ -241,7 +237,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(phone: value),
             ),
-            _buildTextField(
+            FormTextField(
               controller: _addressController,
               label: 'Address',
               iconData: Icons.location_on_outlined,
@@ -250,7 +246,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   .read(cvFormProvider.notifier)
                   .updatePersonalInfo(address: value),
             ),
-            _buildDropdownField(
+            FormDropdownField(
               label: 'Marital Status',
               icon: Icons.assignment_ind_outlined,
               value: personalInfo.maritalStatus,
@@ -261,7 +257,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                     .updatePersonalInfo(maritalStatus: value);
               },
             ),
-            _buildDropdownField(
+            FormDropdownField(
               label: 'Military Service',
               icon: Icons.shield_outlined,
               value: personalInfo.militaryServiceStatus,
@@ -272,7 +268,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                     .updatePersonalInfo(militaryServiceStatus: value);
               },
             ),
-            _buildTextField(
+            FormTextField(
               controller: _summaryController,
               label: 'Summary / About Me',
               iconData: Icons.notes_outlined,
@@ -284,88 +280,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData iconData,
-    required FocusNode focusNode,
-    required ValueChanged<String> onChanged,
-    TextInputType? keyboardType,
-    int maxLines = 1,
-  }) {
-    final theme = Theme.of(context);
-    final bool isFocused = focusNode.hasFocus;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: EnglishOnlyTextField(
-        controller: controller,
-        focusNode: focusNode,
-        labelText: label,
-        prefixIcon: Icon(
-          iconData,
-          color: isFocused
-              ? theme.colorScheme.primary
-              : theme.colorScheme.onSurface.withOpacity(0.6),
-        ),
-        keyboardType: keyboardType,
-        maxLines: maxLines,
-        onChanged: onChanged,
-      ),
-    );
-  }
-
-  Widget _buildDropdownField({
-    required String label,
-    required IconData icon,
-    required String? value,
-    required List<String> items,
-    required void Function(String?) onChanged,
-  }) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: DropdownButtonFormField<String>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon:
-              Icon(icon, color: theme.colorScheme.onSurface.withOpacity(0.6)),
-        ),
-        items: items.map<DropdownMenuItem<String>>((String item) {
-          return DropdownMenuItem<String>(
-            value: item,
-            child: Text(item),
-          );
-        }).toList(),
-        onChanged: onChanged,
-        isExpanded: true,
-      ),
-    );
-  }
-
-  Widget _buildDatePickerField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    required VoidCallback onTap,
-  }) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon:
-              Icon(icon, color: theme.colorScheme.onSurface.withOpacity(0.6)),
-        ),
-        readOnly: true,
-        onTap: onTap,
       ),
     );
   }
