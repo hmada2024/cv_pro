@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/driving_license_section.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:flutter/material.dart';
@@ -21,18 +22,18 @@ class DrivingLicenseSection extends ConsumerWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 Icon(Icons.directions_car, color: theme.colorScheme.secondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSizes.p8),
                 Text('Driving License', style: theme.textTheme.titleLarge),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSizes.p8),
             SwitchListTile(
               title: const Text('I have a driver\'s license'),
               value: licenseInfo.hasLicense,
@@ -48,20 +49,21 @@ class DrivingLicenseSection extends ConsumerWidget {
               child: IgnorePointer(
                 ignoring: !licenseInfo.hasLicense,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 12.0),
+                  padding: const EdgeInsets.only(top: AppSizes.p12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: selectableTypes.map((type) {
                       final isSelected = (licenseInfo.type == type);
                       final isLast = type == selectableTypes.last;
                       return Padding(
-                        padding: EdgeInsets.only(bottom: isLast ? 0 : 8.0),
+                        padding:
+                            EdgeInsets.only(bottom: isLast ? 0 : AppSizes.p8),
                         child: OutlinedButton.icon(
                           onPressed: () =>
                               notifier.updateLicenseInfo(type: type),
                           icon: Icon(
                             isSelected ? Icons.check : null,
-                            size: 18,
+                            size: AppSizes.iconSizeSmall,
                             color:
                                 isSelected ? theme.colorScheme.primary : null,
                           ),
@@ -79,8 +81,10 @@ class DrivingLicenseSection extends ConsumerWidget {
                                   : theme.dividerColor,
                             ),
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
+                                borderRadius: BorderRadius.circular(
+                                    AppSizes.buttonRadius)),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: AppSizes.p12),
                             alignment: Alignment.center,
                           ),
                         ),

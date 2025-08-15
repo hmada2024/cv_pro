@@ -1,6 +1,6 @@
 // features/cv_form/ui/widgets/personal_info_section.dart
-
 import 'dart:io';
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/theme/app_colors.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -137,25 +137,25 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Icon(Icons.person, color: theme.colorScheme.secondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSizes.p8),
                 Text('Personal Information', style: theme.textTheme.titleLarge),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.p16),
             Center(
               child: GestureDetector(
                 onTap: () => _pickImage(theme),
                 child: Stack(
                   children: [
                     CircleAvatar(
-                      radius: 50,
+                      radius: AppSizes.avatarRadius,
                       backgroundColor: theme.dividerColor.withOpacity(0.5),
                       backgroundImage: hasImage
                           ? FileImage(File(personalInfo.profileImagePath!))
@@ -166,10 +166,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                               children: [
                                 Icon(
                                   Icons.add_a_photo_outlined,
-                                  size: 32,
+                                  size: AppSizes.iconSizeLarge - AppSizes.p8,
                                   color: theme.colorScheme.secondary,
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: AppSizes.p4),
                                 Text(
                                   'Add Photo',
                                   style: theme.textTheme.bodySmall,
@@ -182,17 +182,17 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                       bottom: 2,
                       right: 2,
                       child: CircleAvatar(
-                        radius: 12,
+                        radius: AppSizes.p12,
                         backgroundColor: theme.colorScheme.primary,
                         child: const Icon(Icons.edit,
-                            color: Colors.white, size: 18),
+                            color: Colors.white, size: AppSizes.iconSizeSmall),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.p16),
             FormTextField(
               controller: _nameController,
               label: 'Full Name',

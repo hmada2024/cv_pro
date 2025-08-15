@@ -1,4 +1,5 @@
 // features/cv_form/ui/screens/settings_screen.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/theme/app_theme.dart';
@@ -10,7 +11,6 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ❌ REMOVED: selectedTemplate is no longer needed.
     final currentThemeMode = ref.watch(themeModeProvider);
 
     return Scaffold(
@@ -18,13 +18,13 @@ class SettingsScreen extends ConsumerWidget {
         title: const Text('Settings'),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p16),
         children: [
           Text(
             'Appearance',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSizes.p8),
           SegmentedButton<ThemeMode>(
             segments: const <ButtonSegment<ThemeMode>>[
               ButtonSegment<ThemeMode>(
@@ -45,14 +45,12 @@ class SettingsScreen extends ConsumerWidget {
               ref.read(themeModeProvider.notifier).state = newSelection.first;
             },
           ),
-          const Divider(height: 40),
-
-          // ✅ SECTION UPDATED: تم التبسيط لعرض القالب الوحيد المتاح.
+          const Divider(height: AppSizes.p32 + AppSizes.p8),
           Text(
             'CV Template',
             style: Theme.of(context).textTheme.titleLarge,
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSizes.p8),
           Card(
             child: ListTile(
               title: const Text('Official Template'),
@@ -69,7 +67,6 @@ class SettingsScreen extends ConsumerWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PdfPreviewScreen(
-                        // ✅ UPDATED: استدعاء الـ provider الوهمي المبسط.
                         pdfProvider: dummyPdfBytesProvider,
                       ),
                     ),

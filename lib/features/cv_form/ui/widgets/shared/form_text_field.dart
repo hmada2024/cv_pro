@@ -1,4 +1,5 @@
 // lib/features/cv_form/ui/widgets/shared/form_text_field.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:flutter/material.dart';
 
@@ -25,11 +26,10 @@ class FormTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    // The focus state is managed directly here.
     final bool isFocused = focusNode.hasFocus;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.only(bottom: AppSizes.p12),
       child: EnglishOnlyTextField(
         controller: controller,
         focusNode: focusNode,

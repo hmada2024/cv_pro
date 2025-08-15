@@ -1,4 +1,5 @@
 // features/cv_form/ui/screens/cv_form_screen.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
@@ -23,7 +24,8 @@ class CvFormScreen extends ConsumerWidget {
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.buttonRadius)),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
@@ -31,7 +33,6 @@ class CvFormScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Logic for showing motivational snackbars upon adding the first item to a section.
     ref.listen<List<Education>>(cvFormProvider.select((cv) => cv.education),
         (prev, next) {
       if ((prev?.isEmpty ?? true) && next.isNotEmpty) {
@@ -95,7 +96,8 @@ class CvFormScreen extends ConsumerWidget {
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).disabledColor,
             ),
-            iconSize: 28,
+            iconSize:
+                AppSizes.iconSizeMedium + 4, // Slightly larger action icon
             tooltip: 'Create Final CV',
             onPressed: canCreate
                 ? () {
@@ -110,28 +112,28 @@ class CvFormScreen extends ConsumerWidget {
                   }
                 : null,
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: AppSizes.p16),
         ],
         bottom: const CvCompletionProgress(),
       ),
       body: const SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(AppSizes.p16),
         child: Column(
           children: [
             PersonalInfoSection(),
-            SizedBox(height: 16),
+            SizedBox(height: AppSizes.p16),
             EducationSection(),
-            SizedBox(height: 16),
+            SizedBox(height: AppSizes.p16),
             ExperienceSection(),
-            SizedBox(height: 16),
+            SizedBox(height: AppSizes.p16),
             SkillSection(),
-            SizedBox(height: 16),
+            SizedBox(height: AppSizes.p16),
             LanguageSection(),
-            SizedBox(height: 16),
+            SizedBox(height: AppSizes.p16),
             DrivingLicenseSection(),
-            SizedBox(height: 16),
+            SizedBox(height: AppSizes.p16),
             ReferencesSection(),
-            SizedBox(height: 20),
+            SizedBox(height: AppSizes.p24),
           ],
         ),
       ),
