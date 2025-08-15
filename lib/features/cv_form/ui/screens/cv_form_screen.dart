@@ -12,15 +12,17 @@ import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/personal_info_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/references_section.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/skill_section.dart';
-import '../widgets/driving_license_section.dart'; // ✅ NEW: Import the new section
+import '../widgets/driving_license_section.dart';
 
 class CvFormScreen extends ConsumerWidget {
   const CvFormScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final cvData = ref.watch(cvFormProvider);
-    final canCreate = cvData.personalInfo.name.isNotEmpty;
+    // ✅ OPTIMIZED: This widget now only watches the single boolean it cares about.
+    // It will no longer rebuild when you type in the summary, add a skill, etc.
+    final canCreate = ref
+        .watch(cvFormProvider.select((cv) => cv.personalInfo.name.isNotEmpty));
 
     return Scaffold(
       appBar: AppBar(
@@ -46,6 +48,9 @@ class CvFormScreen extends ConsumerWidget {
             tooltip: 'Create Final CV',
             onPressed: canCreate
                 ? () {
+                    // Invalidate the provider to ensure it re-fetches the latest data.
+                    // This is good practice when triggering a process based on user action.
+                    ref.invalidate(pdfBytesProvider);
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => PdfPreviewScreen(
@@ -62,6 +67,8 @@ class CvFormScreen extends ConsumerWidget {
       ),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
+        // The sections themselves are now responsible for watching their own state.
+        // This screen doesn't need to rebuild them.
         child: Column(
           children: [
             PersonalInfoSection(),
@@ -74,7 +81,6 @@ class CvFormScreen extends ConsumerWidget {
             SizedBox(height: 16),
             LanguageSection(),
             SizedBox(height: 16),
-            // ✅ NEW: Add the driving license section here
             DrivingLicenseSection(),
             SizedBox(height: 16),
             ReferencesSection(),

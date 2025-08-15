@@ -6,19 +6,32 @@ import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/pdf_export/data/dummy_data/cv_data_dummy.dart';
 
-/// making it compatible with any provider that passes a ref object.
-Future<Uint8List> _generatePdf(Ref ref, {bool isDummy = false}) async {
-  // 1. Load all required font assets on the main thread.
+typedef PdfFontAssets = ({
+  ByteData fontData,
+  ByteData boldFontData,
+  ByteData iconFontData,
+});
+
+final pdfAssetsProvider = FutureProvider<PdfFontAssets>((ref) async {
   final fontData = await rootBundle.load('assets/fonts/Lato-Regular.ttf');
   final boldFontData = await rootBundle.load('assets/fonts/Lato-Bold.ttf');
   final iconFontData =
       await rootBundle.load('assets/fonts/MaterialIcons-Regular.ttf');
 
-  // 2. Get the correct CV data.
-  final cvData = isDummy ? createDummyCvData() : ref.watch(cvFormProvider);
-  final showNote = isDummy ? false : ref.watch(showReferencesNoteProvider);
+  return (
+    fontData: fontData,
+    boldFontData: boldFontData,
+    iconFontData: iconFontData,
+  );
+});
 
-  // 3. Load the profile image data on the main thread.
+Future<Uint8List> _generatePdf(Ref ref, {bool isDummy = false}) async {
+  final fontAssets = await ref.watch(pdfAssetsProvider.future);
+
+  // 2. Get the correct CV data.
+  final cvData = isDummy ? createDummyCvData() : ref.read(cvFormProvider);
+  final showNote = isDummy ? false : ref.read(showReferencesNoteProvider);
+
   Uint8List? profileImageData;
   final imagePath = cvData.personalInfo.profileImagePath;
 
@@ -36,19 +49,20 @@ Future<Uint8List> _generatePdf(Ref ref, {bool isDummy = false}) async {
     }
   }
 
-  // 4. Call the static method that bundles everything and runs the isolate.
   return PdfServiceImpl.generateCvWithAssets(
     data: cvData,
     showReferencesNote: showNote,
-    fontData: fontData,
-    boldFontData: boldFontData,
-    iconFontData: iconFontData,
+    fontData: fontAssets.fontData,
+    boldFontData: fontAssets.boldFontData,
+    iconFontData: fontAssets.iconFontData,
     profileImageData: profileImageData,
   );
 }
 
 /// Provider to generate the PDF for the user's actual CV data.
 final pdfBytesProvider = FutureProvider.autoDispose<Uint8List>((ref) async {
+  ref.watch(cvFormProvider);
+  ref.watch(showReferencesNoteProvider);
   return _generatePdf(ref, isDummy: false);
 });
 

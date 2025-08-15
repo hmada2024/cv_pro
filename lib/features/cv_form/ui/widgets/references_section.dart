@@ -91,7 +91,7 @@ class ReferencesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final references = ref.watch(cvFormProvider).references;
+    final references = ref.watch(cvFormProvider.select((cv) => cv.references));
     final showNote = ref.watch(showReferencesNoteProvider);
     final theme = Theme.of(context);
 

@@ -31,6 +31,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
 
   void _addSkill() {
     if (_skillController.text.isNotEmpty && _selectedSkillLevel != null) {
+      // ✅ CORRECT: Using `ref.read` for actions is efficient.
       ref.read(cvFormProvider.notifier).addSkill(
             name: _skillController.text,
             level: _selectedSkillLevel!,
@@ -44,8 +45,10 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
 
   @override
   Widget build(BuildContext context) {
-    final skills = ref.watch(cvFormProvider).skills;
+    // ✅ OPTIMIZED: This widget now only rebuilds when the list of skills changes.
+    final skills = ref.watch(cvFormProvider.select((cv) => cv.skills));
     final theme = Theme.of(context);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),

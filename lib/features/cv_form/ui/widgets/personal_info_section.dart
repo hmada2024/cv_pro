@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cv_pro/core/theme/app_colors.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
@@ -18,6 +19,7 @@ class PersonalInfoSection extends ConsumerStatefulWidget {
 }
 
 class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
+  // Controllers manage the text field's state locally for performance.
   final _nameController = TextEditingController();
   final _jobTitleController = TextEditingController();
   final _emailController = TextEditingController();
@@ -25,8 +27,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   final _addressController = TextEditingController();
   final _summaryController = TextEditingController();
   final _birthDateController = TextEditingController();
+
   final DateFormat _dateFormatter = DateFormat('d MMMM yyyy');
 
+  // Focus nodes to enhance UI feedback.
   final _nameFocus = FocusNode();
   final _jobTitleFocus = FocusNode();
   final _emailFocus = FocusNode();
@@ -37,22 +41,10 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   @override
   void initState() {
     super.initState();
-    final cvData = ref.read(cvFormProvider);
-    final personalInfo = cvData.personalInfo;
+    // Initialize controllers with the current state from the provider.
+    _syncControllers(ref.read(cvFormProvider).personalInfo);
 
-    _nameController.text = personalInfo.name;
-    _jobTitleController.text = personalInfo.jobTitle;
-    _emailController.text = personalInfo.email;
-    _phoneController.text = personalInfo.phone ?? '';
-    _addressController.text = personalInfo.address ?? '';
-    _summaryController.text = personalInfo.summary;
-
-    if (personalInfo.birthDate != null) {
-      _birthDateController.text =
-          _dateFormatter.format(personalInfo.birthDate!);
-    }
-
-    // Add listeners to rebuild on focus change
+    // Add listeners to rebuild for focus-based UI changes (e.g., icon color).
     _nameFocus.addListener(() => setState(() {}));
     _jobTitleFocus.addListener(() => setState(() {}));
     _emailFocus.addListener(() => setState(() {}));
@@ -70,19 +62,41 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     _addressController.dispose();
     _summaryController.dispose();
     _birthDateController.dispose();
-
-    // Dispose focus nodes
     _nameFocus.dispose();
     _jobTitleFocus.dispose();
     _emailFocus.dispose();
     _phoneFocus.dispose();
     _addressFocus.dispose();
     _summaryFocus.dispose();
-
     super.dispose();
   }
 
+  /// ✅ NEW: Helper method to synchronize controller text with the state.
+  /// Prevents unnecessary updates if the text already matches.
+  void _syncControllers(PersonalInfo info) {
+    if (_nameController.text != info.name) _nameController.text = info.name;
+    if (_jobTitleController.text != info.jobTitle) {
+      _jobTitleController.text = info.jobTitle;
+    }
+    if (_emailController.text != info.email) _emailController.text = info.email;
+    if (_phoneController.text != (info.phone ?? '')) {
+      _phoneController.text = info.phone ?? '';
+    }
+    if (_addressController.text != (info.address ?? '')) {
+      _addressController.text = info.address ?? '';
+    }
+    if (_summaryController.text != info.summary) {
+      _summaryController.text = info.summary;
+    }
+    final formattedDate =
+        info.birthDate != null ? _dateFormatter.format(info.birthDate!) : '';
+    if (_birthDateController.text != formattedDate) {
+      _birthDateController.text = formattedDate;
+    }
+  }
+
   Future<void> _selectBirthDate(BuildContext context) async {
+    // ✅ CORRECT: Use `ref.read` inside a callback.
     final notifier = ref.read(cvFormProvider.notifier);
     final initialDate = ref.read(cvFormProvider).personalInfo.birthDate ??
         DateTime.now().subtract(const Duration(days: 365 * 25));
@@ -96,15 +110,29 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
     if (picked != null && picked != initialDate) {
       notifier.updatePersonalInfo(birthDate: picked);
-      setState(() {
-        _birthDateController.text = _dateFormatter.format(picked);
-      });
+      // The `ref.listen` below will handle updating the controller text.
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final personalInfo = ref.watch(cvFormProvider).personalInfo;
+    // ✅ OPTIMIZED: This widget now only listens for changes to personalInfo.
+    // It will NOT rebuild when other sections (like skills, experience) are changed.
+    final personalInfo =
+        ref.watch(cvFormProvider.select((s) => s.personalInfo));
+
+    // ✅ ROBUSTNESS: Use `ref.listen` to keep controllers in sync with the state.
+    // This is crucial for handling state changes that originate from outside the widget,
+    // like the initial data load from the database.
+    ref.listen<PersonalInfo>(
+      cvFormProvider.select((s) => s.personalInfo),
+      (previous, next) {
+        if (previous != next) {
+          _syncControllers(next);
+        }
+      },
+    );
+
     final theme = Theme.of(context);
 
     return Card(
@@ -127,10 +155,12 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: theme.dividerColor,
-                    backgroundImage: personalInfo.profileImagePath != null
+                    backgroundImage: personalInfo.profileImagePath != null &&
+                            personalInfo.profileImagePath!.isNotEmpty
                         ? FileImage(File(personalInfo.profileImagePath!))
                         : null,
-                    child: personalInfo.profileImagePath == null
+                    child: personalInfo.profileImagePath == null ||
+                            personalInfo.profileImagePath!.isEmpty
                         ? Icon(Icons.camera_alt,
                             size: 40, color: Colors.grey.shade600)
                         : null,
@@ -140,6 +170,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                     right: 0,
                     child: InkWell(
                       onTap: () {
+                        // ✅ CORRECT: Using `ref.read` for an action.
                         ref.read(cvFormProvider.notifier).pickProfileImage(
                               toolbarColor: theme.appBarTheme.backgroundColor!,
                               toolbarWidgetColor:

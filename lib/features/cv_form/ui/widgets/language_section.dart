@@ -33,6 +33,7 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
   void _addLanguage() {
     if (_languageController.text.isNotEmpty &&
         _selectedProficiencyLevel != null) {
+      // ✅ CORRECT: Using `ref.read` for actions is efficient.
       ref.read(cvFormProvider.notifier).addLanguage(
             name: _languageController.text,
             proficiency: _selectedProficiencyLevel!,
@@ -46,8 +47,10 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
 
   @override
   Widget build(BuildContext context) {
-    final languages = ref.watch(cvFormProvider).languages;
+    // ✅ OPTIMIZED: This widget now only rebuilds when the list of languages changes.
+    final languages = ref.watch(cvFormProvider.select((cv) => cv.languages));
     final theme = Theme.of(context);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
