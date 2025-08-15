@@ -1,30 +1,27 @@
 // features/pdf_export/data/providers/pdf_providers.dart
-
 import 'dart:typed_data';
-
 import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/pdf_export/data/models/dummy_cv_data.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Provider to generate the PDF for the user's actual CV data.
-/// It depends on the selected template.
-final pdfBytesProvider = FutureProvider.autoDispose
-    .family<Uint8List, CvTemplate>((ref, template) async {
+/// ✅ UPDATED: تم تبسيط الـ provider ليصبح FutureProvider.autoDispose عادي.
+/// لم يعد هناك حاجة ليكون من نوع .family بما أن هناك قالب واحد فقط.
+final pdfBytesProvider = FutureProvider.autoDispose<Uint8List>((ref) async {
   final pdfService = ref.read(pdfServiceProvider);
   final cvData = ref.watch(cvFormProvider);
   final showNote = ref.watch(showReferencesNoteProvider);
-  return pdfService.generateCv(cvData, template, showReferencesNote: showNote);
+  // ✅ UPDATED: استدعاء دالة generateCv لم يعد يمرر نوع القالب.
+  return pdfService.generateCv(cvData, showReferencesNote: showNote);
 });
 
-/// Provider to generate a PDF using dummy data for template preview purposes.
-/// It depends on the selected template.
-final dummyPdfBytesProvider = FutureProvider.autoDispose
-    .family<Uint8List, CvTemplate>((ref, template) async {
+/// ✅ UPDATED: الـ provider الخاص بالبيانات الوهمية تم تبسيطه أيضاً.
+/// يستخدم لمعاينة القالب من شاشة الإعدادات.
+final dummyPdfBytesProvider =
+    FutureProvider.autoDispose<Uint8List>((ref) async {
   final pdfService = ref.read(pdfServiceProvider);
   final dummyData = createDummyCvData();
-  final showNote = ref.watch(showReferencesNoteProvider);
-  return pdfService.generateCv(dummyData, template,
-      showReferencesNote: showNote);
+  // نستخدم قيمة ثابتة للمعاينة لإظهار شكل المراجع الكامل.
+  return pdfService.generateCv(dummyData, showReferencesNote: false);
 });

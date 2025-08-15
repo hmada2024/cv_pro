@@ -1,10 +1,8 @@
 // features/cv_form/ui/screens/cv_form_screen.dart
-
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/cv_completion_progress.dart';
 import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
-import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
@@ -47,11 +45,12 @@ class CvFormScreen extends ConsumerWidget {
             tooltip: 'Create Final CV',
             onPressed: canCreate
                 ? () {
-                    final selectedTemplate = ref.read(selectedTemplateProvider);
+                    // ❌ REMOVED: لم نعد بحاجة لقراءة selectedTemplateProvider.
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => PdfPreviewScreen(
-                          pdfProvider: pdfBytesProvider(selectedTemplate),
+                          // ✅ UPDATED: استدعاء الـ provider المبسط.
+                          pdfProvider: pdfBytesProvider,
                         ),
                       ),
                     );
@@ -60,7 +59,6 @@ class CvFormScreen extends ConsumerWidget {
           ),
           const SizedBox(width: 16),
         ],
-        // ✅ NEW: Add the completion progress bar widget here.
         bottom: const CvCompletionProgress(),
       ),
       body: const SingleChildScrollView(

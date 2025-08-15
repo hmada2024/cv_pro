@@ -1,10 +1,8 @@
 // features/cv_form/ui/screens/settings_screen.dart
-
-import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/theme/app_theme.dart';
-import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
+import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -12,7 +10,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedTemplate = ref.watch(selectedTemplateProvider);
+    // ❌ REMOVED: selectedTemplate is no longer needed.
     final currentThemeMode = ref.watch(themeModeProvider);
 
     return Scaffold(
@@ -49,101 +47,38 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const Divider(height: 40),
 
+          // ✅ SECTION UPDATED: تم التبسيط لعرض القالب الوحيد المتاح.
           Text(
             'CV Template',
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Choose the template for the final CV.',
-            style: TextStyle(color: Colors.grey),
-          ),
-          const SizedBox(height: 16),
-
-          _buildTemplateSelector(
-            context: context,
-            ref: ref,
-            title: 'Two Column 01',
-            subtitle:
-                'Features a prominent header and a clean, sidebar-based layout for contact details.',
-            value: CvTemplate.twoColumn01,
-            groupValue: selectedTemplate,
-            onChanged: (value) {
-              if (value != null) {
-                ref.read(selectedTemplateProvider.notifier).state = value;
-              }
-            },
-          ),
-          const SizedBox(height: 12),
-
-          _buildTemplateSelector(
-            context: context,
-            ref: ref,
-            title: 'Two Column 02',
-            subtitle:
-                'A dynamic, asymmetrical layout that separates key info from the main content.',
-            value: CvTemplate.twoColumn02,
-            groupValue: selectedTemplate,
-            onChanged: (value) {
-              if (value != null) {
-                ref.read(selectedTemplateProvider.notifier).state = value;
-              }
-            },
-          ),
-          const SizedBox(height: 12),
-
-          // ✅ NEW: Add the selector for the new template
-          _buildTemplateSelector(
-            context: context,
-            ref: ref,
-            title: 'Asymmetrical 03',
-            subtitle:
-                'A modern design with a diagonal header and a clear content hierarchy.',
-            value: CvTemplate.twoColumn03,
-            groupValue: selectedTemplate,
-            onChanged: (value) {
-              if (value != null) {
-                ref.read(selectedTemplateProvider.notifier).state = value;
-              }
-            },
+          Card(
+            child: ListTile(
+              title: const Text('Official Template'),
+              subtitle: const Text(
+                  'A dynamic, asymmetrical layout that separates key info from the main content.'),
+              leading: Icon(
+                Icons.article_outlined,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              trailing: IconButton(
+                icon: const Icon(Icons.visibility_outlined),
+                tooltip: 'Preview with dummy data',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PdfPreviewScreen(
+                        // ✅ UPDATED: استدعاء الـ provider الوهمي المبسط.
+                        pdfProvider: dummyPdfBytesProvider,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTemplateSelector({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String title,
-    required String subtitle,
-    required CvTemplate value,
-    required CvTemplate groupValue,
-    required void Function(CvTemplate?) onChanged,
-  }) {
-    return Card(
-      child: ListTile(
-        title: Text(title),
-        subtitle: Text(subtitle),
-        leading: Radio<CvTemplate>(
-          value: value,
-          groupValue: groupValue,
-          onChanged: onChanged,
-          activeColor: Theme.of(context).colorScheme.primary,
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.visibility_outlined),
-          tooltip: 'Preview with dummy data',
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => PdfPreviewScreen(
-                  pdfProvider: dummyPdfBytesProvider(value),
-                ),
-              ),
-            );
-          },
-        ),
       ),
     );
   }
