@@ -45,7 +45,7 @@ class PdfRightColumn extends pw.StatelessWidget {
           pw.Text(
             data.personalInfo.jobTitle.toUpperCase(),
             style: const pw.TextStyle(
-                fontSize: 14, color: PdfLayoutColors.darkText),
+                fontSize: 14, color: PdfLayoutColors.primary),
           ),
           pw.SizedBox(height: 25),
           if (data.personalInfo.summary.isNotEmpty)
