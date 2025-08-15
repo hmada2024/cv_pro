@@ -19,8 +19,6 @@ class CvFormScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ✅ OPTIMIZED: This widget now only watches the single boolean it cares about.
-    // It will no longer rebuild when you type in the summary, add a skill, etc.
     final canCreate = ref
         .watch(cvFormProvider.select((cv) => cv.personalInfo.name.isNotEmpty));
 
@@ -48,8 +46,6 @@ class CvFormScreen extends ConsumerWidget {
             tooltip: 'Create Final CV',
             onPressed: canCreate
                 ? () {
-                    // Invalidate the provider to ensure it re-fetches the latest data.
-                    // This is good practice when triggering a process based on user action.
                     ref.invalidate(pdfBytesProvider);
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -67,8 +63,6 @@ class CvFormScreen extends ConsumerWidget {
       ),
       body: const SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
-        // The sections themselves are now responsible for watching their own state.
-        // This screen doesn't need to rebuild them.
         child: Column(
           children: [
             PersonalInfoSection(),
