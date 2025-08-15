@@ -4,7 +4,7 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../colors_template_02.dart';
+import 'colors_template_02.dart';
 
 class EducationItem extends pw.StatelessWidget {
   final Education education;
@@ -58,8 +58,8 @@ class EducationItem extends pw.StatelessWidget {
           pw.SizedBox(width: 10),
           pw.Text(
             dateRange.toUpperCase(),
-            style: const pw.TextStyle(
-                color: Template02Colors.accent, fontSize: 8),
+            style:
+                const pw.TextStyle(color: Template02Colors.accent, fontSize: 8),
           ),
         ],
       ),

@@ -4,18 +4,20 @@ import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'colors_template_02.dart'; // ✅ UPDATED IMPORT
-import '../shared/widgets/contact_info_line.dart';
-import 'widgets/education_item.dart';
-import 'widgets/language_item.dart';
-import '../shared/widgets/section_header.dart';
-import 'widgets/skill_item.dart';
+import 'contact_info_line.dart';
+import 'education_item.dart';
+import 'language_item.dart';
+import 'section_header.dart';
+import 'skill_item.dart';
 
-class Template02LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAME
+class Template02LeftColumn extends pw.StatelessWidget {
+  // ✅ UPDATED CLASS NAME
   final CVData data;
   final pw.ImageProvider? profileImage;
   final pw.Font iconFont;
 
-  Template02LeftColumn({ // ✅ UPDATED CONSTRUCTOR
+  Template02LeftColumn({
+    // ✅ UPDATED CONSTRUCTOR
     required this.data,
     this.profileImage,
     required this.iconFont,
@@ -32,15 +34,17 @@ class Template02LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
     final bool hasDetails = personalInfo.birthDate != null ||
         personalInfo.maritalStatus != null ||
         personalInfo.militaryServiceStatus != null;
-    
-    final sortedEducation = List<Education>.from(data.education)..sort((a, b) {
-      final levelComparison = b.level.index.compareTo(a.level.index);
-      if (levelComparison != 0) return levelComparison;
-      if (a.isCurrent && !b.isCurrent) return -1;
-      if (!a.isCurrent && b.isCurrent) return 1;
-      if (!a.isCurrent && !b.isCurrent) return b.endDate!.compareTo(a.endDate!);
-      return b.startDate.compareTo(a.startDate);
-    });
+
+    final sortedEducation = List<Education>.from(data.education)
+      ..sort((a, b) {
+        final levelComparison = b.level.index.compareTo(a.level.index);
+        if (levelComparison != 0) return levelComparison;
+        if (a.isCurrent && !b.isCurrent) return -1;
+        if (!a.isCurrent && b.isCurrent) return 1;
+        if (!a.isCurrent && !b.isCurrent)
+          return b.endDate!.compareTo(a.endDate!);
+        return b.startDate.compareTo(a.startDate);
+      });
 
     return pw.Container(
       color: Template02Colors.primary,
@@ -87,7 +91,6 @@ class Template02LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
                 text: personalInfo.address!,
                 iconFont: iconFont),
           pw.SizedBox(height: 20),
-
           if (hasDetails)
             SectionHeader(
                 title: 'DETAILS',
@@ -111,7 +114,6 @@ class Template02LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
                 text: personalInfo.militaryServiceStatus!,
                 iconFont: iconFont),
           if (hasDetails) pw.SizedBox(height: 20),
-
           if (sortedEducation.isNotEmpty)
             SectionHeader(
                 title: 'EDUCATION',
@@ -121,7 +123,6 @@ class Template02LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
                 lineWidth: 30),
           ...sortedEducation.map((edu) => EducationItem(edu)),
           if (sortedEducation.isNotEmpty) pw.SizedBox(height: 20),
-
           if (data.skills.isNotEmpty)
             SectionHeader(
                 title: 'SKILLS',
@@ -131,7 +132,6 @@ class Template02LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
                 lineWidth: 30),
           ...data.skills.map((skill) => SkillItem(skill)),
           if (data.skills.isNotEmpty) pw.SizedBox(height: 20),
-
           if (data.languages.isNotEmpty)
             SectionHeader(
                 title: 'LANGUAGES',

@@ -2,7 +2,7 @@
 
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../colors_template_02.dart';
+import 'colors_template_02.dart';
 
 class SkillItem extends pw.StatelessWidget {
   final Skill skill;

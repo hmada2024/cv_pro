@@ -1,5 +1,5 @@
 // features/pdf_export/data/services/pdf_service_impl.dart
-import 'package:cv_pro/features/pdf_export/my_forms/two_column_02/builder_template_02.dart';
+import 'package:cv_pro/features/pdf_export/layout/two_column_02/builder_template_02.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/widgets.dart' as pw;
