@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/education_section.dart
+import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   void _resetForm() {
     setState(() {
-      // Create a new key to completely reset the form's state, including validation.
       _formKey = GlobalKey<FormState>();
       _degreeNameController.clear();
       _schoolController.clear();
@@ -51,7 +51,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       _startDate = null;
       _endDate = null;
       _isCurrent = true;
-      _isFormVisible = false; // Hide form after action
+      _isFormVisible = false;
     });
   }
 
@@ -64,7 +64,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             startDate: _startDate!,
             endDate: _isCurrent ? null : _endDate,
           );
-      _resetForm(); // Reset and hide the form
+      _resetForm();
     } else if (_startDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -78,9 +78,8 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
     final lastYear = DateTime(now.year - 1, now.month, now.day);
-    final initialDate = isStartDate
-        ? (_startDate ?? lastYear) // Smart Default
-        : (_endDate ?? now);
+    final initialDate =
+        isStartDate ? (_startDate ?? lastYear) : (_endDate ?? now);
 
     DateTime? pickedDate;
 
@@ -158,12 +157,11 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 return _buildEducationCard(context, theme, edu, originalIndex);
               },
             ),
-            // Conditionally show the form or the "Add" button
             if (_isFormVisible)
               _buildFormFields(theme)
             else ...[
               if (educationList.isEmpty) ...[
-                const _EmptyStateWidget(
+                const EmptyStateWidget(
                   icon: Icons.school_outlined,
                   title: 'Add your first qualification',
                   subtitle:
@@ -190,7 +188,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     );
   }
 
-  // A new widget to build the form fields for better organization
   Widget _buildFormFields(ThemeData theme) {
     return Form(
       key: _formKey,
@@ -327,47 +324,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             ref.read(cvFormProvider.notifier).removeEducation(index);
           },
         ),
-      ),
-    );
-  }
-}
-
-class _EmptyStateWidget extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _EmptyStateWidget({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 48, color: theme.colorScheme.secondary),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }

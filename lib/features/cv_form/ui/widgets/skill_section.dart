@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/skill_section.dart
+import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
   @override
   void initState() {
     super.initState();
-    _selectedSkillLevel = ValueNotifier(kSkillLevels[1]); // 'Intermediate'
+    _selectedSkillLevel = ValueNotifier(kSkillLevels[1]);
   }
 
   @override
@@ -84,7 +85,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               _buildFormFields()
             else ...[
               if (skills.isEmpty) ...[
-                const _EmptyStateWidget(
+                const EmptyStateWidget(
                   icon: Icons.star_border,
                   title: 'No skills added yet',
                   subtitle: 'Highlight your key abilities to catch attention.',
@@ -163,43 +164,6 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _EmptyStateWidget extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _EmptyStateWidget({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Column(
-        children: [
-          Icon(icon, size: 40, color: theme.colorScheme.secondary),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 }

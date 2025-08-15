@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/language_section.dart
+import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
               _buildFormFields()
             else ...[
               if (languages.isEmpty) ...[
-                const _EmptyStateWidget(
+                const EmptyStateWidget(
                   icon: Icons.translate,
                   title: 'No languages added',
                   subtitle: 'Showcase your language skills to employers.',
@@ -182,43 +183,6 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
             ref.read(cvFormProvider.notifier).removeLanguage(index);
           },
         ),
-      ),
-    );
-  }
-}
-
-class _EmptyStateWidget extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _EmptyStateWidget({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: Column(
-        children: [
-          Icon(icon, size: 40, color: theme.colorScheme.secondary),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            subtitle,
-            style: theme.textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          ),
-        ],
       ),
     );
   }
