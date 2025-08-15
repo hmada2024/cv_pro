@@ -1,9 +1,9 @@
 // features/pdf_export/templates/two_column_02/template_02_right_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/layout/two_column_02/experience_item.dart';
+import 'package:cv_pro/features/pdf_export/layout/widget_experience_item.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'colors_template_02.dart';
-import 'section_header.dart';
+import 'pdf_layout_colors.dart';
+import 'widget_section_header.dart';
 
 class Template02RightColumn extends pw.StatelessWidget {
   final CVData data;

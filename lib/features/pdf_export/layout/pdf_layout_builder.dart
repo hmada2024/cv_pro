@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'left_column_template_02.dart'; // ✅ UPDATED IMPORT
-import 'right_column_template_02.dart'; // ✅ UPDATED IMPORT
+import 'pdf_left_column.dart'; // ✅ UPDATED IMPORT
+import 'pdf_right_column.dart'; // ✅ UPDATED IMPORT
 
 Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
     {
@@ -32,7 +32,8 @@ Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
     children: [
       pw.Expanded(
         flex: 1,
-        child: Template02LeftColumn( // ✅ UPDATED
+        child: Template02LeftColumn(
+          // ✅ UPDATED
           data: data,
           profileImage: profileImage,
           iconFont: iconFont,
@@ -40,7 +41,8 @@ Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
       ),
       pw.Expanded(
         flex: 2,
-        child: Template02RightColumn( // ✅ UPDATED
+        child: Template02RightColumn(
+          // ✅ UPDATED
           data: data,
           iconFont: iconFont,
           showReferencesNote: showReferencesNote,

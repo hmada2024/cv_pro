@@ -3,12 +3,12 @@ import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'colors_template_02.dart'; // ✅ UPDATED IMPORT
-import 'contact_info_line.dart';
-import 'education_item.dart';
-import 'language_item.dart';
-import 'section_header.dart';
-import 'skill_item.dart';
+import 'pdf_layout_colors.dart'; // ✅ UPDATED IMPORT
+import 'widget_contact_info_line.dart';
+import 'widget_education_item.dart';
+import 'widget_language_item.dart';
+import 'widget_section_header.dart';
+import 'widget_skill_item.dart';
 
 class Template02LeftColumn extends pw.StatelessWidget {
   // ✅ UPDATED CLASS NAME
