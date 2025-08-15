@@ -14,18 +14,23 @@ typedef PdfGenerationData = ({
   ByteData fontData,
   ByteData boldFontData,
   ByteData iconFontData,
+  Uint8List? profileImageData,
 });
+
 Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
   final doc = pw.Document();
 
+  // Create fonts from the provided raw byte data
   final font = pw.Font.ttf(params.fontData);
   final boldFont = pw.Font.ttf(params.boldFontData);
   final iconFont = pw.Font.ttf(params.iconFontData);
 
-  final layoutWidget = await buildPdfLayout(
+  // The layout builder is now a pure function that only uses the data passed to it.
+  final layoutWidget = buildPdfLayout(
     data: params.data,
     iconFont: iconFont,
     showReferencesNote: params.showReferencesNote,
+    profileImageData: params.profileImageData,
   );
 
   doc.addPage(
@@ -52,12 +57,14 @@ class PdfServiceImpl implements PdfService {
         'generateCv should be called via the provider which handles asset loading.');
   }
 
-  static Future<Uint8List> generateCvWithFonts({
+  /// ✅✅✅ UPDATED: The static method now accepts pre-loaded image data.
+  static Future<Uint8List> generateCvWithAssets({
     required CVData data,
     required bool showReferencesNote,
     required ByteData fontData,
     required ByteData boldFontData,
     required ByteData iconFontData,
+    required Uint8List? profileImageData,
   }) async {
     final params = (
       data: data,
@@ -65,8 +72,8 @@ class PdfServiceImpl implements PdfService {
       fontData: fontData,
       boldFontData: boldFontData,
       iconFontData: iconFontData,
+      profileImageData: profileImageData,
     );
-    // Use Flutter's `compute` to run the heavy PDF generation on a separate isolate.
     return await compute(_generatePdfInBackground, params);
   }
 }
