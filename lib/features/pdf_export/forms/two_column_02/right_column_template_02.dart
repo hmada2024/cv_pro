@@ -1,8 +1,8 @@
 // features/pdf_export/templates/two_column_02/template_02_right_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/shared/widgets/experience_item.dart';
-import 'package:cv_pro/features/pdf_export/templates/shared/widgets/section_header.dart';
-import 'package:cv_pro/features/pdf_export/templates/two_column_02/colors_template_02.dart';
+import 'package:cv_pro/features/pdf_export/my_forms/shared/widgets/experience_item.dart';
+import 'package:cv_pro/features/pdf_export/my_forms/shared/widgets/section_header.dart';
+import 'package:cv_pro/features/pdf_export/my_forms/two_column_02/colors_template_02.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class Template02RightColumn extends pw.StatelessWidget {

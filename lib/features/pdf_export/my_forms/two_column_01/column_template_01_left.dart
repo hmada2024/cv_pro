@@ -1,15 +1,17 @@
 // features/pdf_export/templates/two_column_01/template_01_left_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/templates/shared/widgets/contact_info_line.dart'; // ✅ UPDATED IMPORT
+import 'package:cv_pro/features/pdf_export/my_forms/shared/widgets/contact_info_line.dart'; // ✅ UPDATED IMPORT
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'colors_template_01.dart'; // ✅ UPDATED IMPORT
 
-class Template01LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAME
+class Template01LeftColumn extends pw.StatelessWidget {
+  // ✅ UPDATED CLASS NAME
   final CVData data;
   final pw.Font iconFont;
 
-  Template01LeftColumn({ // ✅ UPDATED CONSTRUCTOR
+  Template01LeftColumn({
+    // ✅ UPDATED CONSTRUCTOR
     required this.data,
     required this.iconFont,
   });
@@ -50,7 +52,6 @@ class Template01LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
               ),
             ),
           if (personalInfo.summary.isNotEmpty) pw.SizedBox(height: 25),
-
           pw.Text(
             'Contact',
             style: pw.TextStyle(
@@ -84,7 +85,6 @@ class Template01LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
               iconColor: Template01Colors.accentBlue,
             ),
           pw.SizedBox(height: 25),
-
           if (hasDetails)
             pw.Text(
               'Personal Details',
@@ -96,7 +96,6 @@ class Template01LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
           if (hasDetails)
             pw.Divider(color: Template01Colors.accentBlue, height: 8),
           if (hasDetails) pw.SizedBox(height: 8),
-
           if (personalInfo.birthDate != null)
             ContactInfoLine(
               iconData: const pw.IconData(0xe7e9),
@@ -122,7 +121,6 @@ class Template01LeftColumn extends pw.StatelessWidget { // ✅ UPDATED CLASS NAM
               iconColor: Template01Colors.accentBlue,
             ),
           if (hasDetails) pw.SizedBox(height: 25),
-
           if (data.languages.isNotEmpty)
             pw.Text(
               'Language',
