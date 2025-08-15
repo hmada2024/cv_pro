@@ -1,5 +1,4 @@
-// features/pdf_export/templates/two_column_02/widgets/skill_item.dart
-
+// features/pdf_export/layout/widget_skill_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'pdf_layout_colors.dart';
@@ -19,7 +18,7 @@ class SkillItem extends pw.StatelessWidget {
             width: 6,
             height: 6,
             decoration: const pw.BoxDecoration(
-              color: PdfLayoutColors.accent, // ✅ FIXED
+              color: PdfLayoutColors.accent,
               shape: pw.BoxShape.circle,
             ),
           ),
@@ -28,7 +27,7 @@ class SkillItem extends pw.StatelessWidget {
             child: pw.Text(
               '${skill.name} (${skill.level})',
               style: const pw.TextStyle(
-                  color: PdfLayoutColors.lightText, fontSize: 10), // ✅ FIXED
+                  color: PdfLayoutColors.lightText, fontSize: 10),
             ),
           ),
         ],

@@ -1,5 +1,4 @@
-// features/pdf_export/templates/two_column_02/widgets/education_item.dart
-
+// features/pdf_export/layout/widget_education_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
@@ -8,7 +7,6 @@ import 'pdf_layout_colors.dart';
 
 class EducationItem extends pw.StatelessWidget {
   final Education education;
-  // ✅ UPDATED: Formatter now only uses the year.
   final DateFormat formatter = DateFormat('yyyy');
 
   EducationItem(this.education);
@@ -26,13 +24,11 @@ class EducationItem extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
-    // ✅ UPDATED: Date range now uses the year-only formatter.
     final dateRange =
         '${formatter.format(education.startDate)} - ${education.isCurrent ? "Present" : formatter.format(education.endDate!)}';
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 10),
-      // ✅ UPDATED: Layout changed to match reference image (Text on left, Date on right).
       child: pw.Row(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [

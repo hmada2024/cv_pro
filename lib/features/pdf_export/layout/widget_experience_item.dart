@@ -1,9 +1,9 @@
-// features/pdf_export/templates/two_column_02/widgets/experience_item.dart
+// features/pdf_export/layout/widget_experience_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/layout/pdf_layout_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
+import 'pdf_layout_colors.dart';
 
 class ExperienceItem extends pw.StatelessWidget {
   final Experience experience;
@@ -18,7 +18,6 @@ class ExperienceItem extends pw.StatelessWidget {
     required this.iconFont,
     this.positionColor = PdfColors.black,
     this.companyColor = PdfLayoutColors.darkText,
-    // ✅ NEW: The date color will default to the company color if not specified.
     PdfColor? dateColor,
   }) : dateColor = dateColor ?? companyColor;
 
@@ -58,7 +57,6 @@ class ExperienceItem extends pw.StatelessWidget {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          // ✅ UPDATED: The header is now a Row to align the date to the right.
           pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
@@ -90,7 +88,7 @@ class ExperienceItem extends pw.StatelessWidget {
                 '${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
                 style: pw.TextStyle(
                   fontSize: 10,
-                  color: dateColor, // Use the new dateColor property
+                  color: dateColor,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
