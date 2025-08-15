@@ -30,7 +30,7 @@ class DrivingLicenseSection extends ConsumerWidget {
     final theme = Theme.of(context);
 
     final selectableTypes =
-        LicenseType.values.where((type) => type != LicenseType.none).toSet();
+        LicenseType.values.where((type) => type != LicenseType.none).toList();
 
     return Card(
       child: Padding(
@@ -60,42 +60,46 @@ class DrivingLicenseSection extends ConsumerWidget {
               opacity: licenseInfo.hasLicense ? 1.0 : 0.4,
               child: IgnorePointer(
                 ignoring: !licenseInfo.hasLicense,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 12),
-                    SegmentedButton<LicenseType>(
-                      segments: selectableTypes
-                          .map((type) => ButtonSegment<LicenseType>(
-                                value: type,
-                                label: Text(_licenseTypeToString(type)),
-                                // Conditionally add a check icon to the selected segment
-                                icon: licenseInfo.type == type
-                                    ? const Icon(Icons.check, size: 18)
-                                    : null,
-                              ))
-                          .toList(),
-                      selected: {
-                        (licenseInfo.hasLicense &&
-                                licenseInfo.type != LicenseType.none)
-                            ? licenseInfo.type
-                            : LicenseType.local,
-                      },
-                      onSelectionChanged: (Set<LicenseType> newSelection) {
-                        if (newSelection.isNotEmpty) {
-                          notifier.updateLicenseInfo(type: newSelection.first);
-                        }
-                      },
-                      style: SegmentedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        selectedBackgroundColor:
-                            theme.colorScheme.primary.withOpacity(0.2),
-                        selectedForegroundColor: theme.colorScheme.primary,
-                      ),
-                      // This ensures the button shows the icon when selected.
-                      showSelectedIcon: true,
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 12.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: selectableTypes.map((type) {
+                      final isSelected = (licenseInfo.type == type);
+                      final isLast = type == selectableTypes.last;
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: isLast ? 0 : 8.0),
+                        child: OutlinedButton.icon(
+                          onPressed: () =>
+                              notifier.updateLicenseInfo(type: type),
+                          icon: Icon(
+                            isSelected ? Icons.check : null,
+                            size: 18,
+                            color:
+                                isSelected ? theme.colorScheme.primary : null,
+                          ),
+                          label: Text(_licenseTypeToString(type)),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: isSelected
+                                ? theme.colorScheme.primary.withOpacity(0.12)
+                                : null,
+                            foregroundColor: isSelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.onSurface.withOpacity(0.8),
+                            side: BorderSide(
+                              color: isSelected
+                                  ? theme.colorScheme.primary
+                                  : theme.dividerColor,
+                            ),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0)),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            alignment: Alignment.center,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),

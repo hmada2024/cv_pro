@@ -1,5 +1,4 @@
 // features/cv_form/ui/widgets/personal_info_section.dart
-
 import 'dart:io';
 import 'package:cv_pro/core/theme/app_colors.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
@@ -71,8 +70,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     super.dispose();
   }
 
-  /// ✅ NEW: Helper method to synchronize controller text with the state.
-  /// Prevents unnecessary updates if the text already matches.
   void _syncControllers(PersonalInfo info) {
     if (_nameController.text != info.name) _nameController.text = info.name;
     if (_jobTitleController.text != info.jobTitle) {
@@ -157,7 +154,6 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             ),
             const SizedBox(height: 16),
             Center(
-              // ✅ UPDATED: The new profile image picker widget
               child: GestureDetector(
                 onTap: () => _pickImage(theme),
                 child: Stack(
@@ -187,13 +183,13 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                           : null,
                     ),
                     Positioned(
-                      bottom: 0,
-                      right: 0,
+                      bottom: 2,
+                      right: 2,
                       child: CircleAvatar(
-                        radius: 18,
+                        radius: 12,
                         backgroundColor: theme.colorScheme.primary,
                         child: const Icon(Icons.edit,
-                            color: Colors.white, size: 20),
+                            color: Colors.white, size: 18),
                       ),
                     ),
                   ],
