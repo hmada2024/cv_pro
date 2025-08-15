@@ -41,8 +41,9 @@ class Template02LeftColumn extends pw.StatelessWidget {
         if (levelComparison != 0) return levelComparison;
         if (a.isCurrent && !b.isCurrent) return -1;
         if (!a.isCurrent && b.isCurrent) return 1;
-        if (!a.isCurrent && !b.isCurrent)
+        if (!a.isCurrent && !b.isCurrent) {
           return b.endDate!.compareTo(a.endDate!);
+        }
         return b.startDate.compareTo(a.startDate);
       });
 
