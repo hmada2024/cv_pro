@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
 import 'package:cv_pro/features/cv_form/data/services/storage_service_impl.dart';
-import 'package:cv_pro/core/services/pdf_service_impl.dart';
+import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
 import 'package:cv_pro/core/services/image_cropper_service.dart';
 
 final pdfServiceProvider = Provider<PdfService>((ref) {
