@@ -22,8 +22,6 @@ class DrivingLicenseSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // ✅ OPTIMIZED: This widget now only rebuilds if `hasDriverLicense` or `licenseType` changes.
-    // It's a small optimization but follows the correct pattern.
     final licenseInfo = ref.watch(cvFormProvider.select((cv) => (
           hasLicense: cv.personalInfo.hasDriverLicense,
           type: cv.personalInfo.licenseType
@@ -71,6 +69,10 @@ class DrivingLicenseSection extends ConsumerWidget {
                           .map((type) => ButtonSegment<LicenseType>(
                                 value: type,
                                 label: Text(_licenseTypeToString(type)),
+                                // Conditionally add a check icon to the selected segment
+                                icon: licenseInfo.type == type
+                                    ? const Icon(Icons.check, size: 18)
+                                    : null,
                               ))
                           .toList(),
                       selected: {
@@ -85,10 +87,13 @@ class DrivingLicenseSection extends ConsumerWidget {
                         }
                       },
                       style: SegmentedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         selectedBackgroundColor:
                             theme.colorScheme.primary.withOpacity(0.2),
                         selectedForegroundColor: theme.colorScheme.primary,
                       ),
+                      // This ensures the button shows the icon when selected.
+                      showSelectedIcon: true,
                     ),
                   ],
                 ),

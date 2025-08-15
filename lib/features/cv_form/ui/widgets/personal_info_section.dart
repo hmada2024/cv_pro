@@ -114,16 +114,21 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     }
   }
 
+  // ✅ NEW: Encapsulated image picker action for reusability.
+  void _pickImage(ThemeData theme) {
+    ref.read(cvFormProvider.notifier).pickProfileImage(
+          toolbarColor: theme.appBarTheme.backgroundColor!,
+          toolbarWidgetColor: theme.appBarTheme.foregroundColor!,
+          backgroundColor: theme.scaffoldBackgroundColor,
+          activeControlsWidgetColor: AppColors.accent,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ✅ OPTIMIZED: This widget now only listens for changes to personalInfo.
-    // It will NOT rebuild when other sections (like skills, experience) are changed.
     final personalInfo =
         ref.watch(cvFormProvider.select((s) => s.personalInfo));
 
-    // ✅ ROBUSTNESS: Use `ref.listen` to keep controllers in sync with the state.
-    // This is crucial for handling state changes that originate from outside the widget,
-    // like the initial data load from the database.
     ref.listen<PersonalInfo>(
       cvFormProvider.select((s) => s.personalInfo),
       (previous, next) {
@@ -134,6 +139,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     );
 
     final theme = Theme.of(context);
+    final hasImage = personalInfo.profileImagePath != null &&
+        personalInfo.profileImagePath!.isNotEmpty;
 
     return Card(
       child: Padding(
@@ -150,35 +157,38 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
             ),
             const SizedBox(height: 16),
             Center(
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: theme.dividerColor,
-                    backgroundImage: personalInfo.profileImagePath != null &&
-                            personalInfo.profileImagePath!.isNotEmpty
-                        ? FileImage(File(personalInfo.profileImagePath!))
-                        : null,
-                    child: personalInfo.profileImagePath == null ||
-                            personalInfo.profileImagePath!.isEmpty
-                        ? Icon(Icons.camera_alt,
-                            size: 40, color: Colors.grey.shade600)
-                        : null,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: InkWell(
-                      onTap: () {
-                        // ✅ CORRECT: Using `ref.read` for an action.
-                        ref.read(cvFormProvider.notifier).pickProfileImage(
-                              toolbarColor: theme.appBarTheme.backgroundColor!,
-                              toolbarWidgetColor:
-                                  theme.appBarTheme.foregroundColor!,
-                              backgroundColor: theme.scaffoldBackgroundColor,
-                              activeControlsWidgetColor: AppColors.accent,
-                            );
-                      },
+              // ✅ UPDATED: The new profile image picker widget
+              child: GestureDetector(
+                onTap: () => _pickImage(theme),
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: theme.dividerColor.withOpacity(0.5),
+                      backgroundImage: hasImage
+                          ? FileImage(File(personalInfo.profileImagePath!))
+                          : null,
+                      child: !hasImage
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_a_photo_outlined,
+                                  size: 32,
+                                  color: theme.colorScheme.secondary,
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  'Add Photo',
+                                  style: theme.textTheme.bodySmall,
+                                )
+                              ],
+                            )
+                          : null,
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
                       child: CircleAvatar(
                         radius: 18,
                         backgroundColor: theme.colorScheme.primary,
@@ -186,8 +196,8 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                             color: Colors.white, size: 20),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
