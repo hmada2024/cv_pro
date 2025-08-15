@@ -76,7 +76,7 @@ class ExperienceItem extends pw.StatelessWidget {
                       experience.companyName,
                       style: pw.TextStyle(
                         fontSize: 11,
-                        color: companyColor,
+                        color: positionColor,
                       ),
                     ),
                   ],
