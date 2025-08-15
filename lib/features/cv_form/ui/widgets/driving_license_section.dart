@@ -76,13 +76,15 @@ class DrivingLicenseSection extends ConsumerWidget {
                               ))
                           .toList(),
                       selected: {
-                        // Ensure a valid selection if license is enabled
-                        if (personalInfo.hasDriverLicense &&
-                            personalInfo.licenseType != LicenseType.none)
-                          personalInfo.licenseType
+                        (personalInfo.hasDriverLicense &&
+                                personalInfo.licenseType != LicenseType.none)
+                            ? personalInfo.licenseType
+                            : LicenseType.local,
                       },
                       onSelectionChanged: (Set<LicenseType> newSelection) {
-                        notifier.updateLicenseInfo(type: newSelection.first);
+                        if (newSelection.isNotEmpty) {
+                          notifier.updateLicenseInfo(type: newSelection.first);
+                        }
                       },
                       style: SegmentedButton.styleFrom(
                         selectedBackgroundColor:
