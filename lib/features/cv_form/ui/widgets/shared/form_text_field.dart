@@ -34,6 +34,7 @@ class FormTextField extends StatelessWidget {
         controller: controller,
         focusNode: focusNode,
         labelText: label,
+        autofocus: false,
         prefixIcon: Icon(
           iconData,
           color: isFocused

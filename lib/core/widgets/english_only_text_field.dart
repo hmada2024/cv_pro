@@ -17,6 +17,7 @@ class EnglishOnlyTextField extends StatelessWidget {
     this.focusNode,
     this.validator,
     this.enabled,
+    this.autofocus = false,
   });
 
   final TextEditingController? controller;
@@ -29,9 +30,9 @@ class EnglishOnlyTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final ValueChanged<String>? onFieldSubmitted;
   final FocusNode? focusNode;
-  final FormFieldValidator<String>? validator; // ✅✅ NEW: Type definition
+  final FormFieldValidator<String>? validator;
   final bool? enabled;
-
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +44,7 @@ class EnglishOnlyTextField extends StatelessWidget {
       onChanged: onChanged,
       onFieldSubmitted: onFieldSubmitted,
       enabled: enabled,
+      autofocus: autofocus,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,
@@ -58,7 +60,7 @@ class EnglishOnlyTextField extends StatelessWidget {
             return externalValidationResult; // Return external error immediately.
           }
         }
-        
+
         // If the external validator passes, run the internal English-only check.
         if (value != null && disallowedCharactersRegex.hasMatch(value)) {
           return 'Please use English characters and numbers only.';
