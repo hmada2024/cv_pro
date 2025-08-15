@@ -1,13 +1,13 @@
-// features/pdf_export/templates/two_column_02/template_02_builder.dart
+// features/pdf_export/layout/pdf_layout_builder.dart
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'pdf_left_column.dart'; // ✅ UPDATED IMPORT
-import 'pdf_right_column.dart'; // ✅ UPDATED IMPORT
+import 'pdf_left_column.dart';
+import 'pdf_right_column.dart';
 
-Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
-    {
+// ✅ UPDATED FUNCTION NAME
+Future<pw.Widget> buildPdfLayout({
   required CVData data,
   required pw.Font iconFont,
   required bool showReferencesNote,
@@ -32,8 +32,7 @@ Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
     children: [
       pw.Expanded(
         flex: 1,
-        child: Template02LeftColumn(
-          // ✅ UPDATED
+        child: PdfLeftColumn(
           data: data,
           profileImage: profileImage,
           iconFont: iconFont,
@@ -41,8 +40,7 @@ Future<pw.Widget> buildTemplate02( // ✅ UPDATED FUNCTION NAME
       ),
       pw.Expanded(
         flex: 2,
-        child: Template02RightColumn(
-          // ✅ UPDATED
+        child: PdfRightColumn(
           data: data,
           iconFont: iconFont,
           showReferencesNote: showReferencesNote,

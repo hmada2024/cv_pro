@@ -16,7 +16,7 @@ class LanguageItem extends pw.StatelessWidget {
       child: pw.Text(
         '${language.name} (${language.proficiency})',
         style: const pw.TextStyle(
-            color: Template02Colors.lightText, fontSize: 10), // ✅ FIXED
+            color: PdfLayoutColors.lightText, fontSize: 10), // ✅ FIXED
       ),
     );
   }

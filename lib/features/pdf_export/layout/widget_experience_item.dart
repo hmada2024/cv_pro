@@ -17,7 +17,7 @@ class ExperienceItem extends pw.StatelessWidget {
     this.experience, {
     required this.iconFont,
     this.positionColor = PdfColors.black,
-    this.companyColor = Template02Colors.darkText,
+    this.companyColor = PdfLayoutColors.darkText,
     // ✅ NEW: The date color will default to the company color if not specified.
     PdfColor? dateColor,
   }) : dateColor = dateColor ?? companyColor;

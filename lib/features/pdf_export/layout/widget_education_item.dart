@@ -50,7 +50,7 @@ class EducationItem extends pw.StatelessWidget {
                 pw.Text(
                   education.school,
                   style: const pw.TextStyle(
-                      color: Template02Colors.lightText, fontSize: 9),
+                      color: PdfLayoutColors.lightText, fontSize: 9),
                 ),
               ],
             ),
@@ -59,7 +59,7 @@ class EducationItem extends pw.StatelessWidget {
           pw.Text(
             dateRange.toUpperCase(),
             style:
-                const pw.TextStyle(color: Template02Colors.accent, fontSize: 8),
+                const pw.TextStyle(color: PdfLayoutColors.accent, fontSize: 8),
           ),
         ],
       ),

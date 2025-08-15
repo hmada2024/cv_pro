@@ -1,15 +1,15 @@
-// features/pdf_export/templates/two_column_02/template_02_right_column.dart
+// features/pdf_export/layout/pdf_right_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/layout/widget_experience_item.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'pdf_layout_colors.dart';
+import 'widget_experience_item.dart';
 import 'widget_section_header.dart';
 
-class Template02RightColumn extends pw.StatelessWidget {
+class PdfRightColumn extends pw.StatelessWidget {
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
-  Template02RightColumn({
+  PdfRightColumn({
     required this.data,
     required this.iconFont,
     required this.showReferencesNote,
@@ -36,21 +36,21 @@ class Template02RightColumn extends pw.StatelessWidget {
             style: pw.TextStyle(
               fontSize: 26,
               fontWeight: pw.FontWeight.bold,
-              color: Template02Colors.primary,
+              color: PdfLayoutColors.primary,
             ),
           ),
           pw.SizedBox(height: 4),
           pw.Text(
             data.personalInfo.jobTitle.toUpperCase(),
             style: const pw.TextStyle(
-                fontSize: 14, color: Template02Colors.darkText),
+                fontSize: 14, color: PdfLayoutColors.darkText),
           ),
           pw.SizedBox(height: 25),
           if (data.personalInfo.summary.isNotEmpty)
             SectionHeader(
                 title: 'PROFILE',
-                titleColor: Template02Colors.primary,
-                lineColor: Template02Colors.accent),
+                titleColor: PdfLayoutColors.primary,
+                lineColor: PdfLayoutColors.accent),
           if (data.personalInfo.summary.isNotEmpty)
             pw.Text(
               data.personalInfo.summary,
@@ -61,13 +61,13 @@ class Template02RightColumn extends pw.StatelessWidget {
           if (sortedExperience.isNotEmpty)
             SectionHeader(
                 title: 'WORK EXPERIENCE',
-                titleColor: Template02Colors.primary,
-                lineColor: Template02Colors.accent),
+                titleColor: PdfLayoutColors.primary,
+                lineColor: PdfLayoutColors.accent),
           ...sortedExperience.map((exp) => ExperienceItem(
                 exp,
                 iconFont: iconFont,
-                positionColor: Template02Colors.primary,
-                dateColor: Template02Colors.primary,
+                positionColor: PdfLayoutColors.primary,
+                dateColor: PdfLayoutColors.primary,
               )),
           _buildReferencesSection(data, showReferencesNote),
         ],
@@ -83,15 +83,15 @@ class Template02RightColumn extends pw.StatelessWidget {
             pw.SizedBox(height: 25),
             SectionHeader(
               title: 'REFERENCES',
-              titleColor: Template02Colors.primary,
-              lineColor: Template02Colors.accent,
+              titleColor: PdfLayoutColors.primary,
+              lineColor: PdfLayoutColors.accent,
             ),
             pw.Text(
               'References available upon request.',
               style: pw.TextStyle(
                   fontSize: 10,
                   fontStyle: pw.FontStyle.italic,
-                  color: Template02Colors.darkText),
+                  color: PdfLayoutColors.darkText),
             ),
           ]);
     } else if (data.references.isNotEmpty) {
@@ -101,8 +101,8 @@ class Template02RightColumn extends pw.StatelessWidget {
           pw.SizedBox(height: 25),
           SectionHeader(
             title: 'REFERENCES',
-            titleColor: Template02Colors.primary,
-            lineColor: Template02Colors.accent,
+            titleColor: PdfLayoutColors.primary,
+            lineColor: PdfLayoutColors.accent,
           ),
           pw.Wrap(
             spacing: 20,
@@ -125,14 +125,14 @@ class Template02RightColumn extends pw.StatelessWidget {
           reference.name,
           style: pw.TextStyle(
             fontWeight: pw.FontWeight.bold,
-            color: Template02Colors.primary,
+            color: PdfLayoutColors.primary,
           ),
         ),
         pw.Text(
           '${reference.position}, ${reference.company}',
           style: pw.TextStyle(
               fontSize: 9,
-              color: Template02Colors.darkText,
+              color: PdfLayoutColors.darkText,
               fontStyle: pw.FontStyle.italic),
         ),
         pw.SizedBox(height: 4),
@@ -140,7 +140,7 @@ class Template02RightColumn extends pw.StatelessWidget {
           reference.email,
           style: const pw.TextStyle(
             fontSize: 9,
-            color: Template02Colors.darkText,
+            color: PdfLayoutColors.darkText,
           ),
         ),
         if (reference.phone != null && reference.phone!.isNotEmpty)
@@ -148,7 +148,7 @@ class Template02RightColumn extends pw.StatelessWidget {
             reference.phone!,
             style: const pw.TextStyle(
               fontSize: 9,
-              color: Template02Colors.darkText,
+              color: PdfLayoutColors.darkText,
             ),
           ),
       ]),

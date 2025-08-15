@@ -19,7 +19,7 @@ class SkillItem extends pw.StatelessWidget {
             width: 6,
             height: 6,
             decoration: const pw.BoxDecoration(
-              color: Template02Colors.accent, // ✅ FIXED
+              color: PdfLayoutColors.accent, // ✅ FIXED
               shape: pw.BoxShape.circle,
             ),
           ),
@@ -28,7 +28,7 @@ class SkillItem extends pw.StatelessWidget {
             child: pw.Text(
               '${skill.name} (${skill.level})',
               style: const pw.TextStyle(
-                  color: Template02Colors.lightText, fontSize: 10), // ✅ FIXED
+                  color: PdfLayoutColors.lightText, fontSize: 10), // ✅ FIXED
             ),
           ),
         ],

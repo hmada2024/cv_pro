@@ -7,6 +7,7 @@ import 'package:printing/printing.dart';
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 
+/// This provider remains as it controls a UI feature (hiding reference details)
 /// that is independent of the template itself.
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
@@ -26,8 +27,8 @@ class PdfServiceImpl implements PdfService {
     final iconFont = pw.Font.ttf(iconFontData);
 
     // 3. بناء واجهة القالب الوحيد المعتمد.
-    // كل المنطق الخاص بالقالب موجود داخل دالة buildTemplate02.
-    final templateWidget = await buildTemplate02(
+    // كل المنطق الخاص بالقالب موجود داخل دالة buildPdfLayout.
+    final layoutWidget = await buildPdfLayout(
       data: data,
       iconFont: iconFont,
       showReferencesNote: showReferencesNote,
@@ -43,7 +44,7 @@ class PdfServiceImpl implements PdfService {
           bold: boldFont,
         ),
         build: (pw.Context context) {
-          return templateWidget;
+          return layoutWidget;
         },
       ),
     );

@@ -1,23 +1,21 @@
-// features/pdf_export/templates/two_column_02/template_02_left_column.dart
+// features/pdf_export/layout/pdf_left_column.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/layout/pdf_layout_colors.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'pdf_layout_colors.dart'; // ✅ UPDATED IMPORT
 import 'widget_contact_info_line.dart';
 import 'widget_education_item.dart';
 import 'widget_language_item.dart';
 import 'widget_section_header.dart';
 import 'widget_skill_item.dart';
 
-class Template02LeftColumn extends pw.StatelessWidget {
-  // ✅ UPDATED CLASS NAME
+class PdfLeftColumn extends pw.StatelessWidget {
   final CVData data;
   final pw.ImageProvider? profileImage;
   final pw.Font iconFont;
 
-  Template02LeftColumn({
-    // ✅ UPDATED CONSTRUCTOR
+  PdfLeftColumn({
     required this.data,
     this.profileImage,
     required this.iconFont,
@@ -25,8 +23,6 @@ class Template02LeftColumn extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
-    // ... (rest of the file content from your original `left_column.dart` goes here)
-    // I am pasting the full content below to ensure correctness.
     const double avatarRadius = 50;
     final personalInfo = data.personalInfo;
     final DateFormat dateFormatter = DateFormat('d MMMM yyyy');
@@ -48,7 +44,7 @@ class Template02LeftColumn extends pw.StatelessWidget {
       });
 
     return pw.Container(
-      color: Template02Colors.primary,
+      color: PdfLayoutColors.primary,
       padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -73,8 +69,8 @@ class Template02LeftColumn extends pw.StatelessWidget {
           if (profileImage != null) pw.SizedBox(height: 25),
           SectionHeader(
               title: 'CONTACT',
-              titleColor: Template02Colors.lightText,
-              lineColor: Template02Colors.accent,
+              titleColor: PdfLayoutColors.lightText,
+              lineColor: PdfLayoutColors.accent,
               fontSize: 14,
               lineWidth: 30),
           if (personalInfo.phone != null && personalInfo.phone!.isNotEmpty)
@@ -95,8 +91,8 @@ class Template02LeftColumn extends pw.StatelessWidget {
           if (hasDetails)
             SectionHeader(
                 title: 'DETAILS',
-                titleColor: Template02Colors.lightText,
-                lineColor: Template02Colors.accent,
+                titleColor: PdfLayoutColors.lightText,
+                lineColor: PdfLayoutColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
           if (personalInfo.birthDate != null)
@@ -118,8 +114,8 @@ class Template02LeftColumn extends pw.StatelessWidget {
           if (sortedEducation.isNotEmpty)
             SectionHeader(
                 title: 'EDUCATION',
-                titleColor: Template02Colors.lightText,
-                lineColor: Template02Colors.accent,
+                titleColor: PdfLayoutColors.lightText,
+                lineColor: PdfLayoutColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
           ...sortedEducation.map((edu) => EducationItem(edu)),
@@ -127,8 +123,8 @@ class Template02LeftColumn extends pw.StatelessWidget {
           if (data.skills.isNotEmpty)
             SectionHeader(
                 title: 'SKILLS',
-                titleColor: Template02Colors.lightText,
-                lineColor: Template02Colors.accent,
+                titleColor: PdfLayoutColors.lightText,
+                lineColor: PdfLayoutColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
           ...data.skills.map((skill) => SkillItem(skill)),
@@ -136,8 +132,8 @@ class Template02LeftColumn extends pw.StatelessWidget {
           if (data.languages.isNotEmpty)
             SectionHeader(
                 title: 'LANGUAGES',
-                titleColor: Template02Colors.lightText,
-                lineColor: Template02Colors.accent,
+                titleColor: PdfLayoutColors.lightText,
+                lineColor: PdfLayoutColors.accent,
                 fontSize: 14,
                 lineWidth: 30),
           ...data.languages.map((lang) => LanguageItem(lang)),
