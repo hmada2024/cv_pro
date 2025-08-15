@@ -1,47 +1,52 @@
 // features/pdf_export/data/services/pdf_service_impl.dart
-import 'package:cv_pro/features/pdf_export/layout/pdf_layout_builder.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/layout/pdf_layout_builder.dart';
 
-/// This provider remains as it controls a UI feature (hiding reference details)
-/// that is independent of the template itself.
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
+// ✅ REMOVED: The ambiguous 'pdfServiceProvider' has been removed from this file.
+// The single source of truth is now in 'injector.dart'.
+
 class PdfServiceImpl implements PdfService {
+  pw.Font? _font;
+  pw.Font? _boldFont;
+  pw.Font? _iconFont;
+
+  /// Initializes all required fonts once.
+  Future<void> init() async {
+    _font = await PdfGoogleFonts.latoRegular();
+    _boldFont = await PdfGoogleFonts.latoBold();
+    final iconFontData =
+        await rootBundle.load('assets/fonts/MaterialIcons-Regular.ttf');
+    _iconFont = pw.Font.ttf(iconFontData);
+  }
+
   @override
   Future<Uint8List> generateCv(CVData data,
       {required bool showReferencesNote}) async {
-    // 1. إنشاء مستند PDF جديد.
     final doc = pw.Document();
 
-    // 2. تحميل الخطوط اللازمة.
-    // نقوم بتحميل نسخة عادية ونسخة عريضة للنصوص، وخط مخصص للأيقونات.
-    final font = await PdfGoogleFonts.cairoRegular();
-    final boldFont = await PdfGoogleFonts.cairoBold();
-    final iconFontData =
-        await rootBundle.load('assets/fonts/MaterialIcons-Regular.ttf');
-    final iconFont = pw.Font.ttf(iconFontData);
+    if (_font == null || _boldFont == null || _iconFont == null) {
+      await init();
+    }
 
-    // 3. بناء واجهة القالب الوحيد المعتمد.
-    // كل المنطق الخاص بالقالب موجود داخل دالة buildPdfLayout.
     final layoutWidget = await buildPdfLayout(
       data: data,
-      iconFont: iconFont,
+      iconFont: _iconFont!,
       showReferencesNote: showReferencesNote,
     );
 
-    // 4. إضافة الواجهة كصفحة جديدة في المستند.
-    // نطبق الخطوط التي تم تحميلها على "theme" الصفحة.
     doc.addPage(
       pw.Page(
-        margin: pw.EdgeInsets.zero, // القالب يعالج الهوامش الداخلية بنفسه.
+        margin: pw.EdgeInsets.zero,
         theme: pw.ThemeData.withFont(
-          base: font,
-          bold: boldFont,
+          base: _font!,
+          bold: _boldFont!,
         ),
         build: (pw.Context context) {
           return layoutWidget;
@@ -49,7 +54,6 @@ class PdfServiceImpl implements PdfService {
       ),
     );
 
-    // 5. حفظ المستند وإعادته كقائمة من البايتات (byte list).
     return doc.save();
   }
 }

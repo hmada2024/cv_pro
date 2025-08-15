@@ -9,11 +9,13 @@ class PdfRightColumn extends pw.StatelessWidget {
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
+
   PdfRightColumn({
     required this.data,
     required this.iconFont,
     required this.showReferencesNote,
   });
+
   @override
   pw.Widget build(pw.Context context) {
     final sortedExperience = List<Experience>.from(data.experiences)
@@ -88,8 +90,10 @@ class PdfRightColumn extends pw.StatelessWidget {
             ),
             pw.Text(
               'References available upon request.',
-              style: const pw.TextStyle(
-                  fontSize: 10, color: PdfLayoutColors.darkText),
+              style: pw.TextStyle(
+                  fontSize: 10,
+                  fontStyle: pw.FontStyle.italic,
+                  color: PdfLayoutColors.darkText),
             ),
           ]);
     } else if (data.references.isNotEmpty) {
@@ -128,8 +132,10 @@ class PdfRightColumn extends pw.StatelessWidget {
         ),
         pw.Text(
           '${reference.position}, ${reference.company}',
-          style:
-              const pw.TextStyle(fontSize: 9, color: PdfLayoutColors.darkText),
+          style: pw.TextStyle(
+              fontSize: 9,
+              color: PdfLayoutColors.darkText,
+              fontStyle: pw.FontStyle.italic),
         ),
         pw.SizedBox(height: 4),
         pw.Text(
