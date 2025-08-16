@@ -1,4 +1,4 @@
-// features/cv_form/ui/screens/cv_form_screen.dart
+// lib/features/cv_form/ui/screens/cv_form_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
@@ -32,6 +32,8 @@ class CvFormScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
     ref.listen<List<Education>>(cvFormProvider.select((cv) => cv.education),
         (prev, next) {
       if ((prev?.isEmpty ?? true) && next.isNotEmpty) {
@@ -111,24 +113,45 @@ class CvFormScreen extends ConsumerWidget {
         ],
         bottom: const CvCompletionProgress(),
       ),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.all(AppSizes.p16),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            PersonalInfoSection(),
-            SizedBox(height: AppSizes.p16),
-            EducationSection(),
-            SizedBox(height: AppSizes.p16),
-            ExperienceSection(),
-            SizedBox(height: AppSizes.p16),
-            SkillSection(),
-            SizedBox(height: AppSizes.p16),
-            LanguageSection(),
-            SizedBox(height: AppSizes.p16),
-            DrivingLicenseSection(),
-            SizedBox(height: AppSizes.p16),
-            ReferencesSection(),
-            SizedBox(height: AppSizes.p24),
+            const PersonalInfoSection(),
+            const SizedBox(height: AppSizes.p16),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: AppSizes.p8, bottom: AppSizes.p12),
+              child: Text(
+                'CAREER & HISTORY',
+                style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.secondary,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            const EducationSection(),
+            const SizedBox(height: AppSizes.p16),
+            const ExperienceSection(),
+            const SizedBox(height: AppSizes.p16),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: AppSizes.p8, bottom: AppSizes.p12),
+              child: Text(
+                'ABILITIES & COMPETENCIES',
+                style: theme.textTheme.titleSmall?.copyWith(
+                    color: theme.colorScheme.secondary,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            const SkillSection(),
+            const SizedBox(height: AppSizes.p16),
+            const LanguageSection(),
+            const SizedBox(height: AppSizes.p16),
+            const DrivingLicenseSection(),
+            const SizedBox(height: AppSizes.p16),
+            const ReferencesSection(),
+            const SizedBox(height: AppSizes.p24),
           ],
         ),
       ),

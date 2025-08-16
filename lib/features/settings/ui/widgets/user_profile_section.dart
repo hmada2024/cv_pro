@@ -46,21 +46,31 @@ class UserProfileSection extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                  child: const Text('Change'),
-                  onPressed: () {
-                    notifier.pickProfileImage(
-                      toolbarColor: theme.appBarTheme.backgroundColor!,
-                      toolbarWidgetColor: theme.appBarTheme.foregroundColor!,
-                      backgroundColor: theme.scaffoldBackgroundColor,
-                      activeControlsWidgetColor: AppColors.accent,
-                    );
-                  },
+                Expanded(
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.edit_outlined),
+                    label: const Text('Change'),
+                    onPressed: () {
+                      notifier.pickProfileImage(
+                        toolbarColor: theme.appBarTheme.backgroundColor!,
+                        toolbarWidgetColor: theme.appBarTheme.foregroundColor!,
+                        backgroundColor: theme.scaffoldBackgroundColor,
+                        activeControlsWidgetColor: AppColors.accent,
+                      );
+                    },
+                  ),
                 ),
-                TextButton(
-                  onPressed: hasImage ? notifier.removeProfileImage : null,
-                  child: Text('Remove',
-                      style: TextStyle(color: theme.colorScheme.error)),
+                const SizedBox(width: AppSizes.p8),
+                Expanded(
+                  child: FilledButton.tonalIcon(
+                    icon: const Icon(Icons.delete_outline),
+                    label: const Text('Remove'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: theme.colorScheme.errorContainer,
+                      foregroundColor: theme.colorScheme.onErrorContainer,
+                    ),
+                    onPressed: hasImage ? notifier.removeProfileImage : null,
+                  ),
                 ),
               ],
             ),

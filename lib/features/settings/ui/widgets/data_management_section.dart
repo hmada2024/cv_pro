@@ -1,4 +1,5 @@
 // lib/features/settings/ui/widgets/data_management_section.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,10 @@ class DataManagementSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        side: BorderSide(color: theme.colorScheme.error.withOpacity(0.5)),
+      ),
       child: ListTile(
         leading:
             Icon(Icons.delete_forever_outlined, color: theme.colorScheme.error),

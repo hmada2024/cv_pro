@@ -1,4 +1,4 @@
-// features/cv_form/ui/widgets/experience_section.dart
+// lib/features/cv_form/ui/widgets/experience_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
@@ -112,14 +112,13 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     }
   }
 
-  // ✅ CORRECTED: `context` parameter removed
   Future<void> _selectDate(bool isStartDate) async {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
     final initialDate = isStartDate ? (_startDate ?? now) : (_endDate ?? now);
 
     final DateTime? picked = await showDatePicker(
-      context: context, // Uses the State's context property directly
+      context: context,
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: now,
@@ -154,6 +153,12 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     final theme = Theme.of(context);
 
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        side: _isFormVisible
+            ? BorderSide(color: theme.colorScheme.primary, width: 1.5)
+            : BorderSide.none,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.p20),
         child: Column(
@@ -164,6 +169,10 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                 Icon(Icons.business_center, color: theme.colorScheme.secondary),
                 const SizedBox(width: AppSizes.p8),
                 Text('Work Experience', style: theme.textTheme.titleLarge),
+                const SizedBox(width: AppSizes.p8),
+                if (experiences.isNotEmpty)
+                  Icon(Icons.check_circle,
+                      color: Colors.green.shade600, size: 18),
               ],
             ),
             if (experiences.isNotEmpty) const SizedBox(height: AppSizes.p16),

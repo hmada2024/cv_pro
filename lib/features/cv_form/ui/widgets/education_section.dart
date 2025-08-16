@@ -1,4 +1,4 @@
-// features/cv_form/ui/widgets/education_section.dart
+// lib/features/cv_form/ui/widgets/education_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
@@ -133,6 +133,12 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     final theme = Theme.of(context);
 
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        side: _isFormVisible
+            ? BorderSide(color: theme.colorScheme.primary, width: 1.5)
+            : BorderSide.none,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.p20),
         child: Column(
@@ -143,6 +149,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 Icon(Icons.school, color: theme.colorScheme.secondary),
                 const SizedBox(width: AppSizes.p8),
                 Text('Education', style: theme.textTheme.titleLarge),
+                const SizedBox(width: AppSizes.p8),
+                if (educationList.isNotEmpty)
+                  Icon(Icons.check_circle,
+                      color: Colors.green.shade600, size: 18),
               ],
             ),
             const SizedBox(height: AppSizes.p16),

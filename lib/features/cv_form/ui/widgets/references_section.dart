@@ -1,4 +1,4 @@
-// features/cv_form/ui/widgets/references_section.dart
+// lib/features/cv_form/ui/widgets/references_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
@@ -111,6 +111,10 @@ class ReferencesSection extends ConsumerWidget {
                   'References',
                   style: theme.textTheme.titleLarge,
                 ),
+                const SizedBox(width: AppSizes.p8),
+                if (references.isNotEmpty)
+                  Icon(Icons.check_circle,
+                      color: Colors.green.shade600, size: 18),
               ],
             ),
             const SizedBox(height: AppSizes.p8),

@@ -21,6 +21,15 @@ class HomeActionCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        side: BorderSide(
+          color: isEnabled
+              ? theme.colorScheme.primary.withOpacity(0.4)
+              : theme.dividerColor.withOpacity(0.5),
+          width: 1.5,
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(

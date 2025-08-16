@@ -1,4 +1,4 @@
-// features/cv_form/ui/widgets/language_section.dart
+// lib/features/cv_form/ui/widgets/language_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
@@ -57,6 +57,12 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
     final languages = ref.watch(cvFormProvider.select((cv) => cv.languages));
     final theme = Theme.of(context);
     return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.cardRadius),
+        side: _isFormVisible
+            ? BorderSide(color: theme.colorScheme.primary, width: 1.5)
+            : BorderSide.none,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.p16),
         child: Column(
@@ -67,6 +73,10 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
                 Icon(Icons.language, color: theme.colorScheme.secondary),
                 const SizedBox(width: AppSizes.p8),
                 Text('Languages', style: theme.textTheme.titleLarge),
+                const SizedBox(width: AppSizes.p8),
+                if (languages.isNotEmpty)
+                  Icon(Icons.check_circle,
+                      color: Colors.green.shade600, size: 18),
               ],
             ),
             const SizedBox(height: AppSizes.p16),
