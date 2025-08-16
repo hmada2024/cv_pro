@@ -2,7 +2,6 @@
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
-import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/cv_completion_progress.dart';
 import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
@@ -73,33 +72,29 @@ class CvFormScreen extends ConsumerWidget {
       }
     });
 
-    final canCreate = ref
-        .watch(cvFormProvider.select((cv) => cv.personalInfo.name.isNotEmpty));
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CV Pro Editor'),
-        leading: IconButton(
-          icon: const Icon(Icons.settings_outlined),
-          tooltip: 'Settings',
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            );
-          },
-        ),
+        title: const Text('CV Editor'),
         actions: [
-          IconButton(
+          TextButton.icon(
             icon: Icon(
-              Icons.checklist_rtl,
-              color: canCreate
+              Icons.preview_outlined,
+              color: ref.watch(cvFormProvider
+                      .select((cv) => cv.personalInfo.name.isNotEmpty))
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).disabledColor,
             ),
-            iconSize:
-                AppSizes.iconSizeMedium + 4, // Slightly larger action icon
-            tooltip: 'Create Final CV',
-            onPressed: canCreate
+            label: Text(
+              'Preview',
+              style: TextStyle(
+                color: ref.watch(cvFormProvider
+                        .select((cv) => cv.personalInfo.name.isNotEmpty))
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).disabledColor,
+              ),
+            ),
+            onPressed: ref.watch(cvFormProvider
+                    .select((cv) => cv.personalInfo.name.isNotEmpty))
                 ? () {
                     ref.invalidate(pdfBytesProvider);
                     Navigator.of(context).push(
@@ -112,7 +107,7 @@ class CvFormScreen extends ConsumerWidget {
                   }
                 : null,
           ),
-          const SizedBox(width: AppSizes.p16),
+          const SizedBox(width: AppSizes.p8),
         ],
         bottom: const CvCompletionProgress(),
       ),
