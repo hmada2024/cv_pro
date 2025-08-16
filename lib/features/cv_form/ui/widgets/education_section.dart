@@ -286,7 +286,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     return InkWell(
       onTap: () {
         if (!isStart && _isCurrent) return;
-        _selectYear(isStart); // ✅ CORRECTED: Call without context
+        _selectYear(isStart);
       },
       child: InputDecorator(
         decoration: InputDecoration(
