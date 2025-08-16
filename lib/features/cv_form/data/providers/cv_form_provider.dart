@@ -1,4 +1,4 @@
-// features/cv_form/data/providers/cv_form_provider.dart
+// lib/features/cv_form/data/providers/cv_form_provider.dart
 import 'dart:async';
 import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/core/services/image_cropper_service.dart';
@@ -8,15 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
-class CvFormNotifier extends StateNotifier<CVData> {
+class CvFormNotifier extends StateNotifier<CVData?> {
   final StorageService _storageService;
   final ImageCropperService _imageCropperService;
   final ImagePicker _imagePicker = ImagePicker();
   Timer? _debounce;
 
   CvFormNotifier(this._storageService, this._imageCropperService)
-      : super(CVData.initial()) {
-    _loadDataFromDb();
+      : super(null) {
+    _loadInitialData();
   }
 
   @override
@@ -25,35 +25,41 @@ class CvFormNotifier extends StateNotifier<CVData> {
     super.dispose();
   }
 
-  Future<void> _loadDataFromDb() async {
-    final loadedData = await _storageService.loadCV();
-    if (loadedData != null) {
-      state = loadedData;
+  Future<void> _loadInitialData() async {
+    // On app start, load the very first CV if it exists.
+    final firstCv = await _storageService.getFirstCV();
+    if (firstCv != null) {
+      state = firstCv;
     }
   }
 
   void _saveStateWithDebounce() {
+    if (state == null) return;
     if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      _storageService.saveCV(state);
+    _debounce = Timer(const Duration(milliseconds: 700), () {
+      final updatedCv = state!.copyWith(lastModified: DateTime.now());
+      _storageService.saveCV(updatedCv);
     });
   }
 
   Future<void> _saveStateImmediately() async {
+    if (state == null) return;
     _debounce?.cancel();
-    await _storageService.saveCV(state);
+    final updatedCv = state!.copyWith(lastModified: DateTime.now());
+    await _storageService.saveCV(updatedCv);
   }
 
-  // Method to replace the current state with data from a history entry.
-  void loadFromHistory(CVData dataFromHistory) {
-    state = dataFromHistory;
+  void loadCvProject(CVData cv) {
+    state = cv;
+  }
+
+  void createNewCvProject(String projectName) {
+    state = CVData.initial(projectName);
     _saveStateImmediately();
   }
 
-  Future<void> clearAllData() async {
-    _debounce?.cancel();
-    state = CVData.initial();
-    await _storageService.saveCV(state);
+  void clearActiveCV() {
+    state = null;
   }
 
   void updatePersonalInfo({
@@ -67,8 +73,9 @@ class CvFormNotifier extends StateNotifier<CVData> {
     String? maritalStatus,
     String? militaryServiceStatus,
   }) {
-    state = state.copyWith(
-      personalInfo: state.personalInfo.copyWith(
+    if (state == null) return;
+    state = state!.copyWith(
+      personalInfo: state!.personalInfo.copyWith(
         name: name,
         jobTitle: jobTitle,
         email: email,
@@ -84,8 +91,9 @@ class CvFormNotifier extends StateNotifier<CVData> {
   }
 
   void updatePersonalInfoImagePath(String? path) {
-    state = state.copyWith(
-      personalInfo: state.personalInfo.copyWith(profileImagePath: path),
+    if (state == null) return;
+    state = state!.copyWith(
+      personalInfo: state!.personalInfo.copyWith(profileImagePath: path),
     );
     _saveStateImmediately();
   }
@@ -95,11 +103,12 @@ class CvFormNotifier extends StateNotifier<CVData> {
   }
 
   void updateLicenseInfo({bool? hasLicense, LicenseType? type}) {
-    bool currentHasLicense = hasLicense ?? state.personalInfo.hasDriverLicense;
+    if (state == null) return;
+    bool currentHasLicense = hasLicense ?? state!.personalInfo.hasDriverLicense;
     LicenseType newType;
 
     if (currentHasLicense) {
-      newType = type ?? state.personalInfo.licenseType;
+      newType = type ?? state!.personalInfo.licenseType;
       if (newType == LicenseType.none) {
         newType = LicenseType.local;
       }
@@ -107,8 +116,8 @@ class CvFormNotifier extends StateNotifier<CVData> {
       newType = LicenseType.none;
     }
 
-    state = state.copyWith(
-      personalInfo: state.personalInfo.copyWith(
+    state = state!.copyWith(
+      personalInfo: state!.personalInfo.copyWith(
         hasDriverLicense: currentHasLicense,
         licenseType: newType,
       ),
@@ -141,183 +150,134 @@ class CvFormNotifier extends StateNotifier<CVData> {
   }
 
   // --- Experience ---
-  void addExperience({
-    required String position,
-    required String companyName,
-    required String description,
-    required DateTime startDate,
-    DateTime? endDate,
-  }) {
-    if (companyName.isNotEmpty && position.isNotEmpty) {
-      final newExperience = Experience.create(
-        companyName: companyName,
-        position: position,
-        description: description,
-        startDate: startDate,
-        endDate: endDate,
-      );
-      state =
-          state.copyWith(experiences: [...state.experiences, newExperience]);
-      _saveStateImmediately();
-    }
+  void addExperience(Experience newExperience) {
+    if (state == null) return;
+    state =
+        state!.copyWith(experiences: [...state!.experiences, newExperience]);
+    _saveStateImmediately();
   }
 
   void updateExperience(int index, Experience updatedExperience) {
-    final currentExperiences = List<Experience>.from(state.experiences);
+    if (state == null) return;
+    final currentExperiences = List<Experience>.from(state!.experiences);
     if (index >= 0 && index < currentExperiences.length) {
       currentExperiences[index] = updatedExperience;
-      state = state.copyWith(experiences: currentExperiences);
+      state = state!.copyWith(experiences: currentExperiences);
       _saveStateImmediately();
     }
   }
 
   void removeExperience(int index) {
-    final currentExperiences = List<Experience>.from(state.experiences);
+    if (state == null) return;
+    final currentExperiences = List<Experience>.from(state!.experiences);
     currentExperiences.removeAt(index);
-    state = state.copyWith(experiences: currentExperiences);
+    state = state!.copyWith(experiences: currentExperiences);
     _saveStateImmediately();
   }
 
   void reorderExperience(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
-    final items = List<Experience>.from(state.experiences);
+    if (state == null) return;
+    if (oldIndex < newIndex) newIndex -= 1;
+    final items = List<Experience>.from(state!.experiences);
     final item = items.removeAt(oldIndex);
     items.insert(newIndex, item);
-    state = state.copyWith(experiences: items);
+    state = state!.copyWith(experiences: items);
     _saveStateImmediately();
   }
 
   // --- Education ---
-  void addEducation({
-    required EducationLevel level,
-    required String degreeName,
-    required String school,
-    required DateTime startDate,
-    DateTime? endDate,
-  }) {
-    if (school.isNotEmpty && degreeName.isNotEmpty) {
-      final newEducation = Education.create(
-        level: level,
-        degreeName: degreeName,
-        school: school,
-        startDate: startDate,
-        endDate: endDate,
-      );
-      state = state.copyWith(education: [...state.education, newEducation]);
-      _saveStateImmediately();
-    }
+  void addEducation(Education newEducation) {
+    if (state == null) return;
+    state = state!.copyWith(education: [...state!.education, newEducation]);
+    _saveStateImmediately();
   }
 
   void updateEducation(int index, Education updatedEducation) {
-    final currentEducation = List<Education>.from(state.education);
+    if (state == null) return;
+    final currentEducation = List<Education>.from(state!.education);
     if (index >= 0 && index < currentEducation.length) {
       currentEducation[index] = updatedEducation;
-      state = state.copyWith(education: currentEducation);
+      state = state!.copyWith(education: currentEducation);
       _saveStateImmediately();
     }
   }
 
   void removeEducation(int index) {
-    final currentEducation = List<Education>.from(state.education);
+    if (state == null) return;
+    final currentEducation = List<Education>.from(state!.education);
     currentEducation.removeAt(index);
-    state = state.copyWith(education: currentEducation);
+    state = state!.copyWith(education: currentEducation);
     _saveStateImmediately();
   }
 
   void reorderEducation(int oldIndex, int newIndex) {
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
-    final items = List<Education>.from(state.education);
+    if (state == null) return;
+    if (oldIndex < newIndex) newIndex -= 1;
+    final items = List<Education>.from(state!.education);
     final item = items.removeAt(oldIndex);
     items.insert(newIndex, item);
-    state = state.copyWith(education: items);
+    state = state!.copyWith(education: items);
     _saveStateImmediately();
   }
 
   // --- Skills ---
-  void addSkill({required String name, required String level}) {
-    if (name.isNotEmpty) {
-      state = state.copyWith(
-          skills: [...state.skills, Skill.create(name: name, level: level)]);
-      _saveStateImmediately();
-    }
+  void addSkill(Skill skill) {
+    if (state == null) return;
+    state = state!.copyWith(skills: [...state!.skills, skill]);
+    _saveStateImmediately();
   }
 
   void removeSkill(int index) {
-    final currentSkills = List<Skill>.from(state.skills);
+    if (state == null) return;
+    final currentSkills = List<Skill>.from(state!.skills);
     currentSkills.removeAt(index);
-    state = state.copyWith(skills: currentSkills);
+    state = state!.copyWith(skills: currentSkills);
     _saveStateImmediately();
   }
 
   // --- Languages ---
-  void addLanguage({required String name, required String proficiency}) {
-    if (name.isNotEmpty && proficiency.isNotEmpty) {
-      state = state.copyWith(languages: [
-        ...state.languages,
-        Language.create(name: name, proficiency: proficiency)
-      ]);
-      _saveStateImmediately();
-    }
-  }
-
-  void updateLanguage(int index, Language updatedLanguage) {
-    final currentLanguages = List<Language>.from(state.languages);
-    if (index >= 0 && index < currentLanguages.length) {
-      currentLanguages[index] = updatedLanguage;
-      state = state.copyWith(languages: currentLanguages);
-      _saveStateImmediately();
-    }
+  void addLanguage(Language language) {
+    if (state == null) return;
+    state = state!.copyWith(languages: [...state!.languages, language]);
+    _saveStateImmediately();
   }
 
   void removeLanguage(int index) {
-    final currentLanguages = List<Language>.from(state.languages);
+    if (state == null) return;
+    final currentLanguages = List<Language>.from(state!.languages);
     currentLanguages.removeAt(index);
-    state = state.copyWith(languages: currentLanguages);
+    state = state!.copyWith(languages: currentLanguages);
     _saveStateImmediately();
   }
 
   // --- References ---
-  void addReference({
-    required String name,
-    required String company,
-    required String position,
-    required String email,
-    String? phone,
-  }) {
-    if (name.isNotEmpty && email.isNotEmpty) {
-      final newReference = Reference.create(
-          name: name,
-          company: company,
-          position: position,
-          email: email,
-          phone: phone);
-      state = state.copyWith(references: [...state.references, newReference]);
-      _saveStateImmediately();
-    }
+  void addReference(Reference reference) {
+    if (state == null) return;
+    state = state!.copyWith(references: [...state!.references, reference]);
+    _saveStateImmediately();
   }
 
   void updateReference(int index, Reference updatedReference) {
-    final currentReferences = List<Reference>.from(state.references);
+    if (state == null) return;
+    final currentReferences = List<Reference>.from(state!.references);
     if (index >= 0 && index < currentReferences.length) {
       currentReferences[index] = updatedReference;
-      state = state.copyWith(references: currentReferences);
+      state = state!.copyWith(references: currentReferences);
       _saveStateImmediately();
     }
   }
 
   void removeReference(int index) {
-    final currentReferences = List<Reference>.from(state.references);
+    if (state == null) return;
+    final currentReferences = List<Reference>.from(state!.references);
     currentReferences.removeAt(index);
-    state = state.copyWith(references: currentReferences);
+    state = state!.copyWith(references: currentReferences);
     _saveStateImmediately();
   }
 }
 
-final cvFormProvider = StateNotifierProvider<CvFormNotifier, CVData>((ref) {
+// Renamed from cvFormProvider to activeCvProvider for clarity
+final activeCvProvider = StateNotifierProvider<CvFormNotifier, CVData?>((ref) {
   final storageService = ref.watch(storageServiceProvider);
   final imageCropperService = ref.watch(imageCropperServiceProvider);
   return CvFormNotifier(storageService, imageCropperService);

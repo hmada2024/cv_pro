@@ -19,14 +19,11 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
   late GlobalKey<FormState> _formKey;
   final _degreeNameController = TextEditingController();
   final _schoolController = TextEditingController();
-
   bool _isFormVisible = false;
-
   EducationLevel _selectedLevel = EducationLevel.bachelor;
   DateTime? _startDate;
   DateTime? _endDate;
   bool _isCurrent = true;
-
   final DateFormat _dateFormatter = DateFormat('yyyy');
 
   @override
@@ -57,13 +54,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   void _addEducation() {
     if (_formKey.currentState!.validate() && _startDate != null) {
-      ref.read(cvFormProvider.notifier).addEducation(
-            level: _selectedLevel,
-            degreeName: _degreeNameController.text,
-            school: _schoolController.text,
-            startDate: _startDate!,
-            endDate: _isCurrent ? null : _endDate,
-          );
+      final newEducation = Education.create(
+        level: _selectedLevel,
+        degreeName: _degreeNameController.text,
+        school: _schoolController.text,
+        startDate: _startDate!,
+        endDate: _isCurrent ? null : _endDate,
+      );
+      ref.read(activeCvProvider.notifier).addEducation(newEducation);
       _resetForm();
     } else if (_startDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -80,9 +78,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     final lastYear = DateTime(now.year - 1, now.month, now.day);
     final initialDate =
         isStartDate ? (_startDate ?? lastYear) : (_endDate ?? now);
-
     DateTime? pickedDate;
-
     await showDialog(
       context: context,
       builder: (context) {
@@ -104,7 +100,6 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
         );
       },
     );
-
     if (pickedDate != null) {
       setState(() {
         if (isStartDate) {
@@ -129,7 +124,10 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
   @override
   Widget build(BuildContext context) {
-    final educationList = ref.watch(cvFormProvider.select((s) => s.education));
+    final cvData = ref.watch(activeCvProvider);
+    if (cvData == null) return const SizedBox.shrink();
+
+    final educationList = cvData.education;
     final theme = Theme.of(context);
 
     return Card(
@@ -168,7 +166,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                 },
                 onReorder: (oldIndex, newIndex) {
                   ref
-                      .read(cvFormProvider.notifier)
+                      .read(activeCvProvider.notifier)
                       .reorderEducation(oldIndex, newIndex);
                 },
               ),
@@ -338,7 +336,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
         trailing: IconButton(
           icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
           onPressed: () {
-            ref.read(cvFormProvider.notifier).removeEducation(index);
+            ref.read(activeCvProvider.notifier).removeEducation(index);
           },
         ),
       ),

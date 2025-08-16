@@ -5,6 +5,7 @@ import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 
 class SkillSection extends ConsumerStatefulWidget {
@@ -42,17 +43,21 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
 
   void _addSkill() {
     if (_skillController.text.isNotEmpty) {
-      ref.read(cvFormProvider.notifier).addSkill(
-            name: _skillController.text,
-            level: _selectedSkillLevel.value,
-          );
+      final newSkill = Skill.create(
+        name: _skillController.text,
+        level: _selectedSkillLevel.value,
+      );
+      ref.read(activeCvProvider.notifier).addSkill(newSkill);
       _resetForm();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final skills = ref.watch(cvFormProvider.select((cv) => cv.skills));
+    final cvData = ref.watch(activeCvProvider);
+    if (cvData == null) return const SizedBox.shrink();
+
+    final skills = cvData.skills;
     final theme = Theme.of(context);
     return Card(
       shape: RoundedRectangleBorder(
@@ -87,7 +92,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
                     Chip(
                       label: Text('${skills[i].name} (${skills[i].level})'),
                       onDeleted: () {
-                        ref.read(cvFormProvider.notifier).removeSkill(i);
+                        ref.read(activeCvProvider.notifier).removeSkill(i);
                       },
                     )
                 ],

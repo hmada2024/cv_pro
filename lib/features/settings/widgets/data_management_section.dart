@@ -1,6 +1,7 @@
-// lib/features/settings/ui/widgets/data_management_section.dart
+// lib/features/settings/widgets/data_management_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -26,7 +27,7 @@ class DataManagementSection extends ConsumerWidget {
             builder: (context) => AlertDialog(
               title: const Text('Are you sure?'),
               content: const Text(
-                  'This will permanently delete all your CV and user profile data. This action cannot be undone.'),
+                  'This will permanently delete all your CV projects. This action cannot be undone.'),
               actions: [
                 TextButton(
                   child: const Text('Cancel'),
@@ -35,7 +36,7 @@ class DataManagementSection extends ConsumerWidget {
                 FilledButton(
                   style: FilledButton.styleFrom(
                       backgroundColor: theme.colorScheme.error),
-                  child: const Text('Delete'),
+                  child: const Text('Delete All'),
                   onPressed: () => Navigator.of(context).pop(true),
                 ),
               ],
@@ -43,7 +44,11 @@ class DataManagementSection extends ConsumerWidget {
           );
 
           if (confirm ?? false) {
-            await ref.read(cvFormProvider.notifier).clearAllData();
+            // Clear the currently active CV first
+            ref.read(activeCvProvider.notifier).clearActiveCV();
+            // Call the new function to delete all projects from the database
+            await ref.read(cvProjectsProvider.notifier).deleteAllProjects();
+
             if (context.mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('All data has been cleared.')),

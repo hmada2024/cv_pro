@@ -1,6 +1,5 @@
 // lib/features/cv_form/ui/widgets/references_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
@@ -63,23 +62,19 @@ class ReferencesSection extends ConsumerWidget {
             ),
             ElevatedButton(
               onPressed: () {
-                final notifier = ref.read(cvFormProvider.notifier);
+                final notifier = ref.read(activeCvProvider.notifier);
+                final newReference = Reference.create(
+                  name: nameController.text,
+                  company: companyController.text,
+                  position: positionController.text,
+                  email: emailController.text,
+                  phone: phoneController.text,
+                );
+
                 if (isEditing) {
-                  final updatedReference = Reference.create(
-                    name: nameController.text,
-                    company: companyController.text,
-                    position: positionController.text,
-                    email: emailController.text,
-                    phone: phoneController.text,
-                  );
-                  notifier.updateReference(index!, updatedReference);
+                  notifier.updateReference(index!, newReference);
                 } else {
-                  notifier.addReference(
-                      name: nameController.text,
-                      company: companyController.text,
-                      position: positionController.text,
-                      email: emailController.text,
-                      phone: phoneController.text);
+                  notifier.addReference(newReference);
                 }
                 Navigator.of(context).pop();
               },
@@ -93,7 +88,10 @@ class ReferencesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final references = ref.watch(cvFormProvider.select((cv) => cv.references));
+    final cvData = ref.watch(activeCvProvider);
+    if (cvData == null) return const SizedBox.shrink();
+
+    final references = cvData.references;
     final showNote = ref.watch(showReferencesNoteProvider);
     final theme = Theme.of(context);
 
@@ -174,7 +172,7 @@ class ReferencesSection extends ConsumerWidget {
                                   ? theme.disabledColor
                                   : theme.colorScheme.error),
                           onPressed: () => ref
-                              .read(cvFormProvider.notifier)
+                              .read(activeCvProvider.notifier)
                               .removeReference(index),
                         ),
                         onTap: () => _showReferenceDialog(context, ref,
@@ -185,16 +183,6 @@ class ReferencesSection extends ConsumerWidget {
                 ),
               ),
             ),
-            if (references.isEmpty && !showNote)
-              const Padding(
-                padding: EdgeInsets.only(top: AppSizes.p16),
-                child: EmptyStateWidget(
-                  icon: Icons.group_outlined,
-                  title: 'No references added yet',
-                  subtitle:
-                      'Add a reference or toggle "Available upon request".',
-                ),
-              ),
           ],
         ),
       ),

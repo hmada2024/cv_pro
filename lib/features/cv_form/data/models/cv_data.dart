@@ -1,5 +1,4 @@
-// features/cv_form/data/models/cv_data.dart
-import 'package:cv_pro/features/history/data/models/cv_history.dart';
+// lib/features/cv_form/data/models/cv_data.dart
 import 'package:isar/isar.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 
@@ -15,6 +14,11 @@ part 'cv_data.g.dart';
 class CVData {
   Id id = Isar.autoIncrement;
 
+  @Index(unique: true, replace: false)
+  late String projectName;
+
+  late DateTime lastModified;
+
   final PersonalInfo personalInfo;
   final List<Experience> experiences;
   final List<Skill> skills;
@@ -23,16 +27,18 @@ class CVData {
   final List<Reference> references;
 
   CVData({
+    this.projectName = '',
     required this.personalInfo,
     required this.experiences,
     required this.skills,
     required this.languages,
     required this.education,
     required this.references,
-  });
+  }) : lastModified = DateTime.now();
 
-  factory CVData.initial() {
+  factory CVData.initial(String name) {
     return CVData(
+      projectName: name,
       personalInfo: PersonalInfo(),
       experiences: [],
       skills: [],
@@ -42,19 +48,9 @@ class CVData {
     );
   }
 
-  // Factory to convert a CVHistory object back to a live CVData object.
-  factory CVData.fromHistory(CVHistory history) {
-    return CVData(
-      personalInfo: history.personalInfo,
-      experiences: history.experiences,
-      skills: history.skills,
-      languages: history.languages,
-      education: history.education,
-      references: history.references,
-    );
-  }
-
   CVData copyWith({
+    String? projectName,
+    DateTime? lastModified,
     PersonalInfo? personalInfo,
     List<Experience>? experiences,
     List<Skill>? skills,
@@ -62,13 +58,15 @@ class CVData {
     List<Education>? education,
     List<Reference>? references,
   }) {
+    // When copying, we want to update the lastModified timestamp.
     return CVData(
+      projectName: projectName ?? this.projectName,
       personalInfo: personalInfo ?? this.personalInfo,
       experiences: experiences ?? this.experiences,
       skills: skills ?? this.skills,
       languages: languages ?? this.languages,
       education: education ?? this.education,
       references: references ?? this.references,
-    );
+    )..lastModified = lastModified ?? DateTime.now();
   }
 }

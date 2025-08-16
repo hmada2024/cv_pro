@@ -38,6 +38,7 @@ flutter:
     - assets/images/
     - assets/images/background_fly.webp
     - assets/images/background_pattern.webp
+    - assets/images/unknown_person.png
     - assets/fonts/MaterialIcons-Regular.ttf
     - assets/images/face_AI.webp
     - assets/fonts/Lato-Regular.ttf

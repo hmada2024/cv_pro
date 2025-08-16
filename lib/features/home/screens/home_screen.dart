@@ -1,15 +1,12 @@
-// lib/features/home/ui/screens/home_screen.dart
+// lib/features/home/screens/home_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
-import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
-import 'package:cv_pro/features/history/ui/screens/history_screen.dart';
+import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
+import 'package:cv_pro/features/cv_projects/ui/widgets/create_cv_dialog.dart';
+import 'package:cv_pro/features/home/widgets/home_create_cv_section.dart';
+import 'package:cv_pro/features/home/widgets/home_project_list_item.dart';
 import 'package:cv_pro/features/settings/screens/settings_screen.dart';
-import 'package:cv_pro/features/home/widgets/animated_scale_tap.dart';
-import 'package:cv_pro/features/home/widgets/home_action_card.dart';
-import 'package:cv_pro/features/home/widgets/home_main_cv_card.dart';
-import 'package:cv_pro/features/home/widgets/home_tip_card.dart';
-import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,161 +15,121 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isNewUser =
-        ref.watch(cvFormProvider.select((cv) => cv.personalInfo.name.isEmpty));
-    final theme = Theme.of(context);
+    final projectsAsync = ref.watch(cvProjectsProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('CV Pro'),
-        leading: IconButton(
-          icon: const Icon(Icons.settings_outlined),
-          tooltip: 'Settings',
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            );
-          },
-        ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.history),
-            tooltip: 'CV History',
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Settings',
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const HistoryScreen()),
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
             },
           ),
           const SizedBox(width: AppSizes.p8),
         ],
       ),
-      body: Stack(
+      body: projectsAsync.when(
+        data: (projects) {
+          if (projects.isEmpty) {
+            // State 1: Empty state with large, centered button
+            return _buildWelcomeView(context, ref);
+          }
+          // State 2: Projects list with large bottom action area
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final topSectionHeight = constraints.maxHeight * 0.65;
+              final bottomSectionHeight = constraints.maxHeight * 0.30;
+              final spacerHeight = constraints.maxHeight * 0.05;
+
+              return Column(
+                children: [
+                  SizedBox(
+                    height: topSectionHeight,
+                    child: ListView.builder(
+                      padding: const EdgeInsets.fromLTRB(
+                          AppSizes.p16, AppSizes.p16, AppSizes.p16, 0),
+                      itemCount: projects.length,
+                      itemBuilder: (context, index) {
+                        return HomeProjectListItem(cvData: projects[index]);
+                      },
+                    ),
+                  ),
+                  SizedBox(height: spacerHeight),
+                  SizedBox(
+                    height: bottomSectionHeight,
+                    child: HomeCreateCvSection(
+                        onCreate: () => _createNewCv(context, ref)),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
+      ),
+    );
+  }
+
+  Future<void> _createNewCv(BuildContext context, WidgetRef ref) async {
+    final newCvId = await showCreateCvDialog(context, ref);
+
+    if (newCvId != null && context.mounted) {
+      final newCv =
+          await ref.read(cvProjectsProvider.notifier).getProjectById(newCvId);
+
+      if (newCv != null && context.mounted) {
+        ref.read(activeCvProvider.notifier).loadCvProject(newCv);
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (_) => const CvFormScreen()));
+      }
+    }
+  }
+
+  // This now builds the special "Empty State" layout
+  Widget _buildWelcomeView(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppSizes.p32),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Background Pattern
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image:
-                    const AssetImage('assets/images/background_pattern.webp'),
-                fit: BoxFit.cover,
-                opacity: theme.brightness == Brightness.light ? 0.03 : 0.02,
-              ),
+          const Spacer(flex: 2),
+          Icon(
+            Icons.rocket_launch_outlined,
+            size: 80,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(height: AppSizes.p24),
+          Text(
+            'Welcome to CV Pro!',
+            style: theme.textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppSizes.p12),
+          Text(
+            'Create your first CV project to get started.',
+            style: theme.textTheme.bodyLarge,
+            textAlign: TextAlign.center,
+          ),
+          const Spacer(flex: 3),
+          // The large, centered button for the empty state
+          ElevatedButton.icon(
+            onPressed: () => _createNewCv(context, ref),
+            icon: const Icon(Icons.add_circle_outline),
+            label: const Text('Create Your First CV'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: AppSizes.p20),
+              textStyle: theme.textTheme.titleMedium,
             ),
           ),
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSizes.p16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AnimatedScaleTap(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const CvFormScreen()));
-                  },
-                  child: HomeMainCvCard(isNewUser: isNewUser),
-                ),
-                const SizedBox(height: AppSizes.p24),
-                Row(
-                  children: [
-                    Icon(Icons.bolt_outlined,
-                        color: theme.colorScheme.secondary),
-                    const SizedBox(width: AppSizes.p8),
-                    Text('Quick Actions', style: theme.textTheme.titleLarge),
-                  ],
-                ),
-                const SizedBox(height: AppSizes.p12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: AnimatedScaleTap(
-                        onTap: isNewUser
-                            ? null
-                            : () {
-                                ref.invalidate(pdfBytesProvider);
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PdfPreviewScreen(
-                                        pdfProvider: pdfBytesProvider),
-                                  ),
-                                );
-                              },
-                        child: HomeActionCard(
-                          icon: Icons.picture_as_pdf_outlined,
-                          label: 'Preview & Export',
-                          subtitle: isNewUser
-                              ? 'Enter your data first'
-                              : 'Your final PDF file',
-                          isEnabled: !isNewUser,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: AppSizes.p16),
-                    Expanded(
-                      child: AnimatedScaleTap(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PdfPreviewScreen(
-                                  pdfProvider: dummyPdfBytesProvider),
-                            ),
-                          );
-                        },
-                        child: const HomeActionCard(
-                          icon: Icons.style_outlined,
-                          label: 'Preview Template',
-                          subtitle: 'Using dummy data',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSizes.p24),
-                Row(
-                  children: [
-                    Icon(Icons.lightbulb_outline,
-                        color: theme.colorScheme.secondary),
-                    const SizedBox(width: AppSizes.p8),
-                    Text('Quick Start Guide',
-                        style: theme.textTheme.titleLarge),
-                  ],
-                ),
-                const SizedBox(height: AppSizes.p12),
-                const AnimatedScaleTap(
-                  child: HomeTipCard(
-                    icon: Icons.edit_note_outlined,
-                    title: 'How do I edit my information?',
-                    content:
-                        'Simply tap on the large CV card at the top to enter edit mode. There you can add and change all your details.',
-                  ),
-                ),
-                const SizedBox(height: AppSizes.p12),
-                const AnimatedScaleTap(
-                  child: HomeTipCard(
-                    icon: Icons.swap_vert_outlined,
-                    title: 'How to reorder my experience?',
-                    content:
-                        'In the Education and Experience sections, press and hold the drag handle icon (::) on the left of any item, then drag it to your desired position.',
-                  ),
-                ),
-                const SizedBox(height: AppSizes.p12),
-                const AnimatedScaleTap(
-                  child: HomeTipCard(
-                    icon: Icons.save_alt_outlined,
-                    title: 'How do I save the PDF?',
-                    content:
-                        "Tap the 'Preview & Export' button on this screen. From the preview page, use the share or print icon to save the file to your device.",
-                  ),
-                ),
-              ],
-            ),
-          ),
+          const Spacer(flex: 1),
         ],
       ),
     );

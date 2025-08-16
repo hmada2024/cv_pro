@@ -44,17 +44,21 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
 
   void _addLanguage() {
     if (_languageController.text.isNotEmpty) {
-      ref.read(cvFormProvider.notifier).addLanguage(
-            name: _languageController.text,
-            proficiency: _selectedProficiencyLevel.value,
-          );
+      final newLanguage = Language.create(
+        name: _languageController.text,
+        proficiency: _selectedProficiencyLevel.value,
+      );
+      ref.read(activeCvProvider.notifier).addLanguage(newLanguage);
       _resetForm();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final languages = ref.watch(cvFormProvider.select((cv) => cv.languages));
+    final cvData = ref.watch(activeCvProvider);
+    if (cvData == null) return const SizedBox.shrink();
+
+    final languages = cvData.languages;
     final theme = Theme.of(context);
     return Card(
       shape: RoundedRectangleBorder(
@@ -191,7 +195,7 @@ class _LanguageSectionState extends ConsumerState<LanguageSection> {
         trailing: IconButton(
           icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
           onPressed: () {
-            ref.read(cvFormProvider.notifier).removeLanguage(index);
+            ref.read(activeCvProvider.notifier).removeLanguage(index);
           },
         ),
       ),

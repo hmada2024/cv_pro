@@ -2,23 +2,21 @@
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/theme/app_colors.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_view_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeMainCvCard extends ConsumerWidget {
-  const HomeMainCvCard({super.key, required this.isNewUser});
-
-  final bool isNewUser;
+  const HomeMainCvCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final cvData = ref.watch(cvFormProvider);
+    final cvData = ref.watch(activeCvProvider);
+    final isNewUser = cvData == null || cvData.personalInfo.name.isEmpty;
 
     return Card(
-      elevation: 0, // Elevation is handled by the container's shadow
-      color: Colors.transparent, // Make card transparent for the gradient
+      elevation: 0,
+      color: Colors.transparent,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
       ),
@@ -80,17 +78,6 @@ class HomeMainCvCard extends ConsumerWidget {
                   ),
                 ],
                 const SizedBox(height: AppSizes.p16),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
-                  child: LinearProgressIndicator(
-                    value: ref.watch(cvCompletionProvider),
-                    minHeight: 6,
-                    backgroundColor: Colors.white.withOpacity(0.3),
-                    valueColor:
-                        const AlwaysStoppedAnimation<Color>(Colors.white),
-                  ),
-                ),
-                const SizedBox(height: AppSizes.p8),
                 Text(
                   'Tap to edit your CV',
                   style: theme.textTheme.bodySmall

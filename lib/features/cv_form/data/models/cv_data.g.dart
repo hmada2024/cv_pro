@@ -35,20 +35,30 @@ const CVDataSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'Language',
     ),
-    r'personalInfo': PropertySchema(
+    r'lastModified': PropertySchema(
       id: 3,
+      name: r'lastModified',
+      type: IsarType.dateTime,
+    ),
+    r'personalInfo': PropertySchema(
+      id: 4,
       name: r'personalInfo',
       type: IsarType.object,
       target: r'PersonalInfo',
     ),
+    r'projectName': PropertySchema(
+      id: 5,
+      name: r'projectName',
+      type: IsarType.string,
+    ),
     r'references': PropertySchema(
-      id: 4,
+      id: 6,
       name: r'references',
       type: IsarType.objectList,
       target: r'Reference',
     ),
     r'skills': PropertySchema(
-      id: 5,
+      id: 7,
       name: r'skills',
       type: IsarType.objectList,
       target: r'Skill',
@@ -59,7 +69,21 @@ const CVDataSchema = CollectionSchema(
   deserialize: _cVDataDeserialize,
   deserializeProp: _cVDataDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'projectName': IndexSchema(
+      id: 7457588439029069741,
+      name: r'projectName',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'projectName',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {
     r'PersonalInfo': PersonalInfoSchema,
@@ -108,6 +132,7 @@ int _cVDataEstimateSize(
   bytesCount += 3 +
       PersonalInfoSchema.estimateSize(
           object.personalInfo, allOffsets[PersonalInfo]!, allOffsets);
+  bytesCount += 3 + object.projectName.length * 3;
   bytesCount += 3 + object.references.length * 3;
   {
     final offsets = allOffsets[Reference]!;
@@ -151,20 +176,22 @@ void _cVDataSerialize(
     LanguageSchema.serialize,
     object.languages,
   );
+  writer.writeDateTime(offsets[3], object.lastModified);
   writer.writeObject<PersonalInfo>(
-    offsets[3],
+    offsets[4],
     allOffsets,
     PersonalInfoSchema.serialize,
     object.personalInfo,
   );
+  writer.writeString(offsets[5], object.projectName);
   writer.writeObjectList<Reference>(
-    offsets[4],
+    offsets[6],
     allOffsets,
     ReferenceSchema.serialize,
     object.references,
   );
   writer.writeObjectList<Skill>(
-    offsets[5],
+    offsets[7],
     allOffsets,
     SkillSchema.serialize,
     object.skills,
@@ -200,20 +227,21 @@ CVData _cVDataDeserialize(
         ) ??
         [],
     personalInfo: reader.readObjectOrNull<PersonalInfo>(
-          offsets[3],
+          offsets[4],
           PersonalInfoSchema.deserialize,
           allOffsets,
         ) ??
         PersonalInfo(),
+    projectName: reader.readStringOrNull(offsets[5]) ?? '',
     references: reader.readObjectList<Reference>(
-          offsets[4],
+          offsets[6],
           ReferenceSchema.deserialize,
           allOffsets,
           Reference(),
         ) ??
         [],
     skills: reader.readObjectList<Skill>(
-          offsets[5],
+          offsets[7],
           SkillSchema.deserialize,
           allOffsets,
           Skill(),
@@ -221,6 +249,7 @@ CVData _cVDataDeserialize(
         [],
   );
   object.id = id;
+  object.lastModified = reader.readDateTime(offsets[3]);
   return object;
 }
 
@@ -256,13 +285,17 @@ P _cVDataDeserializeProp<P>(
           ) ??
           []) as P;
     case 3:
+      return (reader.readDateTime(offset)) as P;
+    case 4:
       return (reader.readObjectOrNull<PersonalInfo>(
             offset,
             PersonalInfoSchema.deserialize,
             allOffsets,
           ) ??
           PersonalInfo()) as P;
-    case 4:
+    case 5:
+      return (reader.readStringOrNull(offset) ?? '') as P;
+    case 6:
       return (reader.readObjectList<Reference>(
             offset,
             ReferenceSchema.deserialize,
@@ -270,7 +303,7 @@ P _cVDataDeserializeProp<P>(
             Reference(),
           ) ??
           []) as P;
-    case 5:
+    case 7:
       return (reader.readObjectList<Skill>(
             offset,
             SkillSchema.deserialize,
@@ -293,6 +326,61 @@ List<IsarLinkBase<dynamic>> _cVDataGetLinks(CVData object) {
 
 void _cVDataAttach(IsarCollection<dynamic> col, Id id, CVData object) {
   object.id = id;
+}
+
+extension CVDataByIndex on IsarCollection<CVData> {
+  Future<CVData?> getByProjectName(String projectName) {
+    return getByIndex(r'projectName', [projectName]);
+  }
+
+  CVData? getByProjectNameSync(String projectName) {
+    return getByIndexSync(r'projectName', [projectName]);
+  }
+
+  Future<bool> deleteByProjectName(String projectName) {
+    return deleteByIndex(r'projectName', [projectName]);
+  }
+
+  bool deleteByProjectNameSync(String projectName) {
+    return deleteByIndexSync(r'projectName', [projectName]);
+  }
+
+  Future<List<CVData?>> getAllByProjectName(List<String> projectNameValues) {
+    final values = projectNameValues.map((e) => [e]).toList();
+    return getAllByIndex(r'projectName', values);
+  }
+
+  List<CVData?> getAllByProjectNameSync(List<String> projectNameValues) {
+    final values = projectNameValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'projectName', values);
+  }
+
+  Future<int> deleteAllByProjectName(List<String> projectNameValues) {
+    final values = projectNameValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'projectName', values);
+  }
+
+  int deleteAllByProjectNameSync(List<String> projectNameValues) {
+    final values = projectNameValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'projectName', values);
+  }
+
+  Future<Id> putByProjectName(CVData object) {
+    return putByIndex(r'projectName', object);
+  }
+
+  Id putByProjectNameSync(CVData object, {bool saveLinks = true}) {
+    return putByIndexSync(r'projectName', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByProjectName(List<CVData> objects) {
+    return putAllByIndex(r'projectName', objects);
+  }
+
+  List<Id> putAllByProjectNameSync(List<CVData> objects,
+      {bool saveLinks = true}) {
+    return putAllByIndexSync(r'projectName', objects, saveLinks: saveLinks);
+  }
 }
 
 extension CVDataQueryWhereSort on QueryBuilder<CVData, CVData, QWhere> {
@@ -366,6 +454,51 @@ extension CVDataQueryWhere on QueryBuilder<CVData, CVData, QWhereClause> {
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterWhereClause> projectNameEqualTo(
+      String projectName) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'projectName',
+        value: [projectName],
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterWhereClause> projectNameNotEqualTo(
+      String projectName) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'projectName',
+              lower: [],
+              upper: [projectName],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'projectName',
+              lower: [projectName],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'projectName',
+              lower: [projectName],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'projectName',
+              lower: [],
+              upper: [projectName],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }
@@ -678,6 +811,189 @@ extension CVDataQueryFilter on QueryBuilder<CVData, CVData, QFilterCondition> {
     });
   }
 
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> lastModifiedEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastModified',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> lastModifiedGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastModified',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> lastModifiedLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastModified',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> lastModifiedBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastModified',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'projectName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'projectName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'projectName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'projectName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'projectName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'projectName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'projectName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'projectName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'projectName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterFilterCondition> projectNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'projectName',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<CVData, CVData, QAfterFilterCondition> referencesLengthEqualTo(
       int length) {
     return QueryBuilder.apply(this, (query) {
@@ -894,7 +1210,31 @@ extension CVDataQueryObject on QueryBuilder<CVData, CVData, QFilterCondition> {
 
 extension CVDataQueryLinks on QueryBuilder<CVData, CVData, QFilterCondition> {}
 
-extension CVDataQuerySortBy on QueryBuilder<CVData, CVData, QSortBy> {}
+extension CVDataQuerySortBy on QueryBuilder<CVData, CVData, QSortBy> {
+  QueryBuilder<CVData, CVData, QAfterSortBy> sortByLastModified() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastModified', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterSortBy> sortByLastModifiedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastModified', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterSortBy> sortByProjectName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'projectName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterSortBy> sortByProjectNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'projectName', Sort.desc);
+    });
+  }
+}
 
 extension CVDataQuerySortThenBy on QueryBuilder<CVData, CVData, QSortThenBy> {
   QueryBuilder<CVData, CVData, QAfterSortBy> thenById() {
@@ -908,9 +1248,46 @@ extension CVDataQuerySortThenBy on QueryBuilder<CVData, CVData, QSortThenBy> {
       return query.addSortBy(r'id', Sort.desc);
     });
   }
+
+  QueryBuilder<CVData, CVData, QAfterSortBy> thenByLastModified() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastModified', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterSortBy> thenByLastModifiedDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastModified', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterSortBy> thenByProjectName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'projectName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QAfterSortBy> thenByProjectNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'projectName', Sort.desc);
+    });
+  }
 }
 
-extension CVDataQueryWhereDistinct on QueryBuilder<CVData, CVData, QDistinct> {}
+extension CVDataQueryWhereDistinct on QueryBuilder<CVData, CVData, QDistinct> {
+  QueryBuilder<CVData, CVData, QDistinct> distinctByLastModified() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastModified');
+    });
+  }
+
+  QueryBuilder<CVData, CVData, QDistinct> distinctByProjectName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'projectName', caseSensitive: caseSensitive);
+    });
+  }
+}
 
 extension CVDataQueryProperty on QueryBuilder<CVData, CVData, QQueryProperty> {
   QueryBuilder<CVData, int, QQueryOperations> idProperty() {
@@ -938,9 +1315,21 @@ extension CVDataQueryProperty on QueryBuilder<CVData, CVData, QQueryProperty> {
     });
   }
 
+  QueryBuilder<CVData, DateTime, QQueryOperations> lastModifiedProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastModified');
+    });
+  }
+
   QueryBuilder<CVData, PersonalInfo, QQueryOperations> personalInfoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'personalInfo');
+    });
+  }
+
+  QueryBuilder<CVData, String, QQueryOperations> projectNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'projectName');
     });
   }
 

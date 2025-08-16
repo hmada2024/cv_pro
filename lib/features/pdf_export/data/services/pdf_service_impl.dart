@@ -1,4 +1,4 @@
-// features/pdf_export/data/services/pdf_service_impl.dart
+// lib/features/pdf_export/data/services/pdf_service_impl.dart
 import 'package:flutter/foundation.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
@@ -25,7 +25,6 @@ Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
   final boldFont = pw.Font.ttf(params.boldFontData);
   final iconFont = pw.Font.ttf(params.iconFontData);
 
-  // The layout builder is now a pure function that only uses the data passed to it.
   final layoutWidget = buildPdfLayout(
     data: params.data,
     iconFont: iconFont,
@@ -39,6 +38,7 @@ Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
       theme: pw.ThemeData.withFont(
         base: font,
         bold: boldFont,
+        fontFallback: [iconFont],
       ),
       build: (pw.Context context) {
         return layoutWidget;
@@ -57,7 +57,6 @@ class PdfServiceImpl implements PdfService {
         'generateCv should be called via the provider which handles asset loading.');
   }
 
-  /// ✅✅✅ UPDATED: The static method now accepts pre-loaded image data.
   static Future<Uint8List> generateCvWithAssets({
     required CVData data,
     required bool showReferencesNote,

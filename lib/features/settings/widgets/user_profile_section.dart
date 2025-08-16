@@ -1,21 +1,77 @@
-// lib/features/settings/ui/widgets/user_profile_section.dart
+// lib/features/settings/widgets/user_profile_section.dart
 import 'dart:io';
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/theme/app_colors.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class UserProfileSection extends ConsumerWidget {
+class UserProfileSection extends ConsumerStatefulWidget {
   const UserProfileSection({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final personalInfo =
-        ref.watch(cvFormProvider.select((s) => s.personalInfo));
-    final notifier = ref.read(cvFormProvider.notifier);
+  ConsumerState<UserProfileSection> createState() => _UserProfileSectionState();
+}
+
+class _UserProfileSectionState extends ConsumerState<UserProfileSection> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final activeCv = ref.read(activeCvProvider);
+    if (activeCv != null) {
+      _syncControllers(activeCv.personalInfo);
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  void _syncControllers(PersonalInfo info) {
+    if (_nameController.text != info.name) _nameController.text = info.name;
+    if (_emailController.text != info.email) _emailController.text = info.email;
+    if (_phoneController.text != (info.phone ?? '')) {
+      _phoneController.text = info.phone ?? '';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final activeCv = ref.watch(activeCvProvider);
+    final notifier = ref.read(activeCvProvider.notifier);
     final theme = Theme.of(context);
+
+    // Listen for changes in the active CV to keep controllers in sync
+    ref.listen<CVData?>(activeCvProvider, (previous, next) {
+      if (next != null && (previous?.personalInfo != next.personalInfo)) {
+        _syncControllers(next.personalInfo);
+      }
+    });
+
+    if (activeCv == null) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppSizes.p20),
+          child: Text(
+            'No active CV project loaded. Please create or load a project from the home screen.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+      );
+    }
+
+    final personalInfo = activeCv.personalInfo;
     final hasImage = personalInfo.profileImagePath != null &&
         personalInfo.profileImagePath!.isNotEmpty;
 
@@ -25,7 +81,7 @@ class UserProfileSection extends ConsumerWidget {
         child: Column(
           children: [
             Text(
-              'Save your basic info here to auto-fill future CVs.',
+              'Editing basic info for "${activeCv.projectName}"',
               style: theme.textTheme.bodySmall,
               textAlign: TextAlign.center,
             ),
@@ -76,19 +132,19 @@ class UserProfileSection extends ConsumerWidget {
             ),
             const Divider(height: AppSizes.p24),
             EnglishOnlyTextField(
-              controller: TextEditingController(text: personalInfo.name),
+              controller: _nameController,
               labelText: 'Full Name',
               onChanged: (value) => notifier.updatePersonalInfo(name: value),
             ),
             const SizedBox(height: AppSizes.p12),
             EnglishOnlyTextField(
-              controller: TextEditingController(text: personalInfo.email),
+              controller: _emailController,
               labelText: 'Email Address',
               onChanged: (value) => notifier.updatePersonalInfo(email: value),
             ),
             const SizedBox(height: AppSizes.p12),
             EnglishOnlyTextField(
-              controller: TextEditingController(text: personalInfo.phone),
+              controller: _phoneController,
               labelText: 'Phone Number',
               onChanged: (value) => notifier.updatePersonalInfo(phone: value),
             ),

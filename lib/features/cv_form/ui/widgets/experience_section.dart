@@ -20,12 +20,10 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
   final _positionController = TextEditingController();
   final _companyController = TextEditingController();
   final _descriptionController = TextEditingController();
-
   bool _isFormVisible = false;
   DateTime? _startDate;
   DateTime? _endDate;
   bool _isCurrent = true;
-
   int? _editingIndex;
   Experience? _existingExperience;
 
@@ -80,7 +78,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
 
   void _saveExperience() {
     if (_formKey.currentState!.validate() && _startDate != null) {
-      final notifier = ref.read(cvFormProvider.notifier);
+      final notifier = ref.read(activeCvProvider.notifier);
       final finalEndDate = _isCurrent ? null : _endDate;
 
       if (_editingIndex != null && _existingExperience != null) {
@@ -94,13 +92,14 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
         );
         notifier.updateExperience(_editingIndex!, updatedExperience);
       } else {
-        notifier.addExperience(
+        final newExperience = Experience.create(
           position: _positionController.text,
           companyName: _companyController.text,
           description: _descriptionController.text,
           startDate: _startDate!,
           endDate: finalEndDate,
         );
+        notifier.addExperience(newExperience);
       }
       _hideAndResetForm();
     } else if (_startDate == null) {
@@ -116,7 +115,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
     final initialDate = isStartDate ? (_startDate ?? now) : (_endDate ?? now);
-
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -124,7 +122,6 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
       lastDate: now,
       initialDatePickerMode: DatePickerMode.year,
     );
-
     if (picked != null) {
       setState(() {
         if (isStartDate) {
@@ -149,7 +146,10 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
 
   @override
   Widget build(BuildContext context) {
-    final experiences = ref.watch(cvFormProvider.select((s) => s.experiences));
+    final cvData = ref.watch(activeCvProvider);
+    if (cvData == null) return const SizedBox.shrink();
+
+    final experiences = cvData.experiences;
     final theme = Theme.of(context);
 
     return Card(
@@ -188,7 +188,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                 },
                 onReorder: (oldIndex, newIndex) {
                   ref
-                      .read(cvFormProvider.notifier)
+                      .read(activeCvProvider.notifier)
                       .reorderExperience(oldIndex, newIndex);
                 },
               ),
@@ -332,7 +332,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             IconButton(
               icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
               onPressed: () {
-                ref.read(cvFormProvider.notifier).removeExperience(index);
+                ref.read(activeCvProvider.notifier).removeExperience(index);
               },
               tooltip: 'Delete Experience',
             ),

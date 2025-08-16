@@ -1,18 +1,18 @@
 // lib/features/cv_form/ui/screens/pdf_preview_screen.dart
 import 'dart:typed_data';
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
-import 'package:cv_pro/features/history/data/providers/cv_history_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
 
 class PdfPreviewScreen extends ConsumerWidget {
   final AutoDisposeFutureProvider<Uint8List> pdfProvider;
+  final String projectName;
 
   const PdfPreviewScreen({
     super.key,
     required this.pdfProvider,
+    required this.projectName,
   });
 
   Widget _buildActionButtons(
@@ -35,29 +35,18 @@ class PdfPreviewScreen extends ConsumerWidget {
           const SizedBox(width: AppSizes.p12),
           Expanded(
             child: ElevatedButton.icon(
-              icon: const Icon(Icons.save_alt_outlined),
-              label: const Text('Save & Finish'),
+              icon: const Icon(Icons.share_outlined),
+              label: const Text('Share / Save'),
               onPressed: () async {
                 try {
                   final pdfBytes = await ref.read(pdfProvider.future);
-                  final historyList = await ref.read(cvHistoryProvider.future);
-                  final defaultName = '${historyList.first.displayName}.pdf';
+                  // Use the passed project name for a reliable filename
+                  final defaultName = '$projectName.pdf';
 
-                  final bool success = await Printing.sharePdf(
+                  await Printing.sharePdf(
                     bytes: pdfBytes,
                     filename: defaultName,
                   );
-
-                  if (success) {
-                    await ref.read(cvFormProvider.notifier).clearAllData();
-
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('CV process completed!')),
-                      );
-                      Navigator.of(context).popUntil((route) => route.isFirst);
-                    }
-                  }
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -115,7 +104,7 @@ class PdfPreviewScreen extends ConsumerWidget {
             Expanded(
               child: PdfPreview(
                 build: (format) => pdfBytes,
-                useActions: false, // This hides the default buttons
+                useActions: false,
                 canChangeOrientation: false,
                 canChangePageFormat: false,
                 canDebug: false,

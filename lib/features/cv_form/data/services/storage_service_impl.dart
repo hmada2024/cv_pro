@@ -1,3 +1,4 @@
+// lib/features/cv_form/data/services/storage_service_impl.dart
 import 'package:isar/isar.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
@@ -8,16 +9,31 @@ class StorageServiceImpl implements StorageService {
   StorageServiceImpl(this._isar);
 
   @override
-  Future<CVData?> loadCV() async {
-    // نظرًا لأننا ندير سيرة ذاتية واحدة فقط، سنبحث دائمًا عن أول سجل.
-    return await _isar.cVDatas.where().findFirst();
+  Future<CVData?> loadCV(int id) async {
+    return await _isar.cVDatas.get(id);
   }
 
   @override
-  Future<void> saveCV(CVData cvData) async {
-    await _isar.writeTxn(() async {
-      // put سيقوم بالإدراج إذا كان جديدًا، أو التحديث إذا كان موجودًا.
-      await _isar.cVDatas.put(cvData);
+  Future<int> saveCV(CVData cvData) async {
+    return await _isar.writeTxn(() async {
+      return await _isar.cVDatas.put(cvData);
     });
+  }
+
+  @override
+  Future<List<CVData>> getAllCVs() async {
+    return await _isar.cVDatas.where().sortByLastModifiedDesc().findAll();
+  }
+
+  @override
+  Future<bool> deleteCV(int id) async {
+    return await _isar.writeTxn(() async {
+      return await _isar.cVDatas.delete(id);
+    });
+  }
+
+  @override
+  Future<CVData?> getFirstCV() async {
+    return await _isar.cVDatas.where().findFirst();
   }
 }

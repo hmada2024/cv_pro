@@ -10,11 +10,17 @@ class DrivingLicenseSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final licenseInfo = ref.watch(cvFormProvider.select((cv) => (
-          hasLicense: cv.personalInfo.hasDriverLicense,
-          type: cv.personalInfo.licenseType
-        )));
-    final notifier = ref.read(cvFormProvider.notifier);
+    // Watch the activeCvProvider and handle the nullable state
+    final cvData = ref.watch(activeCvProvider);
+    if (cvData == null) {
+      return const SizedBox.shrink(); // Don't build if no CV is active
+    }
+
+    final licenseInfo = (
+      hasLicense: cvData.personalInfo.hasDriverLicense,
+      type: cvData.personalInfo.licenseType
+    );
+    final notifier = ref.read(activeCvProvider.notifier);
     final theme = Theme.of(context);
 
     final selectableTypes =

@@ -41,7 +41,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   @override
   void initState() {
     super.initState();
-    _syncControllers(ref.read(cvFormProvider).personalInfo);
+    // Initial sync with the provider's state
+    final initialCv = ref.read(activeCvProvider);
+    if (initialCv != null) {
+      _syncControllers(initialCv.personalInfo);
+    }
 
     _nameFocus.addListener(() => setState(() {}));
     _jobTitleFocus.addListener(() => setState(() {}));
@@ -92,8 +96,11 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   }
 
   Future<void> _selectBirthDate() async {
-    final notifier = ref.read(cvFormProvider.notifier);
-    final initialDate = ref.read(cvFormProvider).personalInfo.birthDate ??
+    final notifier = ref.read(activeCvProvider.notifier);
+    final initialCv = ref.read(activeCvProvider);
+    if (initialCv == null) return;
+
+    final initialDate = initialCv.personalInfo.birthDate ??
         DateTime.now().subtract(const Duration(days: 365 * 25));
 
     final DateTime? picked = await showDatePicker(
@@ -109,7 +116,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   }
 
   void _pickImage(ThemeData theme) {
-    ref.read(cvFormProvider.notifier).pickProfileImage(
+    ref.read(activeCvProvider.notifier).pickProfileImage(
           toolbarColor: theme.appBarTheme.backgroundColor!,
           toolbarWidgetColor: theme.appBarTheme.foregroundColor!,
           backgroundColor: theme.scaffoldBackgroundColor,
@@ -120,14 +127,16 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final personalInfo =
-        ref.watch(cvFormProvider.select((s) => s.personalInfo));
+    final cvData = ref.watch(activeCvProvider);
+    if (cvData == null) return const SizedBox.shrink();
 
-    ref.listen<PersonalInfo>(
-      cvFormProvider.select((s) => s.personalInfo),
+    final personalInfo = cvData.personalInfo;
+
+    ref.listen<CVData?>(
+      activeCvProvider,
       (previous, next) {
-        if (previous != next) {
-          _syncControllers(next);
+        if (next != null && (previous?.personalInfo != next.personalInfo)) {
+          _syncControllers(next.personalInfo);
         }
       },
     );
@@ -178,16 +187,18 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
                             )
                           : null,
                     ),
-                    Positioned(
-                      bottom: 2,
-                      right: 2,
-                      child: CircleAvatar(
-                        radius: AppSizes.p12,
-                        backgroundColor: theme.colorScheme.primary,
-                        child: const Icon(Icons.edit,
-                            color: Colors.white, size: AppSizes.iconSizeSmall),
+                    if (hasImage)
+                      Positioned(
+                        bottom: 2,
+                        right: 2,
+                        child: CircleAvatar(
+                          radius: AppSizes.p12,
+                          backgroundColor: theme.colorScheme.primary,
+                          child: const Icon(Icons.edit,
+                              color: Colors.white,
+                              size: AppSizes.iconSizeSmall),
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -199,7 +210,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               iconData: Icons.badge_outlined,
               focusNode: _nameFocus,
               onChanged: (value) => ref
-                  .read(cvFormProvider.notifier)
+                  .read(activeCvProvider.notifier)
                   .updatePersonalInfo(name: value),
             ),
             FormTextField(
@@ -208,7 +219,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               iconData: Icons.work_outline,
               focusNode: _jobTitleFocus,
               onChanged: (value) => ref
-                  .read(cvFormProvider.notifier)
+                  .read(activeCvProvider.notifier)
                   .updatePersonalInfo(jobTitle: value),
             ),
             FormDatePickerField(
@@ -224,7 +235,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               focusNode: _emailFocus,
               keyboardType: TextInputType.emailAddress,
               onChanged: (value) => ref
-                  .read(cvFormProvider.notifier)
+                  .read(activeCvProvider.notifier)
                   .updatePersonalInfo(email: value),
             ),
             FormTextField(
@@ -234,7 +245,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               focusNode: _phoneFocus,
               keyboardType: TextInputType.phone,
               onChanged: (value) => ref
-                  .read(cvFormProvider.notifier)
+                  .read(activeCvProvider.notifier)
                   .updatePersonalInfo(phone: value),
             ),
             FormTextField(
@@ -243,7 +254,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               iconData: Icons.location_on_outlined,
               focusNode: _addressFocus,
               onChanged: (value) => ref
-                  .read(cvFormProvider.notifier)
+                  .read(activeCvProvider.notifier)
                   .updatePersonalInfo(address: value),
             ),
             FormDropdownField(
@@ -253,7 +264,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               items: kMaritalStatusOptions,
               onChanged: (value) {
                 ref
-                    .read(cvFormProvider.notifier)
+                    .read(activeCvProvider.notifier)
                     .updatePersonalInfo(maritalStatus: value);
               },
             ),
@@ -264,7 +275,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               items: kMilitaryServiceOptions,
               onChanged: (value) {
                 ref
-                    .read(cvFormProvider.notifier)
+                    .read(activeCvProvider.notifier)
                     .updatePersonalInfo(militaryServiceStatus: value);
               },
             ),
@@ -275,7 +286,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               focusNode: _summaryFocus,
               maxLines: 4,
               onChanged: (value) => ref
-                  .read(cvFormProvider.notifier)
+                  .read(activeCvProvider.notifier)
                   .updatePersonalInfo(summary: value),
             ),
           ],
