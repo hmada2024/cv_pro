@@ -55,7 +55,8 @@ class HomeScreen extends ConsumerWidget {
             height: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: const AssetImage('assets/images/background_pattern.png'),
+                image:
+                    const AssetImage('assets/images/background_pattern.webp'),
                 fit: BoxFit.cover,
                 opacity: theme.brightness == Brightness.light ? 0.03 : 0.02,
               ),
