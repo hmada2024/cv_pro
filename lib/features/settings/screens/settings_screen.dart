@@ -1,10 +1,10 @@
 // lib/features/settings/ui/screens/settings_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/features/settings/ui/widgets/about_section.dart';
-import 'package:cv_pro/features/settings/ui/widgets/appearance_section.dart';
-import 'package:cv_pro/features/settings/ui/widgets/data_management_section.dart';
-import 'package:cv_pro/features/settings/ui/widgets/section_title.dart';
-import 'package:cv_pro/features/settings/ui/widgets/user_profile_section.dart';
+import 'package:cv_pro/features/settings/widgets/about_section.dart';
+import 'package:cv_pro/features/settings/widgets/appearance_section.dart';
+import 'package:cv_pro/features/settings/widgets/data_management_section.dart';
+import 'package:cv_pro/features/settings/widgets/section_title.dart';
+import 'package:cv_pro/features/settings/widgets/user_profile_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
