@@ -36,10 +36,8 @@ class HomeScreen extends ConsumerWidget {
       body: projectsAsync.when(
         data: (projects) {
           if (projects.isEmpty) {
-            // State 1: Empty state with large, centered button
             return _buildWelcomeView(context, ref);
           }
-          // State 2: Projects list with large bottom action area
           return LayoutBuilder(
             builder: (context, constraints) {
               final topSectionHeight = constraints.maxHeight * 0.65;
@@ -71,7 +69,36 @@ class HomeScreen extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
+        error: (error, stack) => Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppSizes.p24),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline,
+                    size: 48, color: Colors.redAccent),
+                const SizedBox(height: AppSizes.p16),
+                Text(
+                  'Failed to load projects',
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: AppSizes.p8),
+                Text(
+                  'An unexpected error occurred. Please check your connection or try again.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+                const SizedBox(height: AppSizes.p24),
+                ElevatedButton.icon(
+                  onPressed: () => ref.invalidate(cvProjectsProvider),
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Retry'),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -91,7 +118,6 @@ class HomeScreen extends ConsumerWidget {
     }
   }
 
-  // This now builds the special "Empty State" layout
   Widget _buildWelcomeView(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     return Padding(
@@ -119,7 +145,6 @@ class HomeScreen extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           const Spacer(flex: 3),
-          // The large, centered button for the empty state
           ElevatedButton.icon(
             onPressed: () => _createNewCv(context, ref),
             icon: const Icon(Icons.add_circle_outline),

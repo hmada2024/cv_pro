@@ -51,7 +51,6 @@ class _UserProfileSectionState extends ConsumerState<UserProfileSection> {
     final notifier = ref.read(activeCvProvider.notifier);
     final theme = Theme.of(context);
 
-    // Listen for changes in the active CV to keep controllers in sync
     ref.listen<CVData?>(activeCvProvider, (previous, next) {
       if (next != null && (previous?.personalInfo != next.personalInfo)) {
         _syncControllers(next.personalInfo);
@@ -75,6 +74,31 @@ class _UserProfileSectionState extends ConsumerState<UserProfileSection> {
     final hasImage = personalInfo.profileImagePath != null &&
         personalInfo.profileImagePath!.isNotEmpty;
 
+    Widget avatarChild;
+    if (hasImage) {
+      avatarChild = ClipOval(
+        child: Image.file(
+          File(personalInfo.profileImagePath!),
+          fit: BoxFit.cover,
+          width: AppSizes.avatarRadius * 2,
+          height: AppSizes.avatarRadius * 2,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(
+              Icons.broken_image_outlined,
+              size: AppSizes.iconSizeLarge,
+              color: theme.colorScheme.secondary,
+            );
+          },
+        ),
+      );
+    } else {
+      avatarChild = Icon(
+        Icons.person_outline,
+        size: AppSizes.iconSizeLarge,
+        color: theme.colorScheme.secondary,
+      );
+    }
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppSizes.p20),
@@ -89,14 +113,7 @@ class _UserProfileSectionState extends ConsumerState<UserProfileSection> {
             CircleAvatar(
               radius: AppSizes.avatarRadius,
               backgroundColor: theme.dividerColor,
-              backgroundImage: hasImage
-                  ? FileImage(File(personalInfo.profileImagePath!))
-                  : null,
-              child: !hasImage
-                  ? Icon(Icons.person_outline,
-                      size: AppSizes.iconSizeLarge,
-                      color: theme.colorScheme.secondary)
-                  : null,
+              child: avatarChild,
             ),
             const SizedBox(height: AppSizes.p8),
             Row(

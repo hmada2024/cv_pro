@@ -3,7 +3,6 @@ import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
-// Corrected import path for the provider
 import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -58,32 +57,24 @@ class CvProjectCard extends ConsumerWidget {
               IconButton(
                 icon:
                     Icon(Icons.delete_outline, color: theme.colorScheme.error),
-                onPressed: () async {
-                  final confirm = await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Delete Project?'),
-                      content: Text(
-                          'Are you sure you want to delete "${cvData.projectName}"? This action cannot be undone.'),
-                      actions: [
-                        TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text('Cancel')),
-                        FilledButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          style: FilledButton.styleFrom(
-                              backgroundColor: theme.colorScheme.error),
-                          child: const Text('Delete'),
-                        ),
-                      ],
+                onPressed: () {
+                  ref
+                      .read(cvProjectsProvider.notifier)
+                      .markProjectForDeletion(cvData.id);
+
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Deleted "${cvData.projectName}"'),
+                      duration: const Duration(seconds: 4),
+                      action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () {
+                          ref.read(cvProjectsProvider.notifier).undoDeletion();
+                        },
+                      ),
                     ),
                   );
-                  if (confirm ?? false) {
-                    // Corrected provider name
-                    await ref
-                        .read(cvProjectsProvider.notifier)
-                        .deleteProject(cvData.id);
-                  }
                 },
               ),
             ],

@@ -12,7 +12,6 @@ class ProjectStatusHeader extends ConsumerWidget
       BuildContext context, IconData icon, bool isComplete) {
     final theme = Theme.of(context);
 
-    // AnimatedSwitcher provides a smooth cross-fade transition
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       transitionBuilder: (child, animation) {
@@ -20,13 +19,61 @@ class ProjectStatusHeader extends ConsumerWidget
       },
       child: Icon(
         icon,
-        key:
-            ValueKey<bool>(isComplete), // Key is important for AnimatedSwitcher
+        key: ValueKey<bool>(isComplete),
         size: AppSizes.iconSizeMedium,
         color: isComplete
             ? theme.colorScheme.primary
             : theme.disabledColor.withOpacity(0.5),
       ),
+    );
+  }
+
+  Widget _buildSaveStatusIndicator(
+      BuildContext context, WidgetRef ref, ThemeData theme) {
+    final saveStatus = ref.watch(saveStatusProvider);
+
+    Widget child = const SizedBox.shrink(); // Initialize with a default value
+    switch (saveStatus) {
+      case SaveStatus.saving:
+        child = Row(
+          key: const ValueKey('saving'),
+          children: [
+            const SizedBox(
+                width: 14,
+                height: 14,
+                child: CircularProgressIndicator(strokeWidth: 2)),
+            const SizedBox(width: 8),
+            Text("Saving...", style: theme.textTheme.bodySmall),
+          ],
+        );
+        break;
+      case SaveStatus.saved:
+        child = Row(
+          key: const ValueKey('saved'),
+          children: [
+            const Icon(Icons.check_circle, color: Colors.green, size: 16),
+            const SizedBox(width: 8),
+            Text("Saved", style: theme.textTheme.bodySmall),
+          ],
+        );
+        break;
+      case SaveStatus.idle:
+        child = const SizedBox(key: ValueKey('idle'), height: 16);
+        break;
+    }
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: SizeTransition(
+            sizeFactor: animation,
+            axis: Axis.horizontal,
+            child: child,
+          ),
+        );
+      },
+      child: child,
     );
   }
 
@@ -57,7 +104,9 @@ class ProjectStatusHeader extends ConsumerWidget
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: AppSizes.p16),
+          const SizedBox(width: AppSizes.p8),
+          _buildSaveStatusIndicator(context, ref, theme),
+          const Spacer(),
           _buildSectionIcon(context, Icons.person_outline,
               cvData.personalInfo.name.isNotEmpty),
           const SizedBox(width: AppSizes.p12),
@@ -69,9 +118,6 @@ class ProjectStatusHeader extends ConsumerWidget
           const SizedBox(width: AppSizes.p12),
           _buildSectionIcon(
               context, Icons.star_border, cvData.skills.isNotEmpty),
-          const SizedBox(width: AppSizes.p12),
-          _buildSectionIcon(
-              context, Icons.language, cvData.languages.isNotEmpty),
         ],
       ),
     );

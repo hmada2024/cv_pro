@@ -18,7 +18,7 @@ class HomeProjectListItem extends ConsumerWidget {
     final hasImage = cvData.personalInfo.profileImagePath != null &&
         cvData.personalInfo.profileImagePath!.isNotEmpty;
 
-    // Use a Widget for the image to leverage Flutter's caching mechanisms
+    final projectsNotifier = ref.read(cvProjectsProvider.notifier);
     final Widget profileImageWidget = hasImage
         ? Image.file(
             File(cvData.personalInfo.profileImagePath!),
@@ -26,7 +26,7 @@ class HomeProjectListItem extends ConsumerWidget {
             width: (AppSizes.avatarRadius - 15) * 2,
             height: (AppSizes.avatarRadius - 15) * 2,
             errorBuilder: (context, error, stackTrace) =>
-                const Icon(Icons.person), // Fallback icon on error
+                const Icon(Icons.person),
           )
         : Image.asset(
             'assets/images/unknown_person.png',
@@ -49,7 +49,6 @@ class HomeProjectListItem extends ConsumerWidget {
           padding: const EdgeInsets.all(AppSizes.p12),
           child: Row(
             children: [
-              // Use ClipOval to make the image circular
               ClipOval(
                 child: Container(
                   color: theme.scaffoldBackgroundColor,
@@ -79,6 +78,31 @@ class HomeProjectListItem extends ConsumerWidget {
                     ]
                   ],
                 ),
+              ),
+              IconButton(
+                icon:
+                    Icon(Icons.delete_outline, color: theme.colorScheme.error),
+                tooltip: 'Delete Project',
+                onPressed: () {
+                  // Use the captured notifier instance
+                  projectsNotifier.markProjectForDeletion(cvData.id);
+
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Deleted "${cvData.projectName}"'),
+                      duration: const Duration(seconds: 4),
+                      action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () {
+                          // Use the captured notifier instance here as well.
+                          // This is now safe even if the widget is disposed.
+                          projectsNotifier.undoDeletion();
+                        },
+                      ),
+                    ),
+                  );
+                },
               ),
             ],
           ),
