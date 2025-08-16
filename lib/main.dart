@@ -1,4 +1,4 @@
-// main.dart
+// main.dart..
 import 'package:cv_pro/features/home/ui/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

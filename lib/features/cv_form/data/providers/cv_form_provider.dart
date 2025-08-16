@@ -1,11 +1,11 @@
 // features/cv_form/data/providers/cv_form_provider.dart
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/core/services/image_cropper_service.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CvFormNotifier extends StateNotifier<CVData> {
@@ -57,7 +57,6 @@ class CvFormNotifier extends StateNotifier<CVData> {
     String? summary,
     String? phone,
     String? address,
-    String? profileImagePath,
     DateTime? birthDate,
     String? maritalStatus,
     String? militaryServiceStatus,
@@ -70,13 +69,23 @@ class CvFormNotifier extends StateNotifier<CVData> {
         summary: summary,
         phone: phone,
         address: address,
-        profileImagePath: profileImagePath,
         birthDate: birthDate,
         maritalStatus: maritalStatus,
         militaryServiceStatus: militaryServiceStatus,
       ),
     );
     _saveStateWithDebounce();
+  }
+
+  void updatePersonalInfoImagePath(String? path) {
+    state = state.copyWith(
+      personalInfo: state.personalInfo.copyWith(profileImagePath: path),
+    );
+    _saveStateImmediately();
+  }
+
+  void removeProfileImage() {
+    updatePersonalInfoImagePath(null);
   }
 
   void updateLicenseInfo({bool? hasLicense, LicenseType? type}) {
@@ -120,19 +129,9 @@ class CvFormNotifier extends StateNotifier<CVData> {
       );
 
       if (croppedFile != null) {
-        state = state.copyWith(
-            personalInfo: state.personalInfo
-                .copyWith(profileImagePath: croppedFile.path));
-        _saveStateImmediately();
+        updatePersonalInfoImagePath(croppedFile.path);
       }
     }
-  }
-
-  void removeProfileImage() {
-    state = state.copyWith(
-      personalInfo: state.personalInfo.copyWith(profileImagePath: null),
-    );
-    _saveStateImmediately();
   }
 
   // --- Experience ---

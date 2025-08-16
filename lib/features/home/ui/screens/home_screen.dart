@@ -3,7 +3,7 @@ import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
-import 'package:cv_pro/features/cv_form/ui/screens/settings_screen.dart';
+import 'package:cv_pro/features/settings/ui/screens/settings_screen.dart';
 import 'package:cv_pro/features/home/ui/widgets/animated_scale_tap.dart';
 import 'package:cv_pro/features/home/ui/widgets/home_action_card.dart';
 import 'package:cv_pro/features/home/ui/widgets/home_main_cv_card.dart';
