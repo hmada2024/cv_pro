@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/experience_section.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:flutter/material.dart';
@@ -111,13 +112,14 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
     }
   }
 
+  // ✅ CORRECTED: `context` parameter removed
   Future<void> _selectDate(bool isStartDate) async {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
     final initialDate = isStartDate ? (_startDate ?? now) : (_endDate ?? now);
 
     final DateTime? picked = await showDatePicker(
-      context: context,
+      context: context, // Uses the State's context property directly
       initialDate: initialDate,
       firstDate: firstDate,
       lastDate: now,
@@ -153,18 +155,18 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 Icon(Icons.business_center, color: theme.colorScheme.secondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSizes.p8),
                 Text('Work Experience', style: theme.textTheme.titleLarge),
               ],
             ),
-            if (experiences.isNotEmpty) const SizedBox(height: 16),
+            if (experiences.isNotEmpty) const SizedBox(height: AppSizes.p16),
             if (experiences.isNotEmpty)
               ReorderableListView.builder(
                 shrinkWrap: true,
@@ -186,7 +188,8 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             else ...[
               if (experiences.isEmpty) ...[
                 const Padding(
-                  padding: EdgeInsets.only(top: 16.0, bottom: 16.0),
+                  padding:
+                      EdgeInsets.only(top: AppSizes.p16, bottom: AppSizes.p16),
                   child: EmptyStateWidget(
                     icon: Icons.work_outline,
                     title: 'Add your first work experience',
@@ -200,13 +203,13 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                   label: const Text('Add First Experience'),
                 ),
               ] else ...[
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSizes.p16),
                 OutlinedButton.icon(
                   onPressed: () => _showForm(),
                   icon: const Icon(Icons.add),
                   label: const Text('Add New Experience'),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    padding: const EdgeInsets.symmetric(vertical: AppSizes.p12),
                   ),
                 ),
               ],
@@ -223,24 +226,24 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Divider(height: 32),
+          const Divider(height: AppSizes.p32),
           Text(
             _editingIndex == null ? 'Add New Experience' : 'Edit Experience',
             style: theme.textTheme.titleMedium,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSizes.p16),
           EnglishOnlyTextField(
               controller: _positionController,
               labelText: 'Position / Job Title',
               validator: (v) => v!.isEmpty ? 'Required' : null),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSizes.p12),
           EnglishOnlyTextField(
               controller: _companyController,
               labelText: 'Company Name',
               validator: (v) => v!.isEmpty ? 'Required' : null),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSizes.p16),
           _buildDatePicker('Start Date', _startDate, () => _selectDate(true)),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSizes.p12),
           _buildDatePicker('End Date', _endDate, () => _selectDate(false),
               enabled: !_isCurrent),
           CheckboxListTile(
@@ -259,12 +262,12 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
             controlAffinity: ListTileControlAffinity.leading,
             contentPadding: EdgeInsets.zero,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSizes.p12),
           EnglishOnlyTextField(
               controller: _descriptionController,
               labelText: 'Description (Achievements & Responsibilities)',
               maxLines: 4),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSizes.p16),
           Row(
             children: [
               Expanded(
@@ -273,7 +276,7 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
                   child: const Text('Cancel'),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSizes.p8),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _saveExperience,
@@ -299,9 +302,9 @@ class _ExperienceSectionState extends ConsumerState<ExperienceSection> {
       elevation: 0,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: theme.dividerColor, width: 1),
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
       ),
-      margin: const EdgeInsets.only(bottom: 8.0),
+      margin: const EdgeInsets.only(bottom: AppSizes.p8),
       child: ListTile(
         leading: const Icon(Icons.drag_handle),
         title: Text(exp.position, style: theme.textTheme.titleMedium),

@@ -1,4 +1,5 @@
 // features/cv_form/ui/widgets/education_section.dart
+import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +74,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     }
   }
 
-  Future<void> _selectYear(BuildContext context, bool isStartDate) async {
+  Future<void> _selectYear(bool isStartDate) async {
     final now = DateTime.now();
     final firstDate = DateTime(1960);
     final lastYear = DateTime(now.year - 1, now.month, now.day);
@@ -133,18 +134,18 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(AppSizes.p20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
               children: [
                 Icon(Icons.school, color: theme.colorScheme.secondary),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSizes.p8),
                 Text('Education', style: theme.textTheme.titleLarge),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.p16),
             if (educationList.isNotEmpty)
               ReorderableListView.builder(
                 shrinkWrap: true,
@@ -171,14 +172,14 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   subtitle:
                       'Your academic background is a key part of your CV.',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: AppSizes.p16),
                 ElevatedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
                   label: const Text('Add First Qualification'),
                 ),
               ] else ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSizes.p8),
                 OutlinedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
@@ -198,9 +199,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Divider(height: 32),
+          const Divider(height: AppSizes.p32),
           Text('Add New Qualification', style: theme.textTheme.titleMedium),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSizes.p16),
           DropdownButtonFormField<EducationLevel>(
             value: _selectedLevel,
             decoration: const InputDecoration(labelText: 'Qualification Level'),
@@ -216,25 +217,25 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
               }
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSizes.p12),
           EnglishOnlyTextField(
             controller: _degreeNameController,
             labelText: 'Degree Name (e.g., of Computer Science)',
             validator: (val) => (val?.isEmpty ?? true) ? 'Required' : null,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSizes.p12),
           EnglishOnlyTextField(
             controller: _schoolController,
             labelText: 'School / University',
             validator: (val) => (val?.isEmpty ?? true) ? 'Required' : null,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSizes.p12),
           Row(
             children: [
               Expanded(
                 child: _buildDatePickerField('Start Year', _startDate, true),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSizes.p12),
               Expanded(
                 child: _buildDatePickerField('End Year', _endDate, false),
               ),
@@ -257,7 +258,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
             contentPadding: EdgeInsets.zero,
             activeColor: theme.primaryColor,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSizes.p16),
           Row(
             children: [
               Expanded(
@@ -266,7 +267,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
                   child: const Text('Cancel'),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSizes.p8),
               Expanded(
                 child: ElevatedButton(
                   onPressed: _addEducation,
@@ -285,7 +286,7 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
     return InkWell(
       onTap: () {
         if (!isStart && _isCurrent) return;
-        _selectYear(context, isStart);
+        _selectYear(isStart); // ✅ CORRECTED: Call without context
       },
       child: InputDecorator(
         decoration: InputDecoration(
@@ -316,9 +317,9 @@ class _EducationSectionState extends ConsumerState<EducationSection> {
       elevation: 0,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: theme.dividerColor, width: 1),
-        borderRadius: BorderRadius.circular(8.0),
+        borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
       ),
-      margin: const EdgeInsets.only(bottom: 8.0),
+      margin: const EdgeInsets.only(bottom: AppSizes.p8),
       child: ListTile(
         leading: const Icon(Icons.drag_handle),
         title: Text(title, style: theme.textTheme.titleMedium),
