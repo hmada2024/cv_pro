@@ -3,6 +3,7 @@ import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/cv_completion_progress.dart';
+import 'package:cv_pro/features/history/data/providers/cv_history_provider.dart';
 import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,7 +81,7 @@ class CvFormScreen extends ConsumerWidget {
         actions: [
           TextButton.icon(
             icon: Icon(
-              Icons.preview_outlined,
+              Icons.visibility_outlined,
               color: ref.watch(cvFormProvider
                       .select((cv) => cv.personalInfo.name.isNotEmpty))
                   ? Theme.of(context).colorScheme.primary
@@ -97,15 +98,25 @@ class CvFormScreen extends ConsumerWidget {
             ),
             onPressed: ref.watch(cvFormProvider
                     .select((cv) => cv.personalInfo.name.isNotEmpty))
-                ? () {
+                ? () async {
+                    // Save to history immediately on preview click
+                    final liveCV = ref.read(cvFormProvider);
+                    await ref
+                        .read(cvHistoryProvider.notifier)
+                        .addHistoryEntry(liveCV);
+
+                    // Invalidate the provider to ensure it regenerates
                     ref.invalidate(pdfBytesProvider);
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => PdfPreviewScreen(
-                          pdfProvider: pdfBytesProvider,
+
+                    if (context.mounted) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => PdfPreviewScreen(
+                            pdfProvider: pdfBytesProvider,
+                          ),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   }
                 : null,
           ),

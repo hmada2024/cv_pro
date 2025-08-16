@@ -66,12 +66,9 @@ Future<Uint8List> _generatePdf(Ref ref,
 
 /// Provider to generate the PDF for the user's actual CV data.
 final pdfBytesProvider = FutureProvider.autoDispose<Uint8List>((ref) async {
-  final liveCV = ref.watch(cvFormProvider);
+  // The history entry is now created in CvFormScreen before navigating here.
+  ref.watch(cvFormProvider);
   ref.watch(showReferencesNoteProvider);
-
-  // Automatically save a snapshot to history when previewing.
-  await ref.read(cvHistoryProvider.notifier).addHistoryEntry(liveCV);
-
   return _generatePdf(ref, isDummy: false);
 });
 
