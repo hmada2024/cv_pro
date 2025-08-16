@@ -44,6 +44,12 @@ class CvFormNotifier extends StateNotifier<CVData> {
     await _storageService.saveCV(state);
   }
 
+  Future<void> clearAllData() async {
+    _debounce?.cancel();
+    state = CVData.initial();
+    await _storageService.saveCV(state);
+  }
+
   void updatePersonalInfo({
     String? name,
     String? jobTitle,
@@ -120,6 +126,13 @@ class CvFormNotifier extends StateNotifier<CVData> {
         _saveStateImmediately();
       }
     }
+  }
+
+  void removeProfileImage() {
+    state = state.copyWith(
+      personalInfo: state.personalInfo.copyWith(profileImagePath: null),
+    );
+    _saveStateImmediately();
   }
 
   // --- Experience ---
