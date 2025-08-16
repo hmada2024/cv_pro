@@ -44,6 +44,12 @@ class CvFormNotifier extends StateNotifier<CVData> {
     await _storageService.saveCV(state);
   }
 
+  // Method to replace the current state with data from a history entry.
+  void loadFromHistory(CVData dataFromHistory) {
+    state = dataFromHistory;
+    _saveStateImmediately();
+  }
+
   Future<void> clearAllData() async {
     _debounce?.cancel();
     state = CVData.initial();

@@ -1,5 +1,5 @@
 // features/cv_form/data/models/cv_data.dart
-
+import 'package:cv_pro/features/history/data/models/cv_history.dart';
 import 'package:isar/isar.dart';
 import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
 
@@ -39,6 +39,18 @@ class CVData {
       languages: [],
       education: [],
       references: [],
+    );
+  }
+
+  // Factory to convert a CVHistory object back to a live CVData object.
+  factory CVData.fromHistory(CVHistory history) {
+    return CVData(
+      personalInfo: history.personalInfo,
+      experiences: history.experiences,
+      skills: history.skills,
+      languages: history.languages,
+      education: history.education,
+      references: history.references,
     );
   }
 

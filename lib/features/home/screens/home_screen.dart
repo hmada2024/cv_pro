@@ -3,6 +3,7 @@ import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
+import 'package:cv_pro/features/history/ui/screens/history_screen.dart';
 import 'package:cv_pro/features/settings/screens/settings_screen.dart';
 import 'package:cv_pro/features/home/widgets/animated_scale_tap.dart';
 import 'package:cv_pro/features/home/widgets/home_action_card.dart';
@@ -33,6 +34,18 @@ class HomeScreen extends ConsumerWidget {
             );
           },
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.history),
+            tooltip: 'CV History',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const HistoryScreen()),
+              );
+            },
+          ),
+          const SizedBox(width: AppSizes.p8),
+        ],
       ),
       body: Stack(
         children: [

@@ -1,4 +1,5 @@
-// main.dart..
+// main.dart
+import 'package:cv_pro/features/history/data/models/cv_history.dart';
 import 'package:cv_pro/features/home/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +13,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await getApplicationDocumentsDirectory();
   final isar = await Isar.open(
-    [CVDataSchema],
+    [CVDataSchema, CVHistorySchema], // Add the new schema here
     directory: dir.path,
   );
 

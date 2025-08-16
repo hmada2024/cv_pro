@@ -1,5 +1,7 @@
-// features/pdf_export/data/providers/pdf_providers.dart
+// lib/features/pdf_export/data/providers/pdf_providers.dart
 import 'dart:io';
+import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/history/data/providers/cv_history_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/pdf_export/data/services/pdf_service_impl.dart';
@@ -25,23 +27,26 @@ final pdfAssetsProvider = FutureProvider<PdfFontAssets>((ref) async {
   );
 });
 
-Future<Uint8List> _generatePdf(Ref ref, {bool isDummy = false}) async {
+Future<Uint8List> _generatePdf(Ref ref,
+    {bool isDummy = false, CVData? cvDataOverride}) async {
   final fontAssets = await ref.watch(pdfAssetsProvider.future);
 
-  // 2. Get the correct CV data.
-  final cvData = isDummy ? createDummyCvData() : ref.read(cvFormProvider);
+  final cvData = cvDataOverride ??
+      (isDummy ? createDummyCvData() : ref.read(cvFormProvider));
   final showNote = isDummy ? false : ref.read(showReferencesNoteProvider);
+
+  if (cvData == null) {
+    throw Exception('CV data is not available for PDF generation.');
+  }
 
   Uint8List? profileImageData;
   final imagePath = cvData.personalInfo.profileImagePath;
 
   if (imagePath != null && imagePath.isNotEmpty) {
     if (imagePath.startsWith('assets/')) {
-      // Handle asset image (for dummy data)
       profileImageData =
           (await rootBundle.load(imagePath)).buffer.asUint8List();
     } else {
-      // Handle file image (for user-picked image)
       final imageFile = File(imagePath);
       if (await imageFile.exists()) {
         profileImageData = await imageFile.readAsBytes();
@@ -61,8 +66,12 @@ Future<Uint8List> _generatePdf(Ref ref, {bool isDummy = false}) async {
 
 /// Provider to generate the PDF for the user's actual CV data.
 final pdfBytesProvider = FutureProvider.autoDispose<Uint8List>((ref) async {
-  ref.watch(cvFormProvider);
+  final liveCV = ref.watch(cvFormProvider);
   ref.watch(showReferencesNoteProvider);
+
+  // Automatically save a snapshot to history when previewing.
+  await ref.read(cvHistoryProvider.notifier).addHistoryEntry(liveCV);
+
   return _generatePdf(ref, isDummy: false);
 });
 
@@ -70,4 +79,16 @@ final pdfBytesProvider = FutureProvider.autoDispose<Uint8List>((ref) async {
 final dummyPdfBytesProvider =
     FutureProvider.autoDispose<Uint8List>((ref) async {
   return _generatePdf(ref, isDummy: true);
+});
+
+/// Provider to generate a PDF from a specific history entry.
+final historyPdfBytesProvider =
+    FutureProvider.autoDispose.family<Uint8List, int>((ref, historyId) async {
+  final historyEntry =
+      await ref.read(cvHistoryProvider.notifier).getHistoryById(historyId);
+  if (historyEntry == null) {
+    throw Exception('History entry not found');
+  }
+  final cvData = CVData.fromHistory(historyEntry);
+  return _generatePdf(ref, cvDataOverride: cvData);
 });
