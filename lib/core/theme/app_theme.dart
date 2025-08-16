@@ -41,7 +41,8 @@ class AppTheme {
           color: AppColors.lightPrimaryText, size: AppSizes.iconSizeMedium),
     ),
     cardTheme: CardTheme(
-      elevation: 0,
+      elevation: 1.5,
+      shadowColor: Colors.black.withOpacity(0.05),
       color: AppColors.lightCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),
@@ -124,7 +125,8 @@ class AppTheme {
           color: AppColors.darkPrimaryText, size: AppSizes.iconSizeMedium),
     ),
     cardTheme: CardTheme(
-      elevation: 0,
+      elevation: 1,
+      shadowColor: Colors.black.withOpacity(0.2),
       color: AppColors.darkCard,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSizes.cardRadius),

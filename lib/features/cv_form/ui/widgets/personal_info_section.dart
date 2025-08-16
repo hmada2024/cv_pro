@@ -1,4 +1,4 @@
-// features/cv_form/ui/widgets/personal_info_section.dart
+// lib/features/cv_form/ui/widgets/personal_info_section.dart
 import 'dart:io';
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/theme/app_colors.dart';
@@ -91,7 +91,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
     }
   }
 
-  Future<void> _selectBirthDate(BuildContext context) async {
+  Future<void> _selectBirthDate() async {
     final notifier = ref.read(cvFormProvider.notifier);
     final initialDate = ref.read(cvFormProvider).personalInfo.birthDate ??
         DateTime.now().subtract(const Duration(days: 365 * 25));
@@ -119,6 +119,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final personalInfo =
         ref.watch(cvFormProvider.select((s) => s.personalInfo));
 
@@ -131,13 +132,12 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
       },
     );
 
-    final theme = Theme.of(context);
     final hasImage = personalInfo.profileImagePath != null &&
         personalInfo.profileImagePath!.isNotEmpty;
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppSizes.p16),
+        padding: const EdgeInsets.all(AppSizes.p20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -215,7 +215,7 @@ class _PersonalInfoSectionState extends ConsumerState<PersonalInfoSection> {
               controller: _birthDateController,
               label: 'Date of Birth',
               icon: Icons.cake_outlined,
-              onTap: () => _selectBirthDate(context),
+              onTap: _selectBirthDate,
             ),
             FormTextField(
               controller: _emailController,
