@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/history/data/providers/cv_history_provider.dart';
-import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
@@ -42,27 +41,27 @@ class PdfPreviewScreen extends ConsumerWidget {
                 try {
                   final pdfBytes = await ref.read(pdfProvider.future);
                   final historyList = await ref.read(cvHistoryProvider.future);
-                  final defaultName = historyList.first.displayName;
+                  final defaultName = '${historyList.first.displayName}.pdf';
 
-                  await FileSaver.instance.saveFile(
-                    name: defaultName,
+                  final bool success = await Printing.sharePdf(
                     bytes: pdfBytes,
-                    ext: 'pdf',
-                    mimeType: MimeType.pdf,
+                    filename: defaultName,
                   );
 
-                  await ref.read(cvFormProvider.notifier).clearAllData();
+                  if (success) {
+                    await ref.read(cvFormProvider.notifier).clearAllData();
 
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('CV saved successfully!')),
-                    );
-                    Navigator.of(context).popUntil((route) => route.isFirst);
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('CV process completed!')),
+                      );
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    }
                   }
                 } catch (e) {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Error saving file: $e')),
+                      SnackBar(content: Text('An error occurred: $e')),
                     );
                   }
                 }
