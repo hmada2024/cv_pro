@@ -5,7 +5,7 @@ import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
 import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
 import 'package:cv_pro/features/cv_projects/ui/widgets/create_cv_dialog.dart';
-import 'package:cv_pro/features/cv_templates/widgets/home_template_section.dart';
+import 'package:cv_pro/features/design_selection/widgets/home_template_section.dart';
 import 'package:cv_pro/features/home/widgets/home_project_list_item.dart';
 import 'package:cv_pro/features/settings/screens/settings_screen.dart';
 import 'package:flutter/material.dart';

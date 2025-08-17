@@ -2,7 +2,7 @@
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/cv_form/ui/widgets/project_status_header.dart';
-import 'package:cv_pro/features/pdf_export/data/providers/pdf_providers.dart';
+import 'package:cv_pro/features/pdf_generation/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
