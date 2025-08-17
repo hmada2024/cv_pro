@@ -1,4 +1,4 @@
-//lib\features\2_cv_editor\form\ui\screens\pdf_preview_screen.dart
+// lib/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart
 import 'dart:typed_data';
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +8,13 @@ import 'package:printing/printing.dart';
 class PdfPreviewScreen extends ConsumerWidget {
   final AutoDisposeFutureProvider<Uint8List> pdfProvider;
   final String projectName;
+  final bool isDummyPreview;
 
   const PdfPreviewScreen({
     super.key,
     required this.pdfProvider,
     required this.projectName,
+    this.isDummyPreview = false,
   });
 
   Widget _buildActionButtons(
@@ -21,18 +23,20 @@ class PdfPreviewScreen extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSizes.p16),
       child: Row(
         children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              icon: const Icon(Icons.edit_outlined),
-              label: const Text('Edit'),
-              onPressed: () => Navigator.of(context).pop(),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(
-                    vertical: AppSizes.formFieldContentPaddingV),
+          if (!isDummyPreview) ...[
+            Expanded(
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.edit_outlined),
+                label: const Text('Edit'),
+                onPressed: () => Navigator.of(context).pop(),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: AppSizes.formFieldContentPaddingV),
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: AppSizes.p12),
+            const SizedBox(width: AppSizes.p12),
+          ],
           Expanded(
             child: ElevatedButton.icon(
               icon: const Icon(Icons.share_outlined),
@@ -40,7 +44,6 @@ class PdfPreviewScreen extends ConsumerWidget {
               onPressed: () async {
                 try {
                   final pdfBytes = await ref.read(pdfProvider.future);
-                  // Use the passed project name for a reliable filename
                   final defaultName = '$projectName.pdf';
 
                   await Printing.sharePdf(
@@ -55,6 +58,10 @@ class PdfPreviewScreen extends ConsumerWidget {
                   }
                 }
               },
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                    vertical: AppSizes.formFieldContentPaddingV),
+              ),
             ),
           ),
         ],
@@ -102,13 +109,22 @@ class PdfPreviewScreen extends ConsumerWidget {
         data: (pdfBytes) => Column(
           children: [
             Expanded(
-              child: PdfPreview(
-                build: (format) => pdfBytes,
-                useActions: false,
-                canChangeOrientation: false,
-                canChangePageFormat: false,
-                canDebug: false,
+              // --- BEGIN FIX: Wrap PdfPreview with InteractiveViewer to prevent flicker ---
+              child: InteractiveViewer(
+                panEnabled: true,
+                scaleEnabled: true,
+                boundaryMargin: const EdgeInsets.all(20.0),
+                minScale: 0.5,
+                maxScale: 4.0,
+                child: PdfPreview(
+                  build: (format) => pdfBytes,
+                  useActions: false,
+                  canChangeOrientation: false,
+                  canChangePageFormat: false,
+                  canDebug: false,
+                ),
               ),
+              // --- END FIX ---
             ),
             _buildActionButtons(context, ref, theme),
           ],

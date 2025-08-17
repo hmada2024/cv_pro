@@ -1,4 +1,4 @@
-// lib/features/home/widgets/home_template_section.dart
+// lib/features/3_cv_presentation/design_selection/widgets/home_template_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/3_cv_presentation/design_selection/providers/template_provider.dart';
@@ -28,7 +28,6 @@ class HomeTemplateSection extends ConsumerWidget {
                 style: theme.textTheme.titleMedium,
               ),
               const SizedBox(height: AppSizes.p8),
-              // عرض اسم القالب المختار
               Container(
                 padding: const EdgeInsets.all(AppSizes.p12),
                 decoration: BoxDecoration(
@@ -47,7 +46,6 @@ class HomeTemplateSection extends ConsumerWidget {
               const SizedBox(height: AppSizes.p16),
               Row(
                 children: [
-                  // زر اختيار القالب
                   Expanded(
                     child: OutlinedButton.icon(
                       icon: const Icon(Icons.style_outlined),
@@ -58,18 +56,17 @@ class HomeTemplateSection extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: AppSizes.p12),
-                  // زر معاينة القالب بالبيانات الوهمية
                   Expanded(
                     child: ElevatedButton.icon(
                       icon: const Icon(Icons.visibility_outlined),
                       label: const Text('Preview'),
                       onPressed: () {
-                        // استخدام dummyPdfBytesProvider لعرض القالب ببيانات وهمية
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => PdfPreviewScreen(
                               pdfProvider: dummyPdfBytesProvider,
                               projectName: 'Template Preview',
+                              isDummyPreview: true,
                             ),
                           ),
                         );
