@@ -1,4 +1,4 @@
-// lib/features/pdf_export/templates/classic_two_column/classic_template_theme.dart
+// lib/features/pdf_export/cv_designs/classic_two_column/classic_template_theme.dart
 import 'package:cv_pro/features/pdf_export/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -28,7 +28,7 @@ PdfTemplateTheme classicTemplateTheme() {
     subtitle: pw.TextStyle(
       fontSize: 10,
       fontStyle: pw.FontStyle.italic,
-      color: darkText,
+      color: primary,
     ),
   );
 }
