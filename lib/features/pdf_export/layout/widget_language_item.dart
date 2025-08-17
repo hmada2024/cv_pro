@@ -1,12 +1,13 @@
-// features/pdf_export/layout/widget_language_item.dart
+// lib/features/pdf_export/layout/widget_language_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'pdf_layout_colors.dart';
 
 class LanguageItem extends pw.StatelessWidget {
   final Language language;
+  final PdfTemplateTheme theme;
 
-  LanguageItem(this.language);
+  LanguageItem(this.language, {required this.theme});
 
   @override
   pw.Widget build(pw.Context context) {
@@ -14,8 +15,7 @@ class LanguageItem extends pw.StatelessWidget {
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(
         '${language.name} (${language.proficiency})',
-        style:
-            const pw.TextStyle(color: PdfLayoutColors.lightText, fontSize: 10),
+        style: pw.TextStyle(color: theme.lightTextColor, fontSize: 10),
       ),
     );
   }

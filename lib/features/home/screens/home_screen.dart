@@ -34,47 +34,37 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(width: AppSizes.p8),
         ],
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
+      // تم تبسيط بنية الـ body بالكامل لحل مشكلة التعارض
+      body: projectsAsync.when(
+        data: (projects) {
+          // نستخدم SingleChildScrollView كأب رئيسي للمحتوى
           return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
-                child: projectsAsync.when(
-                  data: (projects) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // الجزء العلوي (قائمة المشاريع أو رسالة الترحيب)
-                        Expanded(
-                          child: projects.isNotEmpty
-                              ? _buildProjectsList(projects)
-                              : _buildWelcomeView(context),
-                        ),
-                        // الجزء السفلي (دائمًا موجود)
-                        const SizedBox(height: AppSizes.p16),
-                        const HomeTemplateSection(),
-                        _buildCreateCvButton(context, ref),
-                      ],
-                    );
-                  },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (error, stack) => _buildErrorView(context, ref, error),
-                ),
-              ),
+            padding: const EdgeInsets.only(bottom: AppSizes.p16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // إذا لم تكن هناك مشاريع، نعرض رسالة الترحيب
+                if (projects.isEmpty) _buildWelcomeView(context),
+                // إذا كانت هناك مشاريع، نعرض القائمة
+                if (projects.isNotEmpty) _buildProjectsList(projects),
+                // الأقسام السفلية تظهر دائمًا
+                const SizedBox(height: AppSizes.p16),
+                const HomeTemplateSection(),
+                _buildCreateCvButton(context, ref),
+              ],
             ),
           );
         },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => _buildErrorView(context, ref, error),
       ),
-      // --- END: RESPONSIVE LAYOUT FIX ---
     );
   }
 
   // ويدجت لبناء قائمة المشاريع
   Widget _buildProjectsList(List<CVData> projects) {
+    // هذه الويدجت لم تعد بحاجة لأن تكون Expanded
     return ListView.builder(
-      // shrinkWrap and physics are needed inside a SingleChildScrollView
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(
@@ -89,7 +79,8 @@ class HomeScreen extends ConsumerWidget {
   // ويدجت لبناء زر إنشاء CV
   Widget _buildCreateCvButton(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.all(AppSizes.p16),
+      padding: const EdgeInsets.fromLTRB(
+          AppSizes.p16, AppSizes.p16, AppSizes.p16, 0),
       child: ElevatedButton.icon(
         onPressed: () => _createNewCv(context, ref),
         icon: const Icon(Icons.add_circle_outline),
@@ -105,13 +96,14 @@ class HomeScreen extends ConsumerWidget {
   // ويدجت لعرض رسالة الترحيب عندما لا توجد مشاريع
   Widget _buildWelcomeView(BuildContext context) {
     final theme = Theme.of(context);
+    // نستخدم Padding للتحكم في المساحة بدلاً من Spacer و Expanded
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSizes.p32),
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppSizes.p32, vertical: AppSizes.p32 * 2),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(flex: 2),
           Icon(
             Icons.rocket_launch_outlined,
             size: 60,
@@ -129,7 +121,6 @@ class HomeScreen extends ConsumerWidget {
             style: theme.textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
-          const Spacer(flex: 3),
         ],
       ),
     );

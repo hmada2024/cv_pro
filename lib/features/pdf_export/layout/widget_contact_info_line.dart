@@ -1,4 +1,5 @@
-// features/pdf_export/templates/shared/widgets/contact_info_line.dart
+// lib/features/pdf_export/layout/widget_contact_info_line.dart
+import 'package:cv_pro/features/pdf_export/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -6,18 +7,14 @@ class ContactInfoLine extends pw.StatelessWidget {
   final pw.IconData iconData;
   final String text;
   final pw.Font iconFont;
-  final PdfColor textColor;
-  final PdfColor iconColor;
+  final PdfTemplateTheme theme;
 
   ContactInfoLine({
     required this.iconData,
     required this.text,
     required this.iconFont,
-    // Provide default colors to make it reusable
-    textColor,
-    iconColor,
-  })  : textColor = textColor ?? const PdfColor.fromInt(0xFFFFFFFF),
-        iconColor = iconColor ?? const PdfColor.fromInt(0xFF42A5F5);
+    required this.theme,
+  });
 
   @override
   pw.Widget build(pw.Context context) {
@@ -27,7 +24,7 @@ class ContactInfoLine extends pw.StatelessWidget {
         children: [
           pw.Icon(
             iconData,
-            color: iconColor,
+            color: theme.accentColor,
             font: iconFont,
             size: 14,
           ),
@@ -35,7 +32,7 @@ class ContactInfoLine extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               text,
-              style: pw.TextStyle(color: textColor, fontSize: 9),
+              style: const pw.TextStyle(color: PdfColors.white, fontSize: 9),
             ),
           ),
         ],

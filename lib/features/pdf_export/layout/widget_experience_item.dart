@@ -1,25 +1,20 @@
-// features/pdf_export/layout/widget_experience_item.dart
+// lib/features/pdf_export/layout/widget_experience_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/theme_templates/pdf_template_theme.dart';
 import 'package:intl/intl.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'pdf_layout_colors.dart';
 
 class ExperienceItem extends pw.StatelessWidget {
   final Experience experience;
   final pw.Font iconFont;
+  final PdfTemplateTheme theme;
   final DateFormat formatter = DateFormat('MMM yyyy');
-  final PdfColor positionColor;
-  final PdfColor companyColor;
-  final PdfColor dateColor;
 
   ExperienceItem(
     this.experience, {
     required this.iconFont,
-    this.positionColor = PdfColors.black,
-    this.companyColor = PdfLayoutColors.darkText,
-    PdfColor? dateColor,
-  }) : dateColor = dateColor ?? companyColor;
+    required this.theme,
+  });
 
   @override
   pw.Widget build(pw.Context context) {
@@ -37,7 +32,7 @@ class ExperienceItem extends pw.StatelessWidget {
                       const pw.IconData(0xe834),
                       font: iconFont,
                       size: 9,
-                      color: companyColor,
+                      color: theme.darkTextColor,
                     ),
                   ),
                   pw.Expanded(
@@ -69,14 +64,14 @@ class ExperienceItem extends pw.StatelessWidget {
                       style: pw.TextStyle(
                         fontSize: 12,
                         fontWeight: pw.FontWeight.bold,
-                        color: positionColor,
+                        color: theme.primaryColor,
                       ),
                     ),
                     pw.Text(
                       experience.companyName,
                       style: pw.TextStyle(
                         fontSize: 11,
-                        color: positionColor,
+                        color: theme.primaryColor,
                       ),
                     ),
                   ],
@@ -87,7 +82,7 @@ class ExperienceItem extends pw.StatelessWidget {
                 '${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
                 style: pw.TextStyle(
                   fontSize: 10,
-                  color: dateColor,
+                  color: theme.primaryColor,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),

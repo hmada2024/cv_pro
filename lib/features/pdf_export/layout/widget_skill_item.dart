@@ -1,12 +1,13 @@
-// features/pdf_export/layout/widget_skill_item.dart
+// lib/features/pdf_export/layout/widget_skill_item.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/pdf_export/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'pdf_layout_colors.dart';
 
 class SkillItem extends pw.StatelessWidget {
   final Skill skill;
+  final PdfTemplateTheme theme;
 
-  SkillItem(this.skill);
+  SkillItem(this.skill, {required this.theme});
 
   @override
   pw.Widget build(pw.Context context) {
@@ -17,8 +18,8 @@ class SkillItem extends pw.StatelessWidget {
           pw.Container(
             width: 6,
             height: 6,
-            decoration: const pw.BoxDecoration(
-              color: PdfLayoutColors.accent,
+            decoration: pw.BoxDecoration(
+              color: theme.accentColor,
               shape: pw.BoxShape.circle,
             ),
           ),
@@ -26,8 +27,7 @@ class SkillItem extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               '${skill.name} (${skill.level})',
-              style: const pw.TextStyle(
-                  color: PdfLayoutColors.lightText, fontSize: 10),
+              style: pw.TextStyle(color: theme.lightTextColor, fontSize: 10),
             ),
           ),
         ],
