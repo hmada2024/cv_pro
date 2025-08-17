@@ -1,4 +1,4 @@
-// lib/features/pdf_export/layout/widget_skill_item.dart
+// lib/features/3_cv_presentation/pdf_generation/layout/widget_skill_item.dart
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -26,8 +26,7 @@ class SkillItem extends pw.StatelessWidget {
           pw.SizedBox(width: 8),
           pw.Expanded(
             child: pw.Text(
-              '${skill.name} (${skill.level})',
-              // التغيير: استخدام نمط النص مباشرة من الثيم
+              skill.name,
               style: theme.leftColumnBody,
             ),
           ),

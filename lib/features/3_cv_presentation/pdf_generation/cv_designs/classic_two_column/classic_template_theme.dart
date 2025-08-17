@@ -26,12 +26,17 @@ PdfTemplateTheme classicTemplateTheme() {
         const pw.TextStyle(color: lightText, fontSize: 9.5, lineSpacing: 2),
     leftColumnSubtext:
         const pw.TextStyle(color: PdfColor.fromInt(0xFFBDC3C7), fontSize: 9),
-
-    // تمت الإضافة: استعادة الأنماط الأصلية للقالب الكلاسيكي
     experienceTitleStyle: pw.TextStyle(
         fontSize: 12, fontWeight: pw.FontWeight.bold, color: primary),
     experienceCompanyStyle: const pw.TextStyle(fontSize: 11, color: primary),
     experienceDateStyle: pw.TextStyle(
         fontSize: 10, color: primary, fontWeight: pw.FontWeight.bold),
+
+    // تمت الإضافة: أنماط المراجع للقالب الكلاسيكي
+    referenceNameStyle:
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, color: primary),
+    referenceCompanyStyle: pw.TextStyle(
+        fontSize: 9, color: darkText, fontStyle: pw.FontStyle.italic),
+    referenceContactStyle: const pw.TextStyle(fontSize: 9, color: darkText),
   );
 }

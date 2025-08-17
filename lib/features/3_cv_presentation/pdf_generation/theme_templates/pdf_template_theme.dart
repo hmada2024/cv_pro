@@ -2,29 +2,27 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-// هذا الكلاس سيحتوي على كل الأنماط الخاصة بقالب واحد
 class PdfTemplateTheme {
-  // الألوان الأساسية
   final PdfColor primaryColor;
   final PdfColor accentColor;
   final PdfColor lightTextColor;
   final PdfColor darkTextColor;
 
-  // أنماط النصوص العامة
   final pw.TextStyle h1;
   final pw.TextStyle h2;
   final pw.TextStyle body;
   final pw.TextStyle subtitle;
 
-  // أنماط مخصصة للعمود الأيسر
   final pw.TextStyle leftColumnHeader;
   final pw.TextStyle leftColumnBody;
   final pw.TextStyle leftColumnSubtext;
 
-  // تمت الإضافة: أنماط مخصصة ومحددة لويدجت الخبرة
   final pw.TextStyle experienceTitleStyle;
   final pw.TextStyle experienceCompanyStyle;
   final pw.TextStyle experienceDateStyle;
+  final pw.TextStyle referenceNameStyle;
+  final pw.TextStyle referenceCompanyStyle;
+  final pw.TextStyle referenceContactStyle;
 
   const PdfTemplateTheme({
     required this.primaryColor,
@@ -41,5 +39,8 @@ class PdfTemplateTheme {
     required this.experienceTitleStyle,
     required this.experienceCompanyStyle,
     required this.experienceDateStyle,
+    required this.referenceNameStyle,
+    required this.referenceCompanyStyle,
+    required this.referenceContactStyle,
   });
 }

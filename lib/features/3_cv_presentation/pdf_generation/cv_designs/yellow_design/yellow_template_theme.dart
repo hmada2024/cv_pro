@@ -28,13 +28,19 @@ PdfTemplateTheme yellowTemplateTheme() {
     leftColumnBody:
         const pw.TextStyle(color: darkText, fontSize: 9.5, lineSpacing: 2),
     leftColumnSubtext: const pw.TextStyle(color: darkText, fontSize: 9),
-
-    // تمت الإضافة: تحديد الأنماط الصحيحة للقالب الأصفر (نصوص داكنة)
     experienceTitleStyle: pw.TextStyle(
         fontSize: 12, fontWeight: pw.FontWeight.bold, color: darkText),
     experienceCompanyStyle:
         pw.TextStyle(fontSize: 11, color: darkText.shade(0.1)),
     experienceDateStyle: pw.TextStyle(
         fontSize: 10, color: darkText, fontWeight: pw.FontWeight.bold),
+    referenceNameStyle:
+        pw.TextStyle(fontWeight: pw.FontWeight.bold, color: darkText),
+    referenceCompanyStyle: pw.TextStyle(
+        fontSize: 9,
+        color: darkText.shade(0.1),
+        fontStyle: pw.FontStyle.italic),
+    referenceContactStyle:
+        pw.TextStyle(fontSize: 9, color: darkText.shade(0.1)),
   );
 }
