@@ -14,7 +14,6 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/clas
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-// هذه هي لوحة البناء الرئيسية التي ترتب الأقسام
 class ClassicTemplateLayout extends pw.StatelessWidget {
   final CVData data;
   final pw.Font iconFont;
@@ -67,7 +66,8 @@ class ClassicTemplateLayout extends pw.StatelessWidget {
                 ContactSectionPdf(
                     personalInfo: data.personalInfo,
                     theme: theme,
-                    iconFont: iconFont),
+                    iconFont: iconFont,
+                    isLeftColumn: true),
                 DetailsSectionPdf(
                     personalInfo: data.personalInfo,
                     theme: theme,
@@ -76,12 +76,17 @@ class ClassicTemplateLayout extends pw.StatelessWidget {
                     educationList: data.education,
                     theme: theme,
                     isLeftColumn: true),
-                SkillsSectionPdf(skills: data.skills, theme: theme),
-                LanguagesSectionPdf(languages: data.languages, theme: theme),
-                LicenseSectionPdf(
-                    personalInfo: data.personalInfo,
+                SkillsSectionPdf(
+                    skills: data.skills, theme: theme, isLeftColumn: true),
+                LanguagesSectionPdf(
+                    languages: data.languages,
                     theme: theme,
-                    iconFont: iconFont),
+                    isLeftColumn: true),
+                LicenseSectionPdf(
+                  personalInfo: data.personalInfo,
+                  theme: theme,
+                  iconFont: iconFont,
+                ),
               ],
             ),
           ),

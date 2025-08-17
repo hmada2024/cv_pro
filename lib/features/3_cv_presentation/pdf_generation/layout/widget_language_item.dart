@@ -6,16 +6,23 @@ import 'package:pdf/widgets.dart' as pw;
 class LanguageItem extends pw.StatelessWidget {
   final Language language;
   final PdfTemplateTheme theme;
+  final bool isLeftColumn;
 
-  LanguageItem(this.language, {required this.theme});
+  LanguageItem(
+    this.language, {
+    required this.theme,
+    this.isLeftColumn = false,
+  });
 
   @override
   pw.Widget build(pw.Context context) {
+    final style = isLeftColumn ? theme.leftColumnBody : theme.body;
+
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(
         '${language.name} (${language.proficiency})',
-        style: theme.leftColumnBody,
+        style: style,
       ),
     );
   }

@@ -21,17 +21,16 @@ class EducationItem extends pw.StatelessWidget {
     final dateRange =
         '${formatter.format(education.startDate)} - ${education.isCurrent ? "Present" : formatter.format(education.endDate!)}';
 
-    // تم التصحيح: تحديد الأنماط ديناميكيًا بناءً على مكان الويدجت
-    final titleStyle =
-        isLeftColumn ? theme.leftColumnHeader : theme.h2.copyWith(fontSize: 11);
-    final subtitleStyle = isLeftColumn
-        ? theme.leftColumnSubtext
-        : theme.body.copyWith(fontSize: 9);
-    final dateStyle = pw.TextStyle(
-      color: theme.accentColor,
-      fontSize: 8,
-      fontWeight: isLeftColumn ? pw.FontWeight.normal : pw.FontWeight.bold,
-    );
+    final titleStyle = isLeftColumn
+        ? theme.leftColumnHeader.copyWith(fontSize: 11)
+        : theme.experienceTitleStyle.copyWith(fontSize: 11);
+
+    final subtitleStyle =
+        isLeftColumn ? theme.leftColumnSubtext : theme.leftColumnSubtext;
+
+    final dateStyle = isLeftColumn
+        ? theme.leftColumnSubtext.copyWith(fontSize: 9)
+        : theme.experienceDateStyle.copyWith(fontSize: 9);
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 10),

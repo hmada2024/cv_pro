@@ -5,6 +5,7 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/mode
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/education_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/experience_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/languages_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/profile_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/references_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/skills_section_pdf.dart';
@@ -42,14 +43,15 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
 
     return pw.Container(
       width: double.infinity,
-      padding: const pw.EdgeInsets.fromLTRB(30, 15, 30, 20),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       color: theme.primaryColor,
-      child: pw.Column(
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
           if (profileImage != null)
             pw.Container(
-              width: 110,
-              height: 110,
+              width: 100,
+              height: 100,
               decoration: const pw.BoxDecoration(
                 color: PdfColors.white,
                 shape: pw.BoxShape.circle,
@@ -61,20 +63,28 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
                 ),
               ),
             ),
-          if (profileImage != null) pw.SizedBox(height: 8),
-          pw.Text(
-            data.personalInfo.name.toUpperCase(),
-            style: theme.h1,
-            textAlign: pw.TextAlign.center,
-          ),
-          pw.SizedBox(height: 4),
-          pw.Text(
-            data.personalInfo.jobTitle,
-            style: theme.body.copyWith(
-              color: theme.lightTextColor.shade(0.8),
-              fontSize: 14,
+          if (profileImage != null) pw.SizedBox(width: 20),
+          pw.Expanded(
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              mainAxisAlignment: pw.MainAxisAlignment.center,
+              children: [
+                pw.Text(
+                  data.personalInfo.name.toUpperCase(),
+                  style: theme.h1.copyWith(fontSize: 24),
+                  textAlign: pw.TextAlign.left,
+                ),
+                pw.SizedBox(height: 5),
+                pw.Text(
+                  data.personalInfo.jobTitle,
+                  style: theme.body.copyWith(
+                    color: theme.lightTextColor.shade(0.8),
+                    fontSize: 13,
+                  ),
+                  textAlign: pw.TextAlign.left,
+                ),
+              ],
             ),
-            textAlign: pw.TextAlign.center,
           ),
         ],
       ),
@@ -84,7 +94,7 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
   pw.Widget _buildBody(PdfTemplateTheme theme) {
     return pw.Expanded(
       child: pw.Padding(
-        padding: const pw.EdgeInsets.fromLTRB(30, 25, 30, 30),
+        padding: const pw.EdgeInsets.fromLTRB(30, 20, 30, 30),
         child: pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
@@ -97,17 +107,17 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
                     personalInfo: data.personalInfo,
                     theme: theme,
                     iconFont: iconFont,
-                    isLeftColumn: false,
+                    isLeftColumn: true,
                   ),
                   EducationSectionPdf(
                     educationList: data.education,
                     theme: theme,
-                    isLeftColumn: false,
+                    isLeftColumn: true,
                   ),
                   SkillsSectionPdf(
                     skills: data.skills,
                     theme: theme,
-                    isLeftColumn: false,
+                    isLeftColumn: true,
                   ),
                 ],
               ),
@@ -120,6 +130,11 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
                 children: [
                   ProfileSectionPdf(
                       personalInfo: data.personalInfo, theme: theme),
+                  LanguagesSectionPdf(
+                    languages: data.languages,
+                    theme: theme,
+                    isLeftColumn: false,
+                  ),
                   ExperienceSectionPdf(
                       experiences: data.experiences,
                       theme: theme,

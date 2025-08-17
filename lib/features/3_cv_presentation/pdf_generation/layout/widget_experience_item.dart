@@ -32,7 +32,8 @@ class ExperienceItem extends pw.StatelessWidget {
                       const pw.IconData(0xe834),
                       font: iconFont,
                       size: 9,
-                      color: theme.darkTextColor,
+                      // AUDIT IMPROVEMENT: Tie icon color to the body text color
+                      color: theme.body.color,
                     ),
                   ),
                   pw.Expanded(
