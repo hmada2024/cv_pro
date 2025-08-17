@@ -7,13 +7,12 @@ import 'package:pdf/widgets.dart' as pw;
 class EducationItem extends pw.StatelessWidget {
   final Education education;
   final PdfTemplateTheme theme;
-  final bool isLeftColumn;
   final DateFormat formatter = DateFormat('yyyy');
 
   EducationItem(
     this.education, {
     required this.theme,
-    this.isLeftColumn = false,
+    bool isLeftColumn = false,
   });
 
   @override
@@ -21,16 +20,9 @@ class EducationItem extends pw.StatelessWidget {
     final dateRange =
         '${formatter.format(education.startDate)} - ${education.isCurrent ? "Present" : formatter.format(education.endDate!)}';
 
-    final titleStyle = isLeftColumn
-        ? theme.leftColumnHeader.copyWith(fontSize: 11)
-        : theme.experienceTitleStyle.copyWith(fontSize: 11);
-
-    final subtitleStyle =
-        isLeftColumn ? theme.leftColumnSubtext : theme.leftColumnSubtext;
-
-    final dateStyle = isLeftColumn
-        ? theme.leftColumnSubtext.copyWith(fontSize: 9)
-        : theme.experienceDateStyle.copyWith(fontSize: 9);
+    final titleStyle = theme.educationTitleStyle;
+    final subtitleStyle = theme.educationSchoolStyle;
+    final dateStyle = theme.educationDateStyle;
 
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 10),

@@ -20,6 +20,11 @@ class PdfTemplateTheme {
   final pw.TextStyle experienceTitleStyle;
   final pw.TextStyle experienceCompanyStyle;
   final pw.TextStyle experienceDateStyle;
+
+  final pw.TextStyle educationTitleStyle;
+  final pw.TextStyle educationSchoolStyle;
+  final pw.TextStyle educationDateStyle;
+
   final pw.TextStyle referenceNameStyle;
   final pw.TextStyle referenceCompanyStyle;
   final pw.TextStyle referenceContactStyle;
@@ -39,6 +44,9 @@ class PdfTemplateTheme {
     required this.experienceTitleStyle,
     required this.experienceCompanyStyle,
     required this.experienceDateStyle,
+    required this.educationTitleStyle,
+    required this.educationSchoolStyle,
+    required this.educationDateStyle,
     required this.referenceNameStyle,
     required this.referenceCompanyStyle,
     required this.referenceContactStyle,

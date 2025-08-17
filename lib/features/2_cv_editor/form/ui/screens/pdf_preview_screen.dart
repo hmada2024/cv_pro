@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
 
-class PdfPreviewScreen extends ConsumerWidget {
+class PdfPreviewScreen extends ConsumerStatefulWidget {
   final AutoDisposeFutureProvider<Uint8List> pdfProvider;
   final String projectName;
   final bool isDummyPreview;
@@ -17,13 +17,30 @@ class PdfPreviewScreen extends ConsumerWidget {
     this.isDummyPreview = false,
   });
 
+  @override
+  ConsumerState<PdfPreviewScreen> createState() => _PdfPreviewScreenState();
+}
+
+class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
+  // We store the future in the state to prevent it from being re-fetched.
+  late Future<Uint8List> _pdfFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch the PDF data once and store the future.
+    _pdfFuture = ref.read(widget.pdfProvider.future);
+  }
+
+  // Moved the action buttons widget inside the state class.
+  // It now accepts the generated pdfBytes directly to avoid re-fetching.
   Widget _buildActionButtons(
-      BuildContext context, WidgetRef ref, ThemeData theme) {
+      BuildContext context, ThemeData theme, Uint8List pdfBytes) {
     return Padding(
       padding: const EdgeInsets.all(AppSizes.p16),
       child: Row(
         children: [
-          if (!isDummyPreview) ...[
+          if (!widget.isDummyPreview) ...[
             Expanded(
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.edit_outlined),
@@ -43,11 +60,9 @@ class PdfPreviewScreen extends ConsumerWidget {
               label: const Text('Share / Save'),
               onPressed: () async {
                 try {
-                  final pdfBytes = await ref.read(pdfProvider.future);
-                  final defaultName = '$projectName.pdf';
-
+                  final defaultName = '${widget.projectName}.pdf';
                   await Printing.sharePdf(
-                    bytes: pdfBytes,
+                    bytes: pdfBytes, // Use the bytes passed to the function
                     filename: defaultName,
                   );
                 } catch (e) {
@@ -70,65 +85,77 @@ class PdfPreviewScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final pdfBytesAsync = ref.watch(pdfProvider);
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('CV Preview'),
       ),
-      body: pdfBytesAsync.when(
-        loading: () => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: AppSizes.p16),
-              Text(
-                "Preparing your professional CV...",
-                style: theme.textTheme.bodyLarge,
+      // Use FutureBuilder to handle the lifecycle of our single data fetch.
+      body: FutureBuilder<Uint8List>(
+        future: _pdfFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: AppSizes.p16),
+                  Text(
+                    "Preparing your professional CV...",
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: AppSizes.p4),
+                  Text(
+                    "This may take a moment.",
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ],
               ),
-              const SizedBox(height: AppSizes.p4),
-              Text(
-                "This may take a moment.",
-                style: theme.textTheme.bodySmall,
-              ),
-            ],
-          ),
-        ),
-        error: (err, stack) => Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Error generating PDF: $err',
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        data: (pdfBytes) => Column(
-          children: [
-            Expanded(
-              // --- BEGIN FIX: Wrap PdfPreview with InteractiveViewer to prevent flicker ---
-              child: InteractiveViewer(
-                panEnabled: true,
-                scaleEnabled: true,
-                boundaryMargin: const EdgeInsets.all(20.0),
-                minScale: 0.5,
-                maxScale: 4.0,
-                child: PdfPreview(
-                  build: (format) => pdfBytes,
-                  useActions: false,
-                  canChangeOrientation: false,
-                  canChangePageFormat: false,
-                  canDebug: false,
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Error generating PDF: ${snapshot.error}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: theme.colorScheme.error),
                 ),
               ),
-              // --- END FIX ---
-            ),
-            _buildActionButtons(context, ref, theme),
-          ],
-        ),
+            );
+          }
+          if (snapshot.hasData) {
+            final pdfBytes = snapshot.data!;
+            return Column(
+              children: [
+                Expanded(
+                  // Your InteractiveViewer is preserved here.
+                  child: InteractiveViewer(
+                    panEnabled: true,
+                    scaleEnabled: true,
+                    boundaryMargin: const EdgeInsets.all(20.0),
+                    minScale: 0.5,
+                    maxScale: 4.0,
+                    child: PdfPreview(
+                      build: (format) => pdfBytes,
+                      useActions: false,
+                      canChangeOrientation: false,
+                      canChangePageFormat: false,
+                      canDebug: false,
+                    ),
+                  ),
+                ),
+                _buildActionButtons(context, theme, pdfBytes),
+              ],
+            );
+          }
+          // Fallback case, should not be reached in normal operation.
+          return const Center(child: Text('An unexpected error occurred.'));
+        },
       ),
     );
   }

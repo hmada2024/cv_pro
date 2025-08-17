@@ -8,6 +8,13 @@ PdfTemplateTheme classicTemplateTheme() {
   const accent = PdfColor.fromInt(0xFF3498DB);
   const lightText = PdfColor.fromInt(0xFFFFFFFF);
   const darkText = PdfColor.fromInt(0xFF7F8C8D);
+  const veryLightText = PdfColor.fromInt(0xFFBDC3C7);
+
+  final experienceTitle = pw.TextStyle(
+      fontSize: 12, fontWeight: pw.FontWeight.bold, color: primary);
+  const experienceCompany = pw.TextStyle(fontSize: 11, color: primary);
+  final experienceDate = pw.TextStyle(
+      fontSize: 10, color: primary, fontWeight: pw.FontWeight.bold);
 
   return PdfTemplateTheme(
     primaryColor: primary,
@@ -24,15 +31,18 @@ PdfTemplateTheme classicTemplateTheme() {
         color: lightText, fontSize: 11, fontWeight: pw.FontWeight.bold),
     leftColumnBody:
         const pw.TextStyle(color: lightText, fontSize: 9.5, lineSpacing: 2),
-    leftColumnSubtext:
-        const pw.TextStyle(color: PdfColor.fromInt(0xFFBDC3C7), fontSize: 9),
-    experienceTitleStyle: pw.TextStyle(
-        fontSize: 12, fontWeight: pw.FontWeight.bold, color: primary),
-    experienceCompanyStyle: const pw.TextStyle(fontSize: 11, color: primary),
-    experienceDateStyle: pw.TextStyle(
-        fontSize: 10, color: primary, fontWeight: pw.FontWeight.bold),
+    leftColumnSubtext: const pw.TextStyle(color: veryLightText, fontSize: 9),
+    experienceTitleStyle: experienceTitle,
+    experienceCompanyStyle: experienceCompany,
+    experienceDateStyle: experienceDate,
 
-    // تمت الإضافة: أنماط المراجع للقالب الكلاسيكي
+    // NEW: Education styles for Classic theme
+    educationTitleStyle: pw.TextStyle(
+        color: lightText, fontSize: 10, fontWeight: pw.FontWeight.bold),
+    educationSchoolStyle: const pw.TextStyle(color: veryLightText, fontSize: 9),
+    educationDateStyle: const pw.TextStyle(color: veryLightText, fontSize: 9),
+
+    // Reference styles
     referenceNameStyle:
         pw.TextStyle(fontWeight: pw.FontWeight.bold, color: primary),
     referenceCompanyStyle: pw.TextStyle(
