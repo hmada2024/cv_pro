@@ -1,7 +1,7 @@
 // lib/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/widgets/widget_contact_info_line.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/widgets/widget_section_header.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/widgets/widget_contact_info_line.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/widgets/widget_section_header.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
 import 'package:pdf/widgets.dart' as pw;
 
