@@ -1,6 +1,6 @@
 // lib/features/pdf_export/layout/sections/details_section_pdf.dart
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/pdf_export/layout/widget_contact_info_line.dart';
+import 'package:cv_pro/features/pdf_export/layout/widget_detail_item_pdf.dart';
 import 'package:cv_pro/features/pdf_export/layout/widget_section_header.dart';
 import 'package:cv_pro/features/pdf_export/theme_templates/pdf_template_theme.dart';
 import 'package:intl/intl.dart';
@@ -20,9 +20,11 @@ class DetailsSectionPdf extends pw.StatelessWidget {
   @override
   pw.Widget build(pw.Context context) {
     final DateFormat dateFormatter = DateFormat('d MMMM yyyy');
-    final hasDetails = personalInfo.birthDate != null ||
-        personalInfo.maritalStatus != null ||
-        personalInfo.militaryServiceStatus != null;
+    final hasDetails = (personalInfo.birthDate != null) ||
+        (personalInfo.maritalStatus != null &&
+            personalInfo.maritalStatus!.isNotEmpty) ||
+        (personalInfo.militaryServiceStatus != null &&
+            personalInfo.militaryServiceStatus!.isNotEmpty);
 
     if (!hasDetails) return pw.SizedBox();
 
@@ -32,22 +34,21 @@ class DetailsSectionPdf extends pw.StatelessWidget {
         pw.SizedBox(height: 20),
         SectionHeader(title: 'DETAILS', theme: theme, isLeftColumn: true),
         if (personalInfo.birthDate != null)
-          ContactInfoLine(
-              iconData: const pw.IconData(0xe7e9),
-              text: dateFormatter.format(personalInfo.birthDate!),
-              iconFont: iconFont,
+          DetailItemPdf(
+              label: 'Birth Date:',
+              value: dateFormatter.format(personalInfo.birthDate!),
               theme: theme),
-        if (personalInfo.maritalStatus != null)
-          ContactInfoLine(
-              iconData: const pw.IconData(0xe042),
-              text: personalInfo.maritalStatus!,
-              iconFont: iconFont,
+        if (personalInfo.maritalStatus != null &&
+            personalInfo.maritalStatus!.isNotEmpty)
+          DetailItemPdf(
+              label: 'Marital Status:',
+              value: personalInfo.maritalStatus!,
               theme: theme),
-        if (personalInfo.militaryServiceStatus != null)
-          ContactInfoLine(
-              iconData: const pw.IconData(0xe8e8),
-              text: personalInfo.militaryServiceStatus!,
-              iconFont: iconFont,
+        if (personalInfo.militaryServiceStatus != null &&
+            personalInfo.militaryServiceStatus!.isNotEmpty)
+          DetailItemPdf(
+              label: 'Military Service:',
+              value: personalInfo.militaryServiceStatus!,
               theme: theme),
       ],
     );
