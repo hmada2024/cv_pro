@@ -8,9 +8,9 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/profile_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/skills_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-// لوحة البناء الرئيسية للقالب الأصفر
 class YellowTemplateLayout extends pw.StatelessWidget {
   final CVData data;
   final pw.Font iconFont;
@@ -30,9 +30,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // العمود الأيسر (الأصفر)
         _buildLeftColumn(theme),
-        // العمود الأيمن (الرئيسي)
         _buildRightColumn(theme),
       ],
     );
@@ -43,7 +41,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
         profileImageData != null ? pw.MemoryImage(profileImageData!) : null;
 
     return pw.Expanded(
-      flex: 2, // العمود الأيسر أضيق
+      flex: 2,
       child: pw.Container(
         color: theme.primaryColor,
         padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -52,7 +50,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
           children: [
             if (profileImage != null)
               pw.Center(
-                child: pw.Container(
+                child: pw.SizedBox(
                   width: 108,
                   height: 108,
                   child: pw.ClipOval(
@@ -61,16 +59,20 @@ class YellowTemplateLayout extends pw.StatelessWidget {
                 ),
               ),
             if (profileImage != null) pw.SizedBox(height: 30),
-            // Profile section is on the left in this design
-            ProfileSectionPdf(personalInfo: data.personalInfo, theme: theme),
+            ProfileSectionPdf(
+                personalInfo: data.personalInfo,
+                theme: theme,
+                isLeftColumn: true),
             pw.SizedBox(height: 20),
             ContactSectionPdf(
               personalInfo: data.personalInfo,
               theme: theme,
               iconFont: iconFont,
+              isLeftColumn: true,
             ),
             pw.SizedBox(height: 20),
-            SkillsSectionPdf(skills: data.skills, theme: theme),
+            SkillsSectionPdf(
+                skills: data.skills, theme: theme, isLeftColumn: true),
           ],
         ),
       ),
@@ -79,13 +81,12 @@ class YellowTemplateLayout extends pw.StatelessWidget {
 
   pw.Widget _buildRightColumn(PdfTemplateTheme theme) {
     return pw.Expanded(
-      flex: 4, // العمود الأيمن أوسع
+      flex: 4,
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
         children: [
-          // رأس أسود يحتوي على الاسم
           pw.Container(
-            color: theme.accentColor, // Black color from theme
+            color: theme.accentColor,
             padding: const pw.EdgeInsets.fromLTRB(30, 40, 30, 30),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -102,27 +103,32 @@ class YellowTemplateLayout extends pw.StatelessWidget {
               ],
             ),
           ),
-          // المحتوى الرئيسي بخلفية بيضاء
-          pw.Padding(
-            padding: const pw.EdgeInsets.all(30),
-            child: pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
-              children: [
-                ExperienceSectionPdf(
-                  experiences: data.experiences,
-                  theme: theme,
-                  iconFont: iconFont,
-                ),
-                pw.SizedBox(height: 10),
-                EducationSectionPdf(
-                  educationList: data.education,
-                  theme: theme,
-                  isLeftColumn: false,
-                ),
-                // Note: References and other sections can be added here if needed
-              ],
+          // --- BEGIN FIX ---
+          // Wrap the main content area in an Expanded widget to fill remaining space
+          pw.Expanded(
+            child: pw.Container(
+              // Using a container to set the white background
+              color: PdfColors.white,
+              padding: const pw.EdgeInsets.all(30),
+              child: pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                children: [
+                  ExperienceSectionPdf(
+                    experiences: data.experiences,
+                    theme: theme,
+                    iconFont: iconFont,
+                  ),
+                  pw.SizedBox(height: 10),
+                  EducationSectionPdf(
+                    educationList: data.education,
+                    theme: theme,
+                    isLeftColumn: false,
+                  ),
+                ],
+              ),
             ),
           ),
+          // --- END FIX ---
         ],
       ),
     );

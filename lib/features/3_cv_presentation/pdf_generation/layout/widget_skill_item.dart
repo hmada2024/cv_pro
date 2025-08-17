@@ -6,11 +6,20 @@ import 'package:pdf/widgets.dart' as pw;
 class SkillItem extends pw.StatelessWidget {
   final Skill skill;
   final PdfTemplateTheme theme;
+  final bool isLeftColumn;
 
-  SkillItem(this.skill, {required this.theme});
+  SkillItem(
+    this.skill, {
+    required this.theme,
+    this.isLeftColumn = false,
+  });
 
   @override
   pw.Widget build(pw.Context context) {
+    final bodyStyle = isLeftColumn ? theme.leftColumnBody : theme.body;
+    final iconColor =
+        isLeftColumn ? theme.leftColumnBody.color : theme.accentColor;
+
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Row(
@@ -19,7 +28,7 @@ class SkillItem extends pw.StatelessWidget {
             width: 6,
             height: 6,
             decoration: pw.BoxDecoration(
-              color: theme.accentColor,
+              color: iconColor,
               shape: pw.BoxShape.circle,
             ),
           ),
@@ -27,7 +36,7 @@ class SkillItem extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               skill.name,
-              style: theme.leftColumnBody,
+              style: bodyStyle,
             ),
           ),
         ],

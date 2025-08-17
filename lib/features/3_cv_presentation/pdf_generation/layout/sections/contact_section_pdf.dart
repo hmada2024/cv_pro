@@ -1,4 +1,4 @@
-// lib/features/pdf_export/layout/sections/contact_section_pdf.dart
+// lib/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/widget_contact_info_line.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/widget_section_header.dart';
@@ -9,11 +9,13 @@ class ContactSectionPdf extends pw.StatelessWidget {
   final PersonalInfo personalInfo;
   final PdfTemplateTheme theme;
   final pw.Font iconFont;
+  final bool isLeftColumn;
 
   ContactSectionPdf({
     required this.personalInfo,
     required this.theme,
     required this.iconFont,
+    this.isLeftColumn = false,
   });
 
   @override
@@ -21,25 +23,31 @@ class ContactSectionPdf extends pw.StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // التغيير: تمرير isLeftColumn بشكل صريح
-        SectionHeader(title: 'CONTACT', theme: theme, isLeftColumn: true),
+        SectionHeader(
+            title: 'CONTACT', theme: theme, isLeftColumn: isLeftColumn),
         if (personalInfo.phone != null && personalInfo.phone!.isNotEmpty)
           ContactInfoLine(
-              iconData: const pw.IconData(0xe0b0),
-              text: personalInfo.phone!,
-              iconFont: iconFont,
-              theme: theme),
-        ContactInfoLine(
-            iconData: const pw.IconData(0xe158),
-            text: personalInfo.email,
+            iconData: const pw.IconData(0xe0b0),
+            text: personalInfo.phone!,
             iconFont: iconFont,
-            theme: theme),
+            theme: theme,
+            isLeftColumn: isLeftColumn,
+          ),
+        ContactInfoLine(
+          iconData: const pw.IconData(0xe158),
+          text: personalInfo.email,
+          iconFont: iconFont,
+          theme: theme,
+          isLeftColumn: isLeftColumn,
+        ),
         if (personalInfo.address != null && personalInfo.address!.isNotEmpty)
           ContactInfoLine(
-              iconData: const pw.IconData(0xe55f),
-              text: personalInfo.address!,
-              iconFont: iconFont,
-              theme: theme),
+            iconData: const pw.IconData(0xe55f),
+            text: personalInfo.address!,
+            iconFont: iconFont,
+            theme: theme,
+            isLeftColumn: isLeftColumn,
+          ),
       ],
     );
   }

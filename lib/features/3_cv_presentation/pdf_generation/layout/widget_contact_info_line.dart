@@ -7,23 +7,29 @@ class ContactInfoLine extends pw.StatelessWidget {
   final String text;
   final pw.Font iconFont;
   final PdfTemplateTheme theme;
+  final bool isLeftColumn;
 
   ContactInfoLine({
     required this.iconData,
     required this.text,
     required this.iconFont,
     required this.theme,
+    this.isLeftColumn = false,
   });
 
   @override
   pw.Widget build(pw.Context context) {
+    final bodyStyle = isLeftColumn ? theme.leftColumnBody : theme.body;
+    final iconColor =
+        isLeftColumn ? theme.leftColumnBody.color : theme.accentColor;
+
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.Row(
         children: [
           pw.Icon(
             iconData,
-            color: theme.accentColor,
+            color: iconColor,
             font: iconFont,
             size: 14,
           ),
@@ -31,8 +37,7 @@ class ContactInfoLine extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               text,
-              // تم التصحيح: استخدام النمط من الثيم بدلاً من لون ثابت
-              style: theme.leftColumnBody,
+              style: bodyStyle,
             ),
           ),
         ],

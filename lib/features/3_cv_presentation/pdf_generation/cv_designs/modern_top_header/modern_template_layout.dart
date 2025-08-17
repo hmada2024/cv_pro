@@ -5,8 +5,6 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/mode
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/education_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/experience_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/languages_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/license_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/profile_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/references_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/skills_section_pdf.dart';
@@ -14,7 +12,6 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-// لوحة البناء الرئيسية للقالب العصري
 class ModernTopHeaderLayout extends pw.StatelessWidget {
   final CVData data;
   final pw.Font iconFont;
@@ -45,14 +42,14 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
 
     return pw.Container(
       width: double.infinity,
-      padding: const pw.EdgeInsets.symmetric(vertical: 18, horizontal: 30),
+      padding: const pw.EdgeInsets.fromLTRB(30, 15, 30, 20),
       color: theme.primaryColor,
       child: pw.Column(
         children: [
           if (profileImage != null)
             pw.Container(
-              width: 95,
-              height: 95,
+              width: 110,
+              height: 110,
               decoration: const pw.BoxDecoration(
                 color: PdfColors.white,
                 shape: pw.BoxShape.circle,
@@ -64,13 +61,13 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
                 ),
               ),
             ),
-          if (profileImage != null) pw.SizedBox(height: 12),
+          if (profileImage != null) pw.SizedBox(height: 8),
           pw.Text(
             data.personalInfo.name.toUpperCase(),
             style: theme.h1,
             textAlign: pw.TextAlign.center,
           ),
-          pw.SizedBox(height: 6),
+          pw.SizedBox(height: 4),
           pw.Text(
             data.personalInfo.jobTitle,
             style: theme.body.copyWith(
@@ -87,7 +84,7 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
   pw.Widget _buildBody(PdfTemplateTheme theme) {
     return pw.Expanded(
       child: pw.Padding(
-        padding: const pw.EdgeInsets.all(30),
+        padding: const pw.EdgeInsets.fromLTRB(30, 25, 30, 30),
         child: pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
@@ -97,20 +94,21 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
                   ContactSectionPdf(
-                      personalInfo: data.personalInfo,
-                      theme: theme,
-                      iconFont: iconFont),
+                    personalInfo: data.personalInfo,
+                    theme: theme,
+                    iconFont: iconFont,
+                    isLeftColumn: false,
+                  ),
                   EducationSectionPdf(
                     educationList: data.education,
                     theme: theme,
                     isLeftColumn: false,
                   ),
-                  SkillsSectionPdf(skills: data.skills, theme: theme),
-                  LanguagesSectionPdf(languages: data.languages, theme: theme),
-                  LicenseSectionPdf(
-                      personalInfo: data.personalInfo,
-                      theme: theme,
-                      iconFont: iconFont),
+                  SkillsSectionPdf(
+                    skills: data.skills,
+                    theme: theme,
+                    isLeftColumn: false,
+                  ),
                 ],
               ),
             ),
