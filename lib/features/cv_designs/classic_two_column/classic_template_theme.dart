@@ -5,10 +5,10 @@ import 'package:pdf/widgets.dart' as pw;
 
 // هذا هو التنفيذ الفعلي لكتيب التعليمات الخاص بالقالب الكلاسيكي
 PdfTemplateTheme classicTemplateTheme() {
-  const primary = PdfColor.fromInt(0xFF2C3E50);
-  const accent = PdfColor.fromInt(0xFF3498DB);
-  const lightText = PdfColor.fromInt(0xFFFFFFFF);
-  const darkText = PdfColor.fromInt(0xFF7F8C8D);
+  const primary = PdfColor.fromInt(0xFF2C3E50); // رمادي داكن
+  const accent = PdfColor.fromInt(0xFF3498DB); // أزرق
+  const lightText = PdfColor.fromInt(0xFFFFFFFF); // أبيض
+  const darkText = PdfColor.fromInt(0xFF7F8C8D); // رمادي فاتح للنص الثانوي
 
   return PdfTemplateTheme(
     // الألوان
@@ -24,7 +24,7 @@ PdfTemplateTheme classicTemplateTheme() {
       color: primary,
     ),
     h2: const pw.TextStyle(
-      fontSize: 16,
+      fontSize: 16, // حجم أكبر لعنوان القسم في العمود الأيمن
       color: primary,
     ),
     body: const pw.TextStyle(fontSize: 10, lineSpacing: 3),
@@ -34,7 +34,7 @@ PdfTemplateTheme classicTemplateTheme() {
       color: primary,
     ),
 
-    // --- التصحيح هنا: إضافة الأنماط المطلوبة للعمود الأيسر ---
+    // أنماط العمود الأيسر (الجانبي)
     leftColumnHeader: pw.TextStyle(
       color: lightText,
       fontSize: 11,

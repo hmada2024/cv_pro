@@ -2,7 +2,6 @@
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/theme_templates/pdf_template_theme.dart';
 import 'package:intl/intl.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class EducationItem extends pw.StatelessWidget {
@@ -28,14 +27,13 @@ class EducationItem extends pw.StatelessWidget {
               children: [
                 pw.Text(
                   '${education.level.toDisplayString()} ${education.degreeName}',
-                  style: pw.TextStyle(
-                      color: PdfColors.white,
-                      fontSize: 10,
-                      fontWeight: pw.FontWeight.bold),
+                  // التغيير: استخدام نمط العنوان من الثيم
+                  style: theme.leftColumnHeader,
                 ),
                 pw.Text(
                   education.school,
-                  style: pw.TextStyle(color: theme.lightTextColor, fontSize: 9),
+                  // التغيير: استخدام النمط الفرعي من الثيم
+                  style: theme.leftColumnSubtext,
                 ),
               ],
             ),

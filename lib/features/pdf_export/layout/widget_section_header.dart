@@ -15,8 +15,9 @@ class SectionHeader extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
-    final titleColor = isLeftColumn ? theme.lightTextColor : theme.primaryColor;
-    final double fontSize = isLeftColumn ? 14 : 16;
+    // التغيير: اختيار النمط المناسب من الثيم بناءً على isLeftColumn
+    final pw.TextStyle titleStyle =
+        isLeftColumn ? theme.leftColumnHeader : theme.h2;
     final double lineWidth = isLeftColumn ? 30 : 50;
 
     return pw.Column(
@@ -24,11 +25,7 @@ class SectionHeader extends pw.StatelessWidget {
       children: [
         pw.Text(
           title.toUpperCase(),
-          style: pw.TextStyle(
-            color: titleColor,
-            fontWeight: pw.FontWeight.bold,
-            fontSize: fontSize,
-          ),
+          style: titleStyle.copyWith(fontWeight: pw.FontWeight.bold),
         ),
         pw.Container(
           height: 2,

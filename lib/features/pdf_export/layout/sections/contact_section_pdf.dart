@@ -21,6 +21,7 @@ class ContactSectionPdf extends pw.StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
+        // التغيير: تمرير isLeftColumn بشكل صريح
         SectionHeader(title: 'CONTACT', theme: theme, isLeftColumn: true),
         if (personalInfo.phone != null && personalInfo.phone!.isNotEmpty)
           ContactInfoLine(

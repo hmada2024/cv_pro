@@ -19,6 +19,7 @@ class SkillsSectionPdf extends pw.StatelessWidget {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.SizedBox(height: 20),
+        // التغيير: تمرير isLeftColumn بشكل صريح
         SectionHeader(title: 'SKILLS', theme: theme, isLeftColumn: true),
         ...skills.map((skill) => SkillItem(skill, theme: theme)),
       ],

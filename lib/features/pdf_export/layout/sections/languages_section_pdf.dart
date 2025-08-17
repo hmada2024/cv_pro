@@ -19,6 +19,7 @@ class LanguagesSectionPdf extends pw.StatelessWidget {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.SizedBox(height: 20),
+        // التغيير: تمرير isLeftColumn بشكل صريح
         SectionHeader(title: 'LANGUAGES', theme: theme, isLeftColumn: true),
         ...languages.map((lang) => LanguageItem(lang, theme: theme)),
       ],

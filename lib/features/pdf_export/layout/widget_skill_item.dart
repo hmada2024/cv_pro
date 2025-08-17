@@ -27,7 +27,8 @@ class SkillItem extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               '${skill.name} (${skill.level})',
-              style: pw.TextStyle(color: theme.lightTextColor, fontSize: 10),
+              // التغيير: استخدام نمط النص مباشرة من الثيم
+              style: theme.leftColumnBody,
             ),
           ),
         ],

@@ -15,7 +15,8 @@ class LanguageItem extends pw.StatelessWidget {
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(
         '${language.name} (${language.proficiency})',
-        style: pw.TextStyle(color: theme.lightTextColor, fontSize: 10),
+        // التغيير: استخدام نمط النص مباشرة من الثيم
+        style: theme.leftColumnBody,
       ),
     );
   }
