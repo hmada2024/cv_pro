@@ -4,9 +4,10 @@ import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/classic_two_column/classic_template_layout.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/modern_top_header/modern_template_layout.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/yellow_template_layout.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/pdf_template_layout_contract.dart'; // استيراد العقد
 import 'package:pdf/widgets.dart' as pw;
 
-({pw.Widget layout, pw.EdgeInsets margin}) buildPdfLayout({
+PdfTemplateLayout buildPdfLayout({
   required CVData data,
   required pw.Font iconFont,
   required bool showReferencesNote,
@@ -15,44 +16,32 @@ import 'package:pdf/widgets.dart' as pw;
 }) {
   switch (templateId) {
     case 'template_1':
-      return (
-        layout: ClassicTemplateLayout(
-          data: data,
-          iconFont: iconFont,
-          showReferencesNote: showReferencesNote,
-          profileImageData: profileImageData,
-        ),
-        margin: const pw.EdgeInsets.all(1)
+      return ClassicTemplateLayout(
+        data: data,
+        iconFont: iconFont,
+        showReferencesNote: showReferencesNote,
+        profileImageData: profileImageData,
       );
     case 'template_2':
-      return (
-        layout: ModernTopHeaderLayout(
-          data: data,
-          iconFont: iconFont,
-          showReferencesNote: showReferencesNote,
-          profileImageData: profileImageData,
-        ),
-        margin: const pw.EdgeInsets.all(5)
+      return ModernTopHeaderLayout(
+        data: data,
+        iconFont: iconFont,
+        showReferencesNote: showReferencesNote,
+        profileImageData: profileImageData,
       );
     case 'template_3':
-      return (
-        layout: YellowTemplateLayout(
-          data: data,
-          iconFont: iconFont,
-          showReferencesNote: showReferencesNote,
-          profileImageData: profileImageData,
-        ),
-        margin: const pw.EdgeInsets.all(10)
+      return YellowTemplateLayout(
+        data: data,
+        iconFont: iconFont,
+        showReferencesNote: showReferencesNote,
+        profileImageData: profileImageData,
       );
     default:
-      return (
-        layout: ClassicTemplateLayout(
-          data: data,
-          iconFont: iconFont,
-          showReferencesNote: showReferencesNote,
-          profileImageData: profileImageData,
-        ),
-        margin: const pw.EdgeInsets.all(10) // الهامش الافتراضي 10
+      return ClassicTemplateLayout(
+        data: data,
+        iconFont: iconFont,
+        showReferencesNote: showReferencesNote,
+        profileImageData: profileImageData,
       );
   }
 }

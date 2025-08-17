@@ -1,20 +1,19 @@
 // lib/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/yellow_template_layout.dart
 import 'dart:typed_data';
-
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/yellow_template_theme.dart';
-// استيراد القطع المخصصة الجديدة
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_education_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_experience_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_section_header.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_skill_item.dart';
-// استيراد القطع العامة
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/pdf_template_layout_contract.dart'; // استيراد العقد
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/widget_contact_info_line.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class YellowTemplateLayout extends pw.StatelessWidget {
+class YellowTemplateLayout extends PdfTemplateLayout {
+  // تعديل: يرث من العقد
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
@@ -26,6 +25,10 @@ class YellowTemplateLayout extends pw.StatelessWidget {
     required this.showReferencesNote,
     required this.profileImageData,
   });
+
+  // تطبيق العقد: كل قالب يحدد هامشه الخاص
+  @override
+  final pw.EdgeInsets margin = const pw.EdgeInsets.all(10);
 
   @override
   pw.Widget build(pw.Context context) {
@@ -44,7 +47,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
         profileImageData != null ? pw.MemoryImage(profileImageData!) : null;
 
     return pw.Expanded(
-      flex: 3, // تم تعديل النسبة لتتناسب مع التصميم الجديد
+      flex: 3,
       child: pw.Container(
         color: theme.primaryColor,
         padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -54,7 +57,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
             if (profileImage != null)
               pw.Center(
                 child: pw.SizedBox(
-                  width: 120, // زيادة حجم الصورة
+                  width: 120,
                   height: 120,
                   child: pw.ClipOval(
                     child: pw.Image(profileImage, fit: pw.BoxFit.cover),
@@ -62,8 +65,6 @@ class YellowTemplateLayout extends pw.StatelessWidget {
                 ),
               ),
             if (profileImage != null) pw.SizedBox(height: 30),
-
-            // --- Profile Section ---
             if (data.personalInfo.summary.isNotEmpty) ...[
               YellowSectionHeader(
                   title: 'PROFILE', theme: theme, isLeftColumn: true),
@@ -71,8 +72,6 @@ class YellowTemplateLayout extends pw.StatelessWidget {
                   style: theme.leftColumnBody, textAlign: pw.TextAlign.justify),
               pw.SizedBox(height: 20),
             ],
-
-            // --- Contact Section ---
             YellowSectionHeader(
                 title: 'CONTACT', theme: theme, isLeftColumn: true),
             if (data.personalInfo.email.isNotEmpty)
@@ -102,8 +101,6 @@ class YellowTemplateLayout extends pw.StatelessWidget {
                 isLeftColumn: true,
               ),
             pw.SizedBox(height: 20),
-
-            // --- Skills Section ---
             if (data.skills.isNotEmpty) ...[
               YellowSectionHeader(
                   title: 'SKILLS', theme: theme, isLeftColumn: true),
@@ -118,7 +115,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
 
   pw.Widget _buildRightColumn(PdfTemplateTheme theme) {
     return pw.Expanded(
-      flex: 5, // تم تعديل النسبة
+      flex: 5,
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
         children: [
@@ -148,7 +145,6 @@ class YellowTemplateLayout extends pw.StatelessWidget {
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  // --- Experience Section ---
                   if (data.experiences.isNotEmpty) ...[
                     YellowSectionHeader(
                         title: 'PROFESSIONAL EXPERIENCE', theme: theme),
@@ -156,8 +152,6 @@ class YellowTemplateLayout extends pw.StatelessWidget {
                         .map((exp) => YellowExperienceItem(exp, theme: theme)),
                     pw.SizedBox(height: 20),
                   ],
-
-                  // --- Education Section ---
                   if (data.education.isNotEmpty) ...[
                     YellowSectionHeader(title: 'EDUCATION', theme: theme),
                     ...data.education

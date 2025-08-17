@@ -1,11 +1,11 @@
 // lib/features/3_cv_presentation/pdf_generation/data/services/pdf_service_impl.dart
 import 'package:cv_pro/features/3_cv_presentation/design_selection/models/template_model.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/pdf_layout_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
@@ -26,8 +26,8 @@ Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
   final boldFont = pw.Font.ttf(params.boldFontData);
   final iconFont = pw.Font.ttf(params.iconFontData);
 
-  // التغيير: نستقبل الآن الويدجت والهامش معًا من المهندس
-  final pageConfig = buildPdfLayout(
+  // تعديل: نستقبل الآن كائن القالب الكامل الذي يلتزم بالعقد
+  final pageLayout = buildPdfLayout(
     data: params.data,
     iconFont: iconFont,
     showReferencesNote: params.showReferencesNote,
@@ -37,14 +37,16 @@ Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
 
   doc.addPage(
     pw.Page(
-      margin: pageConfig.margin,
+      // تعديل: نستخدم الهامش الذي حدده القالب بنفسه من خلال العقد
+      margin: pageLayout.margin,
       theme: pw.ThemeData.withFont(
         base: font,
         bold: boldFont,
         fontFallback: [iconFont],
       ),
+      // تعديل: pageLayout هو الآن الويدجت نفسه
       build: (pw.Context context) {
-        return pageConfig.layout;
+        return pageLayout;
       },
     ),
   );

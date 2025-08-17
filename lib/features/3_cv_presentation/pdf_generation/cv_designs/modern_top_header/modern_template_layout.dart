@@ -2,6 +2,7 @@
 import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/modern_top_header/modern_template_theme.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/pdf_template_layout_contract.dart'; // استيراد العقد
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/details_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/education_section_pdf.dart';
@@ -15,7 +16,7 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class ModernTopHeaderLayout extends pw.StatelessWidget {
+class ModernTopHeaderLayout extends PdfTemplateLayout {
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
@@ -27,6 +28,9 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
     required this.showReferencesNote,
     required this.profileImageData,
   });
+
+  @override
+  final pw.EdgeInsets margin = const pw.EdgeInsets.all(5);
 
   @override
   pw.Widget build(pw.Context context) {
