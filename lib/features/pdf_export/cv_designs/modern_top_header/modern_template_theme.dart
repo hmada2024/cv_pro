@@ -5,11 +5,11 @@ import 'package:pdf/widgets.dart' as pw;
 
 // كتيب التعليمات الخاص بالقالب العصري ذي الرأس العلوي
 PdfTemplateTheme modernTopHeaderTheme() {
-  const primary = PdfColor.fromInt(0xFF1976D2); // أزرق احترافي وأقل حدة
-  const accent =
-      PdfColor.fromInt(0xFF64B5F6); // درجة فاتحة من الأزرق للمسة عصرية
+  const primary = PdfColor.fromInt(0xFF1976D2); // أزرق احترافي (دون تغيير)
+  const accent = PdfColor.fromInt(
+      0xFF1976D2); // استخدام اللون الأساسي نفسه كلمسة لونية للتوحيد
   const lightText = PdfColor.fromInt(0xFFFFFFFF); // أبيض نقي
-  const darkText = PdfColor.fromInt(0xFF424242); // رمادي داكن للنصوص
+  const darkText = PdfColor.fromInt(0xFF212121); // أسود داكن جدًا لوضوح تام
 
   return PdfTemplateTheme(
     // الألوان
@@ -27,7 +27,7 @@ PdfTemplateTheme modernTopHeaderTheme() {
     h2: pw.TextStyle(
       fontSize: 16,
       fontWeight: pw.FontWeight.bold,
-      color: primary, // عناوين الأقسام باللون الأساسي
+      color: primary,
     ),
     body: const pw.TextStyle(
       fontSize: 10,
