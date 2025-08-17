@@ -4,7 +4,7 @@ import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
 import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
 import 'package:cv_pro/features/cv_projects/ui/widgets/create_cv_dialog.dart';
-import 'package:cv_pro/features/home/widgets/home_create_cv_section.dart';
+import 'package:cv_pro/features/cv_templates/widgets/home_template_section.dart';
 import 'package:cv_pro/features/home/widgets/home_project_list_item.dart';
 import 'package:cv_pro/features/settings/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -35,37 +35,47 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: projectsAsync.when(
         data: (projects) {
-          if (projects.isEmpty) {
-            return _buildWelcomeView(context, ref);
-          }
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final topSectionHeight = constraints.maxHeight * 0.65;
-              final bottomSectionHeight = constraints.maxHeight * 0.30;
-              final spacerHeight = constraints.maxHeight * 0.05;
+          // عرض التصميم الجديد الذي يحتوي على كل الأقسام
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 1. قسم قائمة المشاريع (يظهر فقط إذا كانت هناك مشاريع)
+              if (projects.isNotEmpty)
+                Expanded(
+                  child: ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(
+                        AppSizes.p16, AppSizes.p16, AppSizes.p16, 0),
+                    itemCount: projects.length,
+                    itemBuilder: (context, index) {
+                      return HomeProjectListItem(cvData: projects[index]);
+                    },
+                  ),
+                )
+              else
+                // إذا لم تكن هناك مشاريع، اعرض رسالة ترحيبية
+                Expanded(
+                  child: _buildWelcomeView(context),
+                ),
 
-              return Column(
-                children: [
-                  SizedBox(
-                    height: topSectionHeight,
-                    child: ListView.builder(
-                      padding: const EdgeInsets.fromLTRB(
-                          AppSizes.p16, AppSizes.p16, AppSizes.p16, 0),
-                      itemCount: projects.length,
-                      itemBuilder: (context, index) {
-                        return HomeProjectListItem(cvData: projects[index]);
-                      },
-                    ),
+              // 2. قسم اختيار القالب ومعاينته (دائمًا ظاهر)
+              const HomeTemplateSection(),
+              const SizedBox(height: AppSizes.p16),
+
+              // 3. زر إنشاء CV جديد (دائمًا ظاهر في الأسفل)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                    AppSizes.p16, 0, AppSizes.p16, AppSizes.p16),
+                child: ElevatedButton.icon(
+                  onPressed: () => _createNewCv(context, ref),
+                  icon: const Icon(Icons.add_circle_outline),
+                  label: const Text('Create New CV'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: AppSizes.p16),
+                    textStyle: Theme.of(context).textTheme.titleMedium,
                   ),
-                  SizedBox(height: spacerHeight),
-                  SizedBox(
-                    height: bottomSectionHeight,
-                    child: HomeCreateCvSection(
-                        onCreate: () => _createNewCv(context, ref)),
-                  ),
-                ],
-              );
-            },
+                ),
+              ),
+            ],
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -85,7 +95,7 @@ class HomeScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: AppSizes.p8),
                 Text(
-                  'An unexpected error occurred. Please check your connection or try again.',
+                  'An unexpected error occurred. Please try again.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
@@ -118,7 +128,8 @@ class HomeScreen extends ConsumerWidget {
     }
   }
 
-  Widget _buildWelcomeView(BuildContext context, WidgetRef ref) {
+  // ويدجت لعرض رسالة الترحيب عندما لا توجد مشاريع
+  Widget _buildWelcomeView(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSizes.p32),
@@ -126,10 +137,9 @@ class HomeScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Spacer(flex: 2),
           Icon(
             Icons.rocket_launch_outlined,
-            size: 80,
+            size: 60,
             color: theme.colorScheme.primary,
           ),
           const SizedBox(height: AppSizes.p24),
@@ -140,21 +150,10 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSizes.p12),
           Text(
-            'Create your first CV project to get started.',
+            'Your professional journey starts here. Create your first CV below.',
             style: theme.textTheme.bodyLarge,
             textAlign: TextAlign.center,
           ),
-          const Spacer(flex: 3),
-          ElevatedButton.icon(
-            onPressed: () => _createNewCv(context, ref),
-            icon: const Icon(Icons.add_circle_outline),
-            label: const Text('Create Your First CV'),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: AppSizes.p20),
-              textStyle: theme.textTheme.titleMedium,
-            ),
-          ),
-          const Spacer(flex: 1),
         ],
       ),
     );
