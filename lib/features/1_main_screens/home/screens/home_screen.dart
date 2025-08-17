@@ -1,11 +1,11 @@
 // lib/features/home/screens/home_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/features/form/data/models/cv_data.dart';
-import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
-import 'package:cv_pro/features/form/ui/screens/cv_form_screen.dart';
-import 'package:cv_pro/features/projects/providers/cv_projects_provider.dart';
-import 'package:cv_pro/features/projects/ui/widgets/create_cv_dialog.dart';
-import 'package:cv_pro/features/design_selection/widgets/home_template_section.dart';
+import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
+import 'package:cv_pro/features/2_cv_editor/form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/2_cv_editor/form/ui/screens/cv_form_screen.dart';
+import 'package:cv_pro/features/2_cv_editor/projects/providers/cv_projects_provider.dart';
+import 'package:cv_pro/features/2_cv_editor/projects/ui/widgets/create_cv_dialog.dart';
+import 'package:cv_pro/features/3_cv_presentation/design_selection/widgets/home_template_section.dart';
 import 'package:cv_pro/features/1_main_screens/home/widgets/home_project_list_item.dart';
 import 'package:cv_pro/features/1_main_screens/settings/screens/settings_screen.dart';
 import 'package:flutter/material.dart';

@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
-import 'package:cv_pro/features/form/data/services/storage_service_impl.dart';
-import 'package:cv_pro/features/pdf_generation/data/services/pdf_service_impl.dart';
+import 'package:cv_pro/features/2_cv_editor/form/data/services/storage_service_impl.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/data/services/pdf_service_impl.dart';
 import 'package:cv_pro/core/services/image_cropper_service.dart';
 
 final pdfServiceProvider = Provider<PdfService>((ref) {
