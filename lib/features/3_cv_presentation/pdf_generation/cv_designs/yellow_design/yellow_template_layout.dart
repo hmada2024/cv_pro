@@ -6,9 +6,9 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yell
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_experience_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_section_header.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_skill_item.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/pdf_template_layout_contract.dart'; // استيراد العقد
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_layout_contract.dart'; // استيراد العقد
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/widget_contact_info_line.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 

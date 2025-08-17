@@ -1,4 +1,4 @@
-// lib/features/3_cv_presentation/pdf_generation/layout/pdf_template_layout_contract.dart
+// lib\features\3_cv_presentation\pdf_generation\core\pdf_template_layout_contract.dart
 import 'package:pdf/widgets.dart' as pw;
 
 /// A contract (abstract class) that all PDF template layouts must adhere to.
