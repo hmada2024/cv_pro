@@ -1,4 +1,4 @@
-// lib/features/cv_form/ui/screens/pdf_preview_screen.dart
+//lib\features\2_cv_editor\form\ui\screens\pdf_preview_screen.dart
 import 'dart:typed_data';
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:flutter/material.dart';

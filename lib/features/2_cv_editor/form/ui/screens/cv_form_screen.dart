@@ -1,4 +1,4 @@
-// lib/features/cv_form/ui/screens/cv_form_screen.dart
+// lib\features\2_cv_editor\form\ui\screens\cv_form_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/widgets/project_status_header.dart';
