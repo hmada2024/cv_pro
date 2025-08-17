@@ -39,7 +39,6 @@ class ExperienceItem extends pw.StatelessWidget {
                     child: pw.Text(
                       line.trim().replaceFirst('•', '').trim(),
                       textAlign: pw.TextAlign.justify,
-                      // تم التصحيح: استخدام نمط الـ body من الثيم
                       style: theme.body,
                     ),
                   ),
@@ -62,18 +61,11 @@ class ExperienceItem extends pw.StatelessWidget {
                   children: [
                     pw.Text(
                       experience.position.toUpperCase(),
-                      style: pw.TextStyle(
-                        fontSize: 12,
-                        fontWeight: pw.FontWeight.bold,
-                        color: theme.primaryColor,
-                      ),
+                      style: theme.experienceTitleStyle,
                     ),
                     pw.Text(
                       experience.companyName,
-                      style: pw.TextStyle(
-                        fontSize: 11,
-                        color: theme.primaryColor,
-                      ),
+                      style: theme.experienceCompanyStyle,
                     ),
                   ],
                 ),
@@ -81,11 +73,7 @@ class ExperienceItem extends pw.StatelessWidget {
               pw.SizedBox(width: 10),
               pw.Text(
                 '${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
-                style: pw.TextStyle(
-                  fontSize: 10,
-                  color: theme.primaryColor,
-                  fontWeight: pw.FontWeight.bold,
-                ),
+                style: theme.experienceDateStyle,
               ),
             ],
           ),
