@@ -1,6 +1,5 @@
-// lib/features/pdf_export/layout/widget_contact_info_line.dart
+// lib/features/3_cv_presentation/pdf_generation/layout/widget_contact_info_line.dart
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class ContactInfoLine extends pw.StatelessWidget {
@@ -32,7 +31,8 @@ class ContactInfoLine extends pw.StatelessWidget {
           pw.Expanded(
             child: pw.Text(
               text,
-              style: const pw.TextStyle(color: PdfColors.white, fontSize: 9),
+              // تم التصحيح: استخدام النمط من الثيم بدلاً من لون ثابت
+              style: theme.leftColumnBody,
             ),
           ),
         ],

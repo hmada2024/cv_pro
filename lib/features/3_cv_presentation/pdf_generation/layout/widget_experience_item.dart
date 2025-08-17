@@ -1,4 +1,4 @@
-// lib/features/pdf_export/layout/widget_experience_item.dart
+// lib/features/3_cv_presentation/pdf_generation/layout/widget_experience_item.dart
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
 import 'package:intl/intl.dart';
@@ -39,7 +39,8 @@ class ExperienceItem extends pw.StatelessWidget {
                     child: pw.Text(
                       line.trim().replaceFirst('•', '').trim(),
                       textAlign: pw.TextAlign.justify,
-                      style: const pw.TextStyle(fontSize: 10, lineSpacing: 2),
+                      // تم التصحيح: استخدام نمط الـ body من الثيم
+                      style: theme.body,
                     ),
                   ),
                 ],

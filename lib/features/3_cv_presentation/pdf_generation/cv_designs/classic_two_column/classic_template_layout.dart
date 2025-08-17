@@ -1,4 +1,4 @@
-// lib/features/pdf_export/cv_designs/classic_two_column/classic_template_layout.dart
+// lib/features/3_cv_presentation/pdf_generation/cv_designs/classic_two_column/classic_template_layout.dart
 import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart';
@@ -73,7 +73,9 @@ class ClassicTemplateLayout extends pw.StatelessWidget {
                     theme: theme,
                     iconFont: iconFont),
                 EducationSectionPdf(
-                    educationList: data.education, theme: theme),
+                    educationList: data.education,
+                    theme: theme,
+                    isLeftColumn: true),
                 SkillsSectionPdf(skills: data.skills, theme: theme),
                 LanguagesSectionPdf(languages: data.languages, theme: theme),
                 LicenseSectionPdf(
