@@ -33,30 +33,26 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
     final theme = modernTopHeaderTheme();
     return pw.Column(
       children: [
-        // --- 1. بناء الرأس العلوي (Header) ---
         _buildHeader(theme),
-
-        // --- 2. بناء الجسم الرئيسي (Body) ---
         _buildBody(theme),
       ],
     );
   }
 
-  // ويدجت خاصة لبناء الرأس
   pw.Widget _buildHeader(PdfTemplateTheme theme) {
     pw.ImageProvider? profileImage =
         profileImageData != null ? pw.MemoryImage(profileImageData!) : null;
 
     return pw.Container(
       width: double.infinity,
-      padding: const pw.EdgeInsets.symmetric(vertical: 24, horizontal: 30),
+      padding: const pw.EdgeInsets.symmetric(vertical: 18, horizontal: 30),
       color: theme.primaryColor,
       child: pw.Column(
         children: [
           if (profileImage != null)
             pw.Container(
-              width: 110,
-              height: 110,
+              width: 95,
+              height: 95,
               decoration: const pw.BoxDecoration(
                 color: PdfColors.white,
                 shape: pw.BoxShape.circle,
@@ -68,7 +64,7 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
                 ),
               ),
             ),
-          if (profileImage != null) pw.SizedBox(height: 16),
+          if (profileImage != null) pw.SizedBox(height: 12),
           pw.Text(
             data.personalInfo.name.toUpperCase(),
             style: theme.h1,
@@ -88,7 +84,6 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
     );
   }
 
-  // ويدجت خاصة لبناء الجسم
   pw.Widget _buildBody(PdfTemplateTheme theme) {
     return pw.Expanded(
       child: pw.Padding(
@@ -96,14 +91,11 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
         child: pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            // --- العمود الأيسر للجسم (أضيق) ---
             pw.Expanded(
               flex: 3,
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  // لاحظ أننا نمرر الثيم الجديد لكل قسم
-                  // وهذه الأقسام أصبحت الآن ذكية بما يكفي لتتكيف مع أي ثيم
                   ContactSectionPdf(
                       personalInfo: data.personalInfo,
                       theme: theme,
@@ -120,7 +112,6 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
               ),
             ),
             pw.SizedBox(width: 30),
-            // --- العمود الأيمن للجسم (أعرض) ---
             pw.Expanded(
               flex: 5,
               child: pw.Column(

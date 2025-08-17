@@ -1,4 +1,4 @@
-// lib/features/pdf_export/templates/classic_two_column/classic_template_layout.dart
+// lib/features/pdf_export/cv_designs/classic_two_column/classic_template_layout.dart
 import 'dart:typed_data';
 import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_export/layout/sections/contact_section_pdf.dart';
@@ -37,7 +37,6 @@ class ClassicTemplateLayout extends pw.StatelessWidget {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        // العمود الأيسر
         pw.Expanded(
           flex: 1,
           child: pw.Container(
@@ -53,7 +52,7 @@ class ClassicTemplateLayout extends pw.StatelessWidget {
                       width: 108,
                       height: 108,
                       decoration: const pw.BoxDecoration(
-                        color: PdfColor.fromInt(0xFFFFFFFF),
+                        color: PdfColors.white,
                         shape: pw.BoxShape.circle,
                       ),
                       child: pw.Padding(
@@ -85,7 +84,6 @@ class ClassicTemplateLayout extends pw.StatelessWidget {
             ),
           ),
         ),
-        // العمود الأيمن
         pw.Expanded(
           flex: 2,
           child: pw.Container(

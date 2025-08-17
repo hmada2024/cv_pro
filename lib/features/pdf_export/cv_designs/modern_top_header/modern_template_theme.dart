@@ -5,9 +5,9 @@ import 'package:pdf/widgets.dart' as pw;
 
 // كتيب التعليمات الخاص بالقالب العصري ذي الرأس العلوي
 PdfTemplateTheme modernTopHeaderTheme() {
-  // تعريف لوحة ألوان عصرية جديدة
-  const primary = PdfColor.fromInt(0xFF0D47A1); // أزرق داكن وعميق
-  const accent = PdfColor.fromInt(0xFF00BFA5); // أخضر مائل للأزرق (Teal)
+  const primary = PdfColor.fromInt(0xFF1976D2); // أزرق احترافي وأقل حدة
+  const accent =
+      PdfColor.fromInt(0xFF64B5F6); // درجة فاتحة من الأزرق للمسة عصرية
   const lightText = PdfColor.fromInt(0xFFFFFFFF); // أبيض نقي
   const darkText = PdfColor.fromInt(0xFF424242); // رمادي داكن للنصوص
 
@@ -20,9 +20,9 @@ PdfTemplateTheme modernTopHeaderTheme() {
 
     // أنماط النصوص الرئيسية (لجسم الصفحة)
     h1: pw.TextStyle(
-      fontSize: 28,
+      fontSize: 26,
       fontWeight: pw.FontWeight.bold,
-      color: lightText, // الاسم سيكون على خلفية داكنة في الرأس
+      color: lightText,
     ),
     h2: pw.TextStyle(
       fontSize: 16,
@@ -40,9 +40,6 @@ PdfTemplateTheme modernTopHeaderTheme() {
       color: primary,
     ),
 
-    // أنماط العمود الأيسر (غير مستخدمة في هذا التصميم)
-    // نوفرها لتلبية متطلبات الكلاس 'PdfTemplateTheme'
-    // ونجعلها نسخًا من الأنماط الرئيسية
     leftColumnHeader: pw.TextStyle(
       color: primary,
       fontSize: 11,
