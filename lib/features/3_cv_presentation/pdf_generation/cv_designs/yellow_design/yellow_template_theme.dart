@@ -16,31 +16,40 @@ PdfTemplateTheme yellowTemplateTheme() {
     lightTextColor: lightText,
     darkTextColor: darkText,
     h1: pw.TextStyle(
-        fontSize: 28, fontWeight: pw.FontWeight.bold, color: lightText),
+      fontSize: 32, // زيادة حجم الخط للاسم
+      fontWeight: pw.FontWeight.bold,
+      color: lightText,
+      letterSpacing: 2,
+    ),
     h2: pw.TextStyle(
-        fontSize: 14, fontWeight: pw.FontWeight.bold, color: darkText),
+        fontSize: 13,
+        fontWeight: pw.FontWeight.bold,
+        color: darkText,
+        letterSpacing: 1),
     body: const pw.TextStyle(fontSize: 9.5, lineSpacing: 3, color: darkText),
     subtitle: pw.TextStyle(
         fontSize: 9.5, fontStyle: pw.FontStyle.italic, color: subtleDarkText),
     leftColumnHeader: pw.TextStyle(
-        color: darkText, fontSize: 11, fontWeight: pw.FontWeight.bold),
+        color: darkText,
+        fontSize: 12, // تكبير خط عناوين العمود الأيسر
+        fontWeight: pw.FontWeight.bold),
     leftColumnBody:
-        const pw.TextStyle(color: darkText, fontSize: 9.5, lineSpacing: 2),
+        const pw.TextStyle(color: darkText, fontSize: 10, lineSpacing: 2),
     leftColumnSubtext: const pw.TextStyle(color: darkText, fontSize: 9),
 
     // Experience Styles
     experienceTitleStyle: pw.TextStyle(
-        fontSize: 12, fontWeight: pw.FontWeight.bold, color: darkText),
+        fontSize: 11, fontWeight: pw.FontWeight.bold, color: darkText),
     experienceCompanyStyle:
-        const pw.TextStyle(fontSize: 11, color: subtleDarkText),
+        const pw.TextStyle(fontSize: 10, color: subtleDarkText),
     experienceDateStyle: pw.TextStyle(
         fontSize: 10, color: darkText, fontWeight: pw.FontWeight.bold),
 
-    // NEW: Education Styles
+    // Education Styles
     educationTitleStyle: pw.TextStyle(
         fontSize: 11, fontWeight: pw.FontWeight.bold, color: darkText),
     educationSchoolStyle:
-        const pw.TextStyle(fontSize: 9.5, color: subtleDarkText),
+        const pw.TextStyle(fontSize: 10, color: subtleDarkText),
     educationDateStyle: pw.TextStyle(
         fontSize: 9, color: darkText, fontWeight: pw.FontWeight.bold),
 

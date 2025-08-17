@@ -1,16 +1,15 @@
 // lib/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/yellow_template_layout.dart
 import 'dart:typed_data';
+
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/yellow_template_theme.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/details_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/education_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/experience_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/languages_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/license_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/profile_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/references_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/skills_section_pdf.dart';
+// استيراد القطع المخصصة الجديدة
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_education_item.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_experience_item.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_section_header.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/widgets/yellow_skill_item.dart';
+// استيراد القطع العامة
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/widget_contact_info_line.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -45,7 +44,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
         profileImageData != null ? pw.MemoryImage(profileImageData!) : null;
 
     return pw.Expanded(
-      flex: 2,
+      flex: 3, // تم تعديل النسبة لتتناسب مع التصميم الجديد
       child: pw.Container(
         color: theme.primaryColor,
         padding: const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 30),
@@ -55,45 +54,62 @@ class YellowTemplateLayout extends pw.StatelessWidget {
             if (profileImage != null)
               pw.Center(
                 child: pw.SizedBox(
-                  width: 108,
-                  height: 108,
+                  width: 120, // زيادة حجم الصورة
+                  height: 120,
                   child: pw.ClipOval(
                     child: pw.Image(profileImage, fit: pw.BoxFit.cover),
                   ),
                 ),
               ),
             if (profileImage != null) pw.SizedBox(height: 30),
-            ProfileSectionPdf(
-                personalInfo: data.personalInfo,
+
+            // --- Profile Section ---
+            if (data.personalInfo.summary.isNotEmpty) ...[
+              YellowSectionHeader(
+                  title: 'PROFILE', theme: theme, isLeftColumn: true),
+              pw.Text(data.personalInfo.summary,
+                  style: theme.leftColumnBody, textAlign: pw.TextAlign.justify),
+              pw.SizedBox(height: 20),
+            ],
+
+            // --- Contact Section ---
+            YellowSectionHeader(
+                title: 'CONTACT', theme: theme, isLeftColumn: true),
+            if (data.personalInfo.email.isNotEmpty)
+              ContactInfoLine(
+                iconData: const pw.IconData(0xe158),
+                text: data.personalInfo.email,
+                iconFont: iconFont,
                 theme: theme,
-                isLeftColumn: true),
+                isLeftColumn: true,
+              ),
+            if (data.personalInfo.phone != null &&
+                data.personalInfo.phone!.isNotEmpty)
+              ContactInfoLine(
+                iconData: const pw.IconData(0xe0b0),
+                text: data.personalInfo.phone!,
+                iconFont: iconFont,
+                theme: theme,
+                isLeftColumn: true,
+              ),
+            if (data.personalInfo.address != null &&
+                data.personalInfo.address!.isNotEmpty)
+              ContactInfoLine(
+                iconData: const pw.IconData(0xe55f),
+                text: data.personalInfo.address!,
+                iconFont: iconFont,
+                theme: theme,
+                isLeftColumn: true,
+              ),
             pw.SizedBox(height: 20),
-            ContactSectionPdf(
-              personalInfo: data.personalInfo,
-              theme: theme,
-              iconFont: iconFont,
-              isLeftColumn: true,
-            ),
-            pw.SizedBox(height: 20),
-            SkillsSectionPdf(
-                skills: data.skills, theme: theme, isLeftColumn: true),
-            // --- ADDED SECTIONS ---
-            pw.SizedBox(height: 20),
-            LanguagesSectionPdf(
-              languages: data.languages,
-              theme: theme,
-              isLeftColumn: true,
-            ),
-            DetailsSectionPdf(
-              personalInfo: data.personalInfo,
-              theme: theme,
-              iconFont: iconFont,
-            ),
-            LicenseSectionPdf(
-              personalInfo: data.personalInfo,
-              theme: theme,
-              iconFont: iconFont,
-            ),
+
+            // --- Skills Section ---
+            if (data.skills.isNotEmpty) ...[
+              YellowSectionHeader(
+                  title: 'SKILLS', theme: theme, isLeftColumn: true),
+              ...data.skills
+                  .map((skill) => YellowSkillItem(skill, theme: theme)),
+            ],
           ],
         ),
       ),
@@ -102,7 +118,7 @@ class YellowTemplateLayout extends pw.StatelessWidget {
 
   pw.Widget _buildRightColumn(PdfTemplateTheme theme) {
     return pw.Expanded(
-      flex: 4,
+      flex: 5, // تم تعديل النسبة
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.stretch,
         children: [
@@ -112,13 +128,14 @@ class YellowTemplateLayout extends pw.StatelessWidget {
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text(data.personalInfo.name, style: theme.h1),
-                pw.SizedBox(height: 4),
+                pw.Text(data.personalInfo.name.toUpperCase(), style: theme.h1),
+                pw.SizedBox(height: 8),
                 pw.Text(
-                  data.personalInfo.jobTitle,
+                  data.personalInfo.jobTitle.toUpperCase(),
                   style: theme.body.copyWith(
                     color: theme.lightTextColor.shade(0.7),
                     fontSize: 12,
+                    letterSpacing: 2,
                   ),
                 ),
               ],
@@ -131,22 +148,21 @@ class YellowTemplateLayout extends pw.StatelessWidget {
               child: pw.Column(
                 crossAxisAlignment: pw.CrossAxisAlignment.start,
                 children: [
-                  ExperienceSectionPdf(
-                    experiences: data.experiences,
-                    theme: theme,
-                    iconFont: iconFont,
-                  ),
-                  pw.SizedBox(height: 10),
-                  EducationSectionPdf(
-                    educationList: data.education,
-                    theme: theme,
-                    isLeftColumn: false,
-                  ),
-                  ReferencesSectionPdf(
-                    references: data.references,
-                    theme: theme,
-                    showReferencesNote: showReferencesNote,
-                  ),
+                  // --- Experience Section ---
+                  if (data.experiences.isNotEmpty) ...[
+                    YellowSectionHeader(
+                        title: 'PROFESSIONAL EXPERIENCE', theme: theme),
+                    ...data.experiences
+                        .map((exp) => YellowExperienceItem(exp, theme: theme)),
+                    pw.SizedBox(height: 20),
+                  ],
+
+                  // --- Education Section ---
+                  if (data.education.isNotEmpty) ...[
+                    YellowSectionHeader(title: 'EDUCATION', theme: theme),
+                    ...data.education
+                        .map((edu) => YellowEducationItem(edu, theme: theme)),
+                  ],
                 ],
               ),
             ),

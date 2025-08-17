@@ -1,16 +1,14 @@
-// lib/features/pdf_export/data/services/pdf_service_impl.dart
+// lib/features/3_cv_presentation/pdf_generation/data/services/pdf_service_impl.dart
 import 'package:cv_pro/features/3_cv_presentation/design_selection/models/template_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/pdf_layout_builder.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// Provider لتحديد ما إذا كان يجب إظهار ملاحظة "المراجع عند الطلب"
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
 
-// Typedef لتمرير كل البيانات اللازمة إلى isolate الحاسوبي
 typedef PdfGenerationData = ({
   CVData data,
   bool showReferencesNote,
@@ -21,7 +19,6 @@ typedef PdfGenerationData = ({
   String templateId,
 });
 
-// هذه الدالة تعمل في isolate منفصل لتجنب تجميد الواجهة
 Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
   final doc = pw.Document();
 
@@ -29,8 +26,8 @@ Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
   final boldFont = pw.Font.ttf(params.boldFontData);
   final iconFont = pw.Font.ttf(params.iconFontData);
 
-  // استدعاء المُوجِّه (builder) الذي سيختار لوحة البناء الصحيحة
-  final layoutWidget = buildPdfLayout(
+  // التغيير: نستقبل الآن الويدجت والهامش معًا من المهندس
+  final pageConfig = buildPdfLayout(
     data: params.data,
     iconFont: iconFont,
     showReferencesNote: params.showReferencesNote,
@@ -40,14 +37,14 @@ Future<Uint8List> _generatePdfInBackground(PdfGenerationData params) async {
 
   doc.addPage(
     pw.Page(
-      margin: pw.EdgeInsets.zero,
+      margin: pageConfig.margin,
       theme: pw.ThemeData.withFont(
         base: font,
         bold: boldFont,
         fontFallback: [iconFont],
       ),
       build: (pw.Context context) {
-        return layoutWidget;
+        return pageConfig.layout;
       },
     ),
   );
@@ -59,12 +56,10 @@ class PdfServiceImpl implements PdfService {
   @override
   Future<Uint8List> generateCv(CVData data,
       {required bool showReferencesNote}) {
-    // هذه الدالة لم تعد مستخدمة مباشرة، الـ provider يتعامل مع كل شيء
     throw UnimplementedError(
         'generateCv should be called via the provider which handles asset loading.');
   }
 
-  // دالة ثابتة جديدة تستقبل كل البيانات المطلوبة بما فيها القالب
   static Future<Uint8List> generateCvWithAssets({
     required CVData data,
     required bool showReferencesNote,
@@ -84,7 +79,6 @@ class PdfServiceImpl implements PdfService {
       templateId: selectedTemplate.id,
     );
 
-    // استخدام compute لتشغيل الدالة في isolate منفصل
     return await compute(_generatePdfInBackground, params);
   }
 }
