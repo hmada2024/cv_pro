@@ -3,9 +3,11 @@ import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/modern_top_header/modern_template_theme.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/details_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/education_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/experience_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/languages_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/license_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/profile_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/references_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/skills_section_pdf.dart';
@@ -118,6 +120,16 @@ class ModernTopHeaderLayout extends pw.StatelessWidget {
                     skills: data.skills,
                     theme: theme,
                     isLeftColumn: true,
+                  ),
+                  DetailsSectionPdf(
+                    personalInfo: data.personalInfo,
+                    theme: theme,
+                    iconFont: iconFont,
+                  ),
+                  LicenseSectionPdf(
+                    personalInfo: data.personalInfo,
+                    theme: theme,
+                    iconFont: iconFont,
                   ),
                 ],
               ),

@@ -3,9 +3,13 @@ import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/yellow_template_theme.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/contact_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/details_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/education_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/experience_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/languages_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/license_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/profile_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/references_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/layout/sections/skills_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/theme_templates/pdf_template_theme.dart';
 import 'package:pdf/pdf.dart';
@@ -73,6 +77,23 @@ class YellowTemplateLayout extends pw.StatelessWidget {
             pw.SizedBox(height: 20),
             SkillsSectionPdf(
                 skills: data.skills, theme: theme, isLeftColumn: true),
+            // --- ADDED SECTIONS ---
+            pw.SizedBox(height: 20),
+            LanguagesSectionPdf(
+              languages: data.languages,
+              theme: theme,
+              isLeftColumn: true,
+            ),
+            DetailsSectionPdf(
+              personalInfo: data.personalInfo,
+              theme: theme,
+              iconFont: iconFont,
+            ),
+            LicenseSectionPdf(
+              personalInfo: data.personalInfo,
+              theme: theme,
+              iconFont: iconFont,
+            ),
           ],
         ),
       ),
@@ -103,11 +124,8 @@ class YellowTemplateLayout extends pw.StatelessWidget {
               ],
             ),
           ),
-          // --- BEGIN FIX ---
-          // Wrap the main content area in an Expanded widget to fill remaining space
           pw.Expanded(
             child: pw.Container(
-              // Using a container to set the white background
               color: PdfColors.white,
               padding: const pw.EdgeInsets.all(30),
               child: pw.Column(
@@ -124,11 +142,15 @@ class YellowTemplateLayout extends pw.StatelessWidget {
                     theme: theme,
                     isLeftColumn: false,
                   ),
+                  ReferencesSectionPdf(
+                    references: data.references,
+                    theme: theme,
+                    showReferencesNote: showReferencesNote,
+                  ),
                 ],
               ),
             ),
           ),
-          // --- END FIX ---
         ],
       ),
     );
