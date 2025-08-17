@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/pdf_layout_builder.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/main_builder/pdf_layout_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final showReferencesNoteProvider = StateProvider<bool>((ref) => true);
