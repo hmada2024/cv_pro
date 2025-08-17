@@ -2,8 +2,8 @@
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 // Corrected import path for the provider
-import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
-import 'package:cv_pro/features/cv_projects/ui/widgets/cv_project_card.dart';
+import 'package:cv_pro/features/projects/providers/cv_projects_provider.dart';
+import 'package:cv_pro/features/projects/ui/widgets/cv_project_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

@@ -3,7 +3,7 @@ import 'package:cv_pro/features/design_selection/models/template_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:cv_pro/core/services/pdf_service.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_generation/layout/pdf_layout_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

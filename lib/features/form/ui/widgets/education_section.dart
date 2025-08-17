@@ -4,8 +4,8 @@ import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
 import 'package:intl/intl.dart';
 
 class EducationSection extends ConsumerStatefulWidget {

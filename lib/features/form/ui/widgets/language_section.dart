@@ -1,53 +1,54 @@
-// lib/features/cv_form/ui/widgets/skill_section.dart
+// lib/features/cv_form/ui/widgets/language_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
 import 'package:cv_pro/core/widgets/english_only_text_field.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
+import 'package:cv_pro/features/form/data/models/cv_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
 
-class SkillSection extends ConsumerStatefulWidget {
-  const SkillSection({super.key});
+class LanguageSection extends ConsumerStatefulWidget {
+  const LanguageSection({super.key});
 
   @override
-  ConsumerState<SkillSection> createState() => _SkillSectionState();
+  ConsumerState<LanguageSection> createState() => _LanguageSectionState();
 }
 
-class _SkillSectionState extends ConsumerState<SkillSection> {
-  final _skillController = TextEditingController();
-  late final ValueNotifier<String> _selectedSkillLevel;
+class _LanguageSectionState extends ConsumerState<LanguageSection> {
+  final _languageController = TextEditingController();
+  late final ValueNotifier<String> _selectedProficiencyLevel;
   bool _isFormVisible = false;
 
   @override
   void initState() {
     super.initState();
-    _selectedSkillLevel = ValueNotifier(kSkillLevels[1]);
+    _selectedProficiencyLevel =
+        ValueNotifier(kSkillLevels[1]); // "Intermediate"
   }
 
   @override
   void dispose() {
-    _skillController.dispose();
-    _selectedSkillLevel.dispose();
+    _languageController.dispose();
+    _selectedProficiencyLevel.dispose();
     super.dispose();
   }
 
   void _resetForm() {
     setState(() {
-      _skillController.clear();
-      _selectedSkillLevel.value = kSkillLevels[1];
+      _languageController.clear();
+      _selectedProficiencyLevel.value = kSkillLevels[1];
       _isFormVisible = false;
     });
   }
 
-  void _addSkill() {
-    if (_skillController.text.isNotEmpty) {
-      final newSkill = Skill.create(
-        name: _skillController.text,
-        level: _selectedSkillLevel.value,
+  void _addLanguage() {
+    if (_languageController.text.isNotEmpty) {
+      final newLanguage = Language.create(
+        name: _languageController.text,
+        proficiency: _selectedProficiencyLevel.value,
       );
-      ref.read(activeCvProvider.notifier).addSkill(newSkill);
+      ref.read(activeCvProvider.notifier).addLanguage(newLanguage);
       _resetForm();
     }
   }
@@ -57,7 +58,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
     final cvData = ref.watch(activeCvProvider);
     if (cvData == null) return const SizedBox.shrink();
 
-    final skills = cvData.skills;
+    final languages = cvData.languages;
     final theme = Theme.of(context);
     return Card(
       shape: RoundedRectangleBorder(
@@ -73,53 +74,48 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
           children: [
             Row(
               children: [
-                Icon(Icons.star, color: theme.colorScheme.secondary),
+                Icon(Icons.language, color: theme.colorScheme.secondary),
                 const SizedBox(width: AppSizes.p8),
-                Text('Skills', style: theme.textTheme.titleLarge),
+                Text('Languages', style: theme.textTheme.titleLarge),
                 const SizedBox(width: AppSizes.p8),
-                if (skills.isNotEmpty)
+                if (languages.isNotEmpty)
                   Icon(Icons.check_circle,
                       color: Colors.green.shade600, size: 18),
               ],
             ),
             const SizedBox(height: AppSizes.p16),
-            if (skills.isNotEmpty)
-              Wrap(
-                spacing: AppSizes.p8,
-                runSpacing: AppSizes.p8,
-                children: [
-                  for (var i = 0; i < skills.length; i++)
-                    Chip(
-                      label: Text('${skills[i].name} (${skills[i].level})'),
-                      onDeleted: () {
-                        ref.read(activeCvProvider.notifier).removeSkill(i);
-                      },
-                    )
-                ],
-              ),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: languages.length,
+              itemBuilder: (context, index) {
+                final lang = languages[index];
+                return _buildLanguageCard(context, theme, lang, index);
+              },
+            ),
             if (_isFormVisible)
               _buildFormFields()
             else ...[
-              if (skills.isEmpty) ...[
+              if (languages.isEmpty) ...[
                 const EmptyStateWidget(
-                  icon: Icons.star_border,
-                  title: 'No skills added yet',
-                  subtitle: 'Highlight your key abilities to catch attention.',
+                  icon: Icons.translate,
+                  title: 'No languages added',
+                  subtitle: 'Showcase your language skills to employers.',
                 ),
                 const SizedBox(height: AppSizes.p16),
                 ElevatedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
-                  label: const Text('Add First Skill'),
+                  label: const Text('Add First Language'),
                 ),
               ] else ...[
                 const SizedBox(height: AppSizes.p16),
                 OutlinedButton.icon(
                   onPressed: () => setState(() => _isFormVisible = true),
                   icon: const Icon(Icons.add),
-                  label: const Text('Add New Skill'),
+                  label: const Text('Add New Language'),
                 ),
-              ]
+              ],
             ]
           ],
         ),
@@ -133,19 +129,19 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
       children: [
         const Divider(height: AppSizes.p32),
         EnglishOnlyTextField(
-          controller: _skillController,
-          labelText: 'Skill Name (e.g., Flutter)',
-          onFieldSubmitted: (value) => _addSkill(),
+          controller: _languageController,
+          labelText: 'Language (e.g., English)',
+          onFieldSubmitted: (_) => _addLanguage(),
         ),
         const SizedBox(height: AppSizes.p12),
         ValueListenableBuilder<String>(
-          valueListenable: _selectedSkillLevel,
+          valueListenable: _selectedProficiencyLevel,
           builder: (context, currentValue, child) {
             return DropdownButtonFormField<String>(
               value: currentValue,
               decoration: const InputDecoration(
                 labelText: 'Proficiency Level',
-                prefixIcon: Icon(Icons.assessment_outlined),
+                prefixIcon: Icon(Icons.bar_chart_outlined),
               ),
               items: kSkillLevels.map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
@@ -155,7 +151,7 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
               }).toList(),
               onChanged: (String? newValue) {
                 if (newValue != null) {
-                  _selectedSkillLevel.value = newValue;
+                  _selectedProficiencyLevel.value = newValue;
                 }
               },
             );
@@ -173,13 +169,36 @@ class _SkillSectionState extends ConsumerState<SkillSection> {
             const SizedBox(width: AppSizes.p8),
             Expanded(
               child: ElevatedButton(
-                onPressed: _addSkill,
-                child: const Text('Save Skill'),
+                onPressed: _addLanguage,
+                child: const Text('Save Language'),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+
+  Widget _buildLanguageCard(
+      BuildContext context, ThemeData theme, Language lang, int index) {
+    return Card(
+      elevation: 0,
+      margin: const EdgeInsets.only(bottom: AppSizes.p8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSizes.buttonRadius),
+        side: BorderSide(color: theme.dividerColor),
+      ),
+      child: ListTile(
+        leading: Icon(Icons.translate, color: theme.colorScheme.primary),
+        title: Text(lang.name, style: theme.textTheme.titleMedium),
+        subtitle: Text(lang.proficiency, style: theme.textTheme.bodyMedium),
+        trailing: IconButton(
+          icon: Icon(Icons.delete_outline, color: theme.colorScheme.error),
+          onPressed: () {
+            ref.read(activeCvProvider.notifier).removeLanguage(index);
+          },
+        ),
+      ),
     );
   }
 }

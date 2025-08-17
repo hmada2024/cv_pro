@@ -1,6 +1,6 @@
 // lib/features/home/widgets/home_template_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
+import 'package:cv_pro/features/form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/design_selection/providers/template_provider.dart';
 import 'package:cv_pro/features/design_selection/widgets/template_selection_bottom_sheet.dart';
 import 'package:cv_pro/features/pdf_generation/data/providers/pdf_providers.dart';

@@ -1,7 +1,7 @@
 // lib/features/cv_form/data/services/storage_service_impl.dart
 import 'package:isar/isar.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 
 class StorageServiceImpl implements StorageService {
   final Isar _isar;

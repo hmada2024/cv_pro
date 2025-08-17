@@ -2,7 +2,7 @@
 import 'dart:async';
 import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';

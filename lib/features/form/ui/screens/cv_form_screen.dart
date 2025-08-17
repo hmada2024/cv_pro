@@ -1,17 +1,17 @@
 // lib/features/cv_form/ui/screens/cv_form_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/features/cv_form/ui/screens/pdf_preview_screen.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/project_status_header.dart';
+import 'package:cv_pro/features/form/ui/screens/pdf_preview_screen.dart';
+import 'package:cv_pro/features/form/ui/widgets/project_status_header.dart';
 import 'package:cv_pro/features/pdf_generation/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/education_section.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/experience_section.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/language_section.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/personal_info_section.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/references_section.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/skill_section.dart';
+import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/form/ui/widgets/education_section.dart';
+import 'package:cv_pro/features/form/ui/widgets/experience_section.dart';
+import 'package:cv_pro/features/form/ui/widgets/language_section.dart';
+import 'package:cv_pro/features/form/ui/widgets/personal_info_section.dart';
+import 'package:cv_pro/features/form/ui/widgets/references_section.dart';
+import 'package:cv_pro/features/form/ui/widgets/skill_section.dart';
 import '../widgets/driving_license_section.dart';
 
 class CvFormScreen extends ConsumerWidget {

@@ -2,14 +2,14 @@
 import 'dart:io';
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/theme/app_colors.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/shared/form_date_picker_field.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/shared/form_dropdown_field.dart';
-import 'package:cv_pro/features/cv_form/ui/widgets/shared/form_text_field.dart';
+import 'package:cv_pro/features/form/data/models/cv_constants.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/ui/widgets/shared/form_date_picker_field.dart';
+import 'package:cv_pro/features/form/ui/widgets/shared/form_dropdown_field.dart';
+import 'package:cv_pro/features/form/ui/widgets/shared/form_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
 import 'package:intl/intl.dart';
 
 class PersonalInfoSection extends ConsumerStatefulWidget {

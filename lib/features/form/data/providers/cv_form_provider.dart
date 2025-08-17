@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:cv_pro/core/di/injector.dart';
 import 'package:cv_pro/core/services/image_cropper_service.dart';
 import 'package:cv_pro/core/services/storage_service.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';

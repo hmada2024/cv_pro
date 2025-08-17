@@ -1,5 +1,5 @@
 // lib/core/services/storage_service.dart
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 
 abstract class StorageService {
   Future<int> saveCV(CVData cvData);

@@ -1,6 +1,6 @@
 // lib/features/pdf_export/cv_designs/classic_two_column/classic_template_layout.dart
 import 'dart:typed_data';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_generation/layout/sections/contact_section_pdf.dart';
 import 'package:cv_pro/features/pdf_generation/layout/sections/details_section_pdf.dart';
 import 'package:cv_pro/features/pdf_generation/layout/sections/education_section_pdf.dart';

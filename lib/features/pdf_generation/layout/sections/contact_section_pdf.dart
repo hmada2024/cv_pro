@@ -1,5 +1,5 @@
 // lib/features/pdf_export/layout/sections/contact_section_pdf.dart
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/pdf_generation/layout/widget_contact_info_line.dart';
 import 'package:cv_pro/features/pdf_generation/layout/widget_section_header.dart';
 import 'package:cv_pro/features/pdf_generation/theme_templates/pdf_template_theme.dart';

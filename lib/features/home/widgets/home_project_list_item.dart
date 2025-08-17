@@ -1,10 +1,10 @@
 // lib/features/home/widgets/home_project_list_item.dart
 import 'dart:io';
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
-import 'package:cv_pro/features/cv_form/ui/screens/cv_form_screen.dart';
-import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/form/ui/screens/cv_form_screen.dart';
+import 'package:cv_pro/features/projects/providers/cv_projects_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

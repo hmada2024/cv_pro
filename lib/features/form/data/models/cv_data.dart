@@ -1,6 +1,6 @@
 // lib/features/cv_form/data/models/cv_data.dart
 import 'package:isar/isar.dart';
-import 'package:cv_pro/features/cv_form/data/models/cv_constants.dart';
+import 'package:cv_pro/features/form/data/models/cv_constants.dart';
 
 part 'personal_info.dart';
 part 'experience.dart';

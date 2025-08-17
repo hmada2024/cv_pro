@@ -1,7 +1,7 @@
 // lib/features/settings/widgets/data_management_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
-import 'package:cv_pro/features/cv_projects/providers/cv_projects_provider.dart';
+import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/projects/providers/cv_projects_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

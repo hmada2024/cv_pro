@@ -2,7 +2,7 @@
 import 'dart:io';
 import 'package:cv_pro/features/design_selection/providers/template_provider.dart';
 import 'package:flutter/services.dart';
-import 'package:cv_pro/features/cv_form/data/providers/cv_form_provider.dart';
+import 'package:cv_pro/features/form/data/providers/cv_form_provider.dart';
 import 'package:cv_pro/features/pdf_generation/data/services/pdf_service_impl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cv_pro/features/pdf_generation/data/dummy_data/cv_data_dummy.dart';

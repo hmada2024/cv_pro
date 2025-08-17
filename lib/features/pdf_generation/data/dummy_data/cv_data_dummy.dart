@@ -1,5 +1,5 @@
 // features/pdf_export/data/dummy_data/cv_data_dummy.dart
-import 'package:cv_pro/features/cv_form/data/models/cv_data.dart';
+import 'package:cv_pro/features/form/data/models/cv_data.dart';
 
 part '_dummy_personal_info.dart';
 part '_dummy_experience.dart';
