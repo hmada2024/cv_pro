@@ -6,8 +6,8 @@ import 'package:cv_pro/features/form/ui/screens/cv_form_screen.dart';
 import 'package:cv_pro/features/projects/providers/cv_projects_provider.dart';
 import 'package:cv_pro/features/projects/ui/widgets/create_cv_dialog.dart';
 import 'package:cv_pro/features/design_selection/widgets/home_template_section.dart';
-import 'package:cv_pro/features/home/widgets/home_project_list_item.dart';
-import 'package:cv_pro/features/settings/screens/settings_screen.dart';
+import 'package:cv_pro/features/1_main_screens/home/widgets/home_project_list_item.dart';
+import 'package:cv_pro/features/1_main_screens/settings/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
