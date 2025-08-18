@@ -22,7 +22,7 @@ class YellowTemplateLayout extends PdfTemplateLayout {
   static const double pageMargin = 25.0;
   static const double leftColumnRatio = 0.32;
   static const double headerHeight = 130.0;
-  static const double imageSize = 100.0;
+  static const double imageSize = 115.0;
   static const double contentPadding = 30.0;
 
   YellowTemplateLayout({
@@ -60,7 +60,7 @@ class YellowTemplateLayout extends PdfTemplateLayout {
         height: headerHeight,
         color: theme.accentColor,
         padding: pw.EdgeInsets.only(
-          left: leftColumnWidth + 20,
+          left: leftColumnWidth + 45,
           right: contentPadding,
           top: 45,
         ),
@@ -69,7 +69,7 @@ class YellowTemplateLayout extends PdfTemplateLayout {
           mainAxisAlignment: pw.MainAxisAlignment.start,
           children: [
             pw.Text(data.personalInfo.name.toUpperCase(), style: theme.h1),
-            pw.SizedBox(height: 8),
+            pw.SizedBox(height: 12),
             pw.Text(
               data.personalInfo.jobTitle.toUpperCase(),
               style: (theme as YellowPdfTemplateTheme).jobTitleStyle,
@@ -174,9 +174,7 @@ class YellowTemplateLayout extends PdfTemplateLayout {
     if (profileImage == null) return pw.SizedBox();
 
     return pw.Positioned(
-      // MODIFICATION: Vertically centered within the header's space
       top: pageMargin + (headerHeight / 2) - (imageSize / 2),
-      // MODIFICATION: Horizontally centered within the yellow bar
       left: pageMargin + (leftColumnWidth / 2) - (imageSize / 2),
       child: pw.SizedBox(
         width: imageSize,
