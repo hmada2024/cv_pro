@@ -20,6 +20,11 @@ final allTemplatesProvider = Provider<List<TemplateModel>>((ref) {
       name: 'Yellow Intersection',
       isEnabled: true,
     ),
+    TemplateModel(
+      id: 'template_4',
+      name: 'Asymmetric Black & Blue',
+      isEnabled: true,
+    ),
   ];
 });
 
