@@ -1,6 +1,6 @@
 // lib/features/3_cv_presentation/pdf_generation/cv_designs/black_blue_asymmetric/theme_black_blue_asymmetric.dart
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/yellow_intersection/theme_yellow_intersection.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/yellow_brown_intersection/theme_yellow_intersection.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
