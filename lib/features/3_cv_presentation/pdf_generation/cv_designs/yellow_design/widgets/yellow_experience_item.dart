@@ -7,7 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 class YellowExperienceItem extends pw.StatelessWidget {
   final Experience experience;
   final PdfTemplateTheme theme;
-  final DateFormat formatter = DateFormat('MMM yyyy');
+  final DateFormat formatter = DateFormat('MMM. yyyy');
 
   YellowExperienceItem(this.experience, {required this.theme});
 
@@ -23,8 +23,8 @@ class YellowExperienceItem extends pw.StatelessWidget {
                 children: [
                   pw.Container(
                     margin: const pw.EdgeInsets.only(top: 4, right: 8),
-                    width: 5,
-                    height: 5,
+                    width: 4,
+                    height: 4,
                     decoration: pw.BoxDecoration(
                         color: theme.darkTextColor, shape: pw.BoxShape.circle),
                   ),
@@ -45,12 +45,25 @@ class YellowExperienceItem extends pw.StatelessWidget {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text(
-            experience.position.toUpperCase(),
-            style: theme.experienceTitleStyle,
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Expanded(
+                child: pw.Text(
+                  experience.position.toUpperCase(),
+                  style: theme.experienceTitleStyle,
+                ),
+              ),
+              pw.SizedBox(width: 10),
+              pw.Text(
+                '${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
+                style: theme.experienceDateStyle,
+              ),
+            ],
           ),
           pw.Text(
-            '${experience.companyName} | ${formatter.format(experience.startDate)} - ${experience.isCurrent ? "Present" : formatter.format(experience.endDate!)}',
+            experience.companyName,
             style: theme.experienceCompanyStyle,
           ),
           pw.SizedBox(height: 8),

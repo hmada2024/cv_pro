@@ -21,9 +21,18 @@ class YellowEducationItem extends pw.StatelessWidget {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.Text(
-            '${education.level.toDisplayString().toUpperCase()} ${education.degreeName.toUpperCase()} | $dateRange',
-            style: theme.educationTitleStyle,
+          pw.Row(
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.Text(
+                '${education.level.toDisplayString().toUpperCase()} ${education.degreeName.toUpperCase()}',
+                style: theme.educationTitleStyle,
+              ),
+              pw.Text(
+                dateRange,
+                style: theme.educationDateStyle,
+              ),
+            ],
           ),
           pw.Text(
             education.school,

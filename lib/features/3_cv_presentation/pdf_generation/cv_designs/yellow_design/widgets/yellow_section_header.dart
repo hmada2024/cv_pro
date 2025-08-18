@@ -5,19 +5,19 @@ import 'package:pdf/widgets.dart' as pw;
 class YellowSectionHeader extends pw.StatelessWidget {
   final String title;
   final PdfTemplateTheme theme;
-  final bool isLeftColumn;
 
   YellowSectionHeader({
     required this.title,
     required this.theme,
-    this.isLeftColumn = false,
   });
 
   @override
   pw.Widget build(pw.Context context) {
-    final titleStyle = isLeftColumn
-        ? theme.leftColumnHeader.copyWith(letterSpacing: 1.5)
-        : theme.h2.copyWith(letterSpacing: 1.5);
+    // Simplified to match the target design: just a title and a divider
+    final titleStyle =
+        title == 'PROFILE' || title == 'CONTACT' || title == 'SKILLS'
+            ? theme.leftColumnHeader
+            : theme.h2;
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
