@@ -1,7 +1,7 @@
 // lib/features/3_cv_presentation/pdf_generation/cv_designs/modern_top_header/modern_template_layout.dart
 import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/modern_top_header/modern_template_theme.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/blue_top_header/modern_template_theme.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_layout_contract.dart'; // استيراد العقد
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/contact_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/details_section_pdf.dart';

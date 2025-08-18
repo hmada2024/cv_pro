@@ -12,12 +12,12 @@ final allTemplatesProvider = Provider<List<TemplateModel>>((ref) {
     ),
     TemplateModel(
       id: 'template_2',
-      name: 'Blue Top Design',
+      name: 'Blue Top Header',
       isEnabled: true,
     ),
     TemplateModel(
       id: 'template_3',
-      name: 'Yellow Intersection Design',
+      name: 'Yellow Intersection',
       isEnabled: true,
     ),
   ];

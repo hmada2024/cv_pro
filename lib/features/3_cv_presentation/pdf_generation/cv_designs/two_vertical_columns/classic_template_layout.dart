@@ -11,7 +11,7 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/profile_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/references_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/skills_section_pdf.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/classic_two_column/classic_template_theme.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/two_vertical_columns/classic_template_theme.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
