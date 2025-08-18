@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_layout_contract.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/black_blue_intersection/theme_black_blue_asymmetric.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/black_blue_intersection/theme_black_blue_asymmetric.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_education_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_experience_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_section_header.dart';
