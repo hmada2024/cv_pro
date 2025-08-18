@@ -7,17 +7,17 @@ final allTemplatesProvider = Provider<List<TemplateModel>>((ref) {
   return const [
     TemplateModel(
       id: 'template_1',
-      name: 'Classic Two Column',
+      name: 'Two Vertical Columns',
       isEnabled: true,
     ),
     TemplateModel(
       id: 'template_2',
-      name: 'Modern Top Header',
+      name: 'Blue Top Design',
       isEnabled: true,
     ),
     TemplateModel(
       id: 'template_3',
-      name: 'Yellow Design',
+      name: 'Yellow Intersection Design',
       isEnabled: true,
     ),
   ];
