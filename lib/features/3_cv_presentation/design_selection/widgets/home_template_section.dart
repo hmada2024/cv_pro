@@ -2,7 +2,7 @@
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/3_cv_presentation/design_selection/providers/template_provider.dart';
-import 'package:cv_pro/features/3_cv_presentation/design_selection/widgets/template_selection_bottom_sheet.dart';
+import 'package:cv_pro/features/3_cv_presentation/design_selection/screens/template_gallery_screen.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,7 +51,12 @@ class HomeTemplateSection extends ConsumerWidget {
                       icon: const Icon(Icons.style_outlined),
                       label: const Text('Choose'),
                       onPressed: () {
-                        showTemplateSelectionBottomSheet(context);
+                        // تعديل: الانتقال إلى شاشة المعرض الجديدة
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const TemplateGalleryScreen(),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -66,6 +71,7 @@ class HomeTemplateSection extends ConsumerWidget {
                             builder: (context) => PdfPreviewScreen(
                               pdfProvider: dummyPdfBytesProvider,
                               projectName: 'Template Preview',
+                              templateModel: selectedTemplate, // تمرير النموذج
                               isDummyPreview: true,
                             ),
                           ),

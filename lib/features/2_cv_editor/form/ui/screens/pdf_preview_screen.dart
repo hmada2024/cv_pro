@@ -1,6 +1,7 @@
 // lib/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart
-import 'dart:typed_data';
 import 'package:cv_pro/core/constants/app_sizes.dart';
+import 'package:cv_pro/features/3_cv_presentation/design_selection/models/template_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:printing/printing.dart';
@@ -8,12 +9,14 @@ import 'package:printing/printing.dart';
 class PdfPreviewScreen extends ConsumerStatefulWidget {
   final AutoDisposeFutureProvider<Uint8List> pdfProvider;
   final String projectName;
+  final TemplateModel templateModel;
   final bool isDummyPreview;
 
   const PdfPreviewScreen({
     super.key,
     required this.pdfProvider,
     required this.projectName,
+    required this.templateModel,
     this.isDummyPreview = false,
   });
 
@@ -22,18 +25,19 @@ class PdfPreviewScreen extends ConsumerStatefulWidget {
 }
 
 class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
-  // We store the future in the state to prevent it from being re-fetched.
   late Future<Uint8List> _pdfFuture;
 
   @override
   void initState() {
     super.initState();
-    // Fetch the PDF data once and store the future.
     _pdfFuture = ref.read(widget.pdfProvider.future);
   }
 
-  // Moved the action buttons widget inside the state class.
-  // It now accepts the generated pdfBytes directly to avoid re-fetching.
+  String _generateExportFilename() {
+    final name = widget.templateModel.name.replaceAll(' ', '_').toLowerCase();
+    return 'gallery_preview_${widget.templateModel.id}_$name.pdf';
+  }
+
   Widget _buildActionButtons(
       BuildContext context, ThemeData theme, Uint8List pdfBytes) {
     return Padding(
@@ -59,18 +63,18 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
               icon: const Icon(Icons.share_outlined),
               label: const Text('Share / Save'),
               onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
                 try {
                   final defaultName = '${widget.projectName}.pdf';
                   await Printing.sharePdf(
-                    bytes: pdfBytes, // Use the bytes passed to the function
+                    bytes: pdfBytes,
                     filename: defaultName,
                   );
                 } catch (e) {
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('An error occurred: $e')),
-                    );
-                  }
+                  if (!mounted) return;
+                  messenger.showSnackBar(
+                    SnackBar(content: Text('An error occurred: $e')),
+                  );
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -92,7 +96,42 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
       appBar: AppBar(
         title: const Text('CV Preview'),
       ),
-      // Use FutureBuilder to handle the lifecycle of our single data fetch.
+      floatingActionButton: kDebugMode
+          ? FutureBuilder<Uint8List>(
+              future: _pdfFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return FloatingActionButton.extended(
+                    onPressed: () async {
+                      final messenger = ScaffoldMessenger.of(context);
+                      try {
+                        await Printing.sharePdf(
+                          bytes: snapshot.data!,
+                          filename: _generateExportFilename(),
+                        );
+                        if (!mounted) return;
+                        // استخدام المتغير المحلي
+                        messenger.showSnackBar(
+                          const SnackBar(
+                            content: Text('PDF ready to be saved to files.'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      } catch (e) {
+                        if (!mounted) return;
+                        messenger.showSnackBar(
+                          SnackBar(content: Text('Export error: $e')),
+                        );
+                      }
+                    },
+                    label: const Text('Export for Gallery'),
+                    icon: const Icon(Icons.developer_mode),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            )
+          : null,
       body: FutureBuilder<Uint8List>(
         future: _pdfFuture,
         builder: (context, snapshot) {
@@ -103,15 +142,11 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
                 children: [
                   const CircularProgressIndicator(),
                   const SizedBox(height: AppSizes.p16),
-                  Text(
-                    "Preparing your professional CV...",
-                    style: theme.textTheme.bodyLarge,
-                  ),
+                  Text("Preparing your professional CV...",
+                      style: theme.textTheme.bodyLarge),
                   const SizedBox(height: AppSizes.p4),
-                  Text(
-                    "This may take a moment.",
-                    style: theme.textTheme.bodySmall,
-                  ),
+                  Text("This may take a moment.",
+                      style: theme.textTheme.bodySmall),
                 ],
               ),
             );
@@ -133,7 +168,6 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
             return Column(
               children: [
                 Expanded(
-                  // Your InteractiveViewer is preserved here.
                   child: InteractiveViewer(
                     panEnabled: true,
                     scaleEnabled: true,
@@ -153,7 +187,6 @@ class _PdfPreviewScreenState extends ConsumerState<PdfPreviewScreen> {
               ],
             );
           }
-          // Fallback case, should not be reached in normal operation.
           return const Center(child: Text('An unexpected error occurred.'));
         },
       ),

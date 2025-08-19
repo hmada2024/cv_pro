@@ -2,6 +2,7 @@
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/widgets/project_status_header.dart';
+import 'package:cv_pro/features/3_cv_presentation/design_selection/providers/template_provider.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/data/providers/pdf_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,6 +21,8 @@ class CvFormScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeCv = ref.watch(activeCvProvider);
+    // نقوم بقراءة القالب المختار حاليًا
+    final selectedTemplate = ref.watch(selectedTemplateProvider);
 
     if (activeCv == null) {
       return Scaffold(
@@ -71,6 +74,8 @@ class CvFormScreen extends ConsumerWidget {
                         builder: (context) => PdfPreviewScreen(
                           pdfProvider: pdfBytesProvider,
                           projectName: activeCv.projectName,
+                          templateModel:
+                              selectedTemplate, // تمرير القالب المختار
                           isDummyPreview: false,
                         ),
                       ),
