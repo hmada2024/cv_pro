@@ -56,77 +56,92 @@ class _TemplateGalleryScreenState extends ConsumerState<TemplateGalleryScreen> {
       appBar: AppBar(
         title: const Text('Choose Your Template'),
       ),
+      // 1. استخدام Stack لوضع الزر بشكل ثابت في الأسفل
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            const SizedBox(height: AppSizes.p24),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.55,
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _templates.length,
-                itemBuilder: (context, index) {
-                  final template = _templates[index];
-                  final isSelected = index == _currentPage;
+            // 2. المحتوى الآن قابل للتمرير
+            SingleChildScrollView(
+              padding: const EdgeInsets.only(
+                bottom: 100, // إضافة مساحة في الأسفل لكي لا يغطي الزر المحتوى
+              ),
+              child: Column(
+                children: [
+                  const SizedBox(height: AppSizes.p24),
+                  AspectRatio(
+                    aspectRatio: 0.75,
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: _templates.length,
+                      itemBuilder: (context, index) {
+                        final template = _templates[index];
+                        final isSelected = index == _currentPage;
 
-                  return AnimatedScale(
-                    scale: isSelected ? 1.0 : 0.9,
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSizes.p8,
-                        vertical: AppSizes.p12,
-                      ),
-                      child: Card(
-                        elevation: isSelected ? 8 : 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(AppSizes.cardRadius),
-                          side: BorderSide(
-                            color: isSelected
-                                ? theme.colorScheme.primary
-                                : Colors.transparent,
-                            width: 2.5,
+                        return AnimatedScale(
+                          scale: isSelected ? 1.0 : 0.9,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSizes.p8,
+                              vertical: AppSizes.p12,
+                            ),
+                            child: Card(
+                              elevation: isSelected ? 8 : 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(AppSizes.cardRadius),
+                                side: BorderSide(
+                                  color: isSelected
+                                      ? theme.colorScheme.primary
+                                      : Colors.transparent,
+                                  width: 2.5,
+                                ),
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: Image.asset(
+                                template.previewImagePath,
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Center(
+                                    child: Text('Image not found!'),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Image.asset(
-                          template.previewImagePath,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return const Center(
-                              child: Text('Image not found!'),
-                            );
-                          },
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  const SizedBox(height: AppSizes.p20),
+                  Text(
+                    currentTemplate.name,
+                    style: theme.textTheme.titleLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: AppSizes.p20),
-            Text(
-              currentTemplate.name,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                  AppSizes.p16, 0, AppSizes.p16, AppSizes.p24),
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.check_circle_outline),
-                label: const Text('Select this Template'),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
+            // 3. وضع الزر في الأسفل باستخدام Align
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                color: theme.scaffoldBackgroundColor, // خلفية لضمان الوضوح
+                padding: const EdgeInsets.fromLTRB(
+                    AppSizes.p16, AppSizes.p12, AppSizes.p16, AppSizes.p24),
+                child: ElevatedButton.icon(
+                  icon: const Icon(Icons.check_circle_outline),
+                  label: const Text('Select this Template'),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                  ),
+                  onPressed: () {
+                    ref.read(selectedTemplateProvider.notifier).state =
+                        currentTemplate;
+                    Navigator.of(context).pop();
+                  },
                 ),
-                onPressed: () {
-                  ref.read(selectedTemplateProvider.notifier).state =
-                      currentTemplate;
-                  Navigator.of(context).pop();
-                },
               ),
             ),
           ],
