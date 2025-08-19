@@ -18,6 +18,9 @@ class _TemplateGalleryScreenState extends ConsumerState<TemplateGalleryScreen> {
   late int _currentPage;
   late final List<TemplateModel> _templates;
 
+  // نسبة أبعاد ورقة A4 القياسية (العرض / الارتفاع)
+  static const double a4AspectRatio = 1 / 1.414;
+
   @override
   void initState() {
     super.initState();
@@ -56,20 +59,17 @@ class _TemplateGalleryScreenState extends ConsumerState<TemplateGalleryScreen> {
       appBar: AppBar(
         title: const Text('Choose Your Template'),
       ),
-      // 1. استخدام Stack لوضع الزر بشكل ثابت في الأسفل
       body: SafeArea(
         child: Stack(
           children: [
-            // 2. المحتوى الآن قابل للتمرير
             SingleChildScrollView(
-              padding: const EdgeInsets.only(
-                bottom: 100, // إضافة مساحة في الأسفل لكي لا يغطي الزر المحتوى
-              ),
+              padding: const EdgeInsets.only(bottom: 100),
               child: Column(
                 children: [
                   const SizedBox(height: AppSizes.p24),
-                  AspectRatio(
-                    aspectRatio: 0.75,
+                  // نعطي PageView ارتفاعًا محددًا ليعمل بشكل صحيح
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.6,
                     child: PageView.builder(
                       controller: _pageController,
                       itemCount: _templates.length,
@@ -99,14 +99,20 @@ class _TemplateGalleryScreenState extends ConsumerState<TemplateGalleryScreen> {
                                 ),
                               ),
                               clipBehavior: Clip.antiAlias,
-                              child: Image.asset(
-                                template.previewImagePath,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return const Center(
-                                    child: Text('Image not found!'),
-                                  );
-                                },
+                              // التعديل الجوهري هنا:
+                              // 1. نضع AspectRatio داخل الكارت ليتحكم في أبعاده
+                              child: AspectRatio(
+                                aspectRatio: a4AspectRatio,
+                                // 2. نجعل الصورة تملأ هذه الأبعاد الصحيحة
+                                child: Image.asset(
+                                  template.previewImagePath,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Center(
+                                      child: Text('Image not found!'),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
@@ -123,11 +129,10 @@ class _TemplateGalleryScreenState extends ConsumerState<TemplateGalleryScreen> {
                 ],
               ),
             ),
-            // 3. وضع الزر في الأسفل باستخدام Align
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                color: theme.scaffoldBackgroundColor, // خلفية لضمان الوضوح
+                color: theme.scaffoldBackgroundColor,
                 padding: const EdgeInsets.fromLTRB(
                     AppSizes.p16, AppSizes.p12, AppSizes.p16, AppSizes.p24),
                 child: ElevatedButton.icon(
