@@ -27,7 +27,8 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
   });
 
   @override
-  final pw.EdgeInsets margin = const pw.EdgeInsets.all(30);
+  final pw.EdgeInsets margin =
+      const pw.EdgeInsets.only(top: 30, left: 35, right: 35, bottom: 30);
 
   @override
   pw.Widget build(pw.Context context) {
@@ -36,7 +37,7 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         _buildHeader(theme),
-        pw.SizedBox(height: 10), // <-- تعديل: تقليل المسافة
+        pw.SizedBox(height: 15),
         _buildContactBar(theme),
 
         // Main content sections
@@ -75,7 +76,7 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
         pw.SizedBox(width: 24),
         if (profileImage != null)
           pw.SizedBox(
-            width: 95, // <-- تعديل: حجم الصورة الدائرية
+            width: 95,
             height: 95,
             child: pw.ClipOval(
               child: pw.Image(profileImage, fit: pw.BoxFit.cover),
@@ -89,7 +90,6 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
     return pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          pw.SizedBox(height: 10),
           if (data.personalInfo.phone != null &&
               data.personalInfo.phone!.isNotEmpty)
             ContactInfoLine(
@@ -121,7 +121,7 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.SizedBox(height: 15),
+        pw.SizedBox(height: 20),
         FormalSectionHeader(title: 'PROFILE', theme: theme),
         pw.Text(
           data.personalInfo.summary,
@@ -137,7 +137,7 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.SizedBox(height: 15),
+        pw.SizedBox(height: 20),
         FormalSectionHeader(title: 'WORK EXPERIENCE', theme: theme),
         ...data.experiences.map((exp) =>
             _FormalExperienceItem(exp, iconFont: iconFont, theme: theme)),
@@ -200,9 +200,11 @@ class _FormalExperienceItem extends pw.StatelessWidget {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
-                      experience.position.toUpperCase(),
+                      experience.position
+                          .toUpperCase(), // <-- تعديل: ليتطابق مع الصورة
                       style: theme.experienceTitleStyle,
                     ),
+                    pw.SizedBox(height: 2), // <-- تعديل: مسافة صغيرة
                     pw.Text(
                       experience.companyName,
                       style: theme.experienceCompanyStyle,
