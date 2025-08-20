@@ -1,6 +1,7 @@
 // lib/features/3_cv_presentation/design_selection/widgets/home_template_section.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart';
+import 'package:cv_pro/features/3_cv_presentation/design_selection/models/template_model.dart';
 import 'package:cv_pro/features/3_cv_presentation/design_selection/providers/template_provider.dart';
 import 'package:cv_pro/features/3_cv_presentation/design_selection/screens/template_gallery_screen.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/data/providers/pdf_providers.dart';
@@ -13,6 +14,7 @@ class HomeTemplateSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedTemplate = ref.watch(selectedTemplateProvider);
+    final allTemplates = ref.watch(allTemplatesProvider);
     final theme = Theme.of(context);
 
     return Padding(
@@ -51,7 +53,6 @@ class HomeTemplateSection extends ConsumerWidget {
                       icon: const Icon(Icons.style_outlined),
                       label: const Text('Choose'),
                       onPressed: () {
-                        // تعديل: الانتقال إلى شاشة المعرض الجديدة
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const TemplateGalleryScreen(),
@@ -62,21 +63,46 @@ class HomeTemplateSection extends ConsumerWidget {
                   ),
                   const SizedBox(width: AppSizes.p12),
                   Expanded(
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.visibility_outlined),
-                      label: const Text('Preview'),
-                      onPressed: () {
+                    // تم تحويل الزر إلى قائمة منبثقة تفاعلية
+                    child: PopupMenuButton<TemplateModel>(
+                      onSelected: (TemplateModel template) {
+                        // 1. تحديث الحالة أولاً
+                        ref.read(selectedTemplateProvider.notifier).state =
+                            template;
+
+                        // 2. الانتقال إلى شاشة المعاينة بالقالب المختار حديثًا
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => PdfPreviewScreen(
                               pdfProvider: dummyPdfBytesProvider,
                               projectName: 'Template Preview',
-                              templateModel: selectedTemplate, // تمرير النموذج
+                              templateModel: template,
                               isDummyPreview: true,
                             ),
                           ),
                         );
                       },
+                      itemBuilder: (BuildContext context) {
+                        // بناء عناصر القائمة من قائمة القوالب المتاحة
+                        return allTemplates.map((TemplateModel template) {
+                          return PopupMenuItem<TemplateModel>(
+                            value: template,
+                            child: Text(template.name),
+                          );
+                        }).toList();
+                      },
+                      // استخدام الزر الأصلي كمظهر للقائمة
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.visibility_outlined),
+                        label: const Text('Preview'),
+                        onPressed:
+                            null, // يتم تعطيله لأن PopupMenuButton يعالج الضغط
+                        style: ElevatedButton.styleFrom(
+                          disabledBackgroundColor:
+                              theme.colorScheme.primary.withOpacity(0.9),
+                          disabledForegroundColor: theme.colorScheme.onPrimary,
+                        ),
+                      ),
                     ),
                   ),
                 ],
