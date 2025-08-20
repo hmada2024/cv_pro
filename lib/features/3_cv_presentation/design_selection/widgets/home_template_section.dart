@@ -5,6 +5,7 @@ import 'package:cv_pro/features/3_cv_presentation/design_selection/models/templa
 import 'package:cv_pro/features/3_cv_presentation/design_selection/providers/template_provider.dart';
 import 'package:cv_pro/features/3_cv_presentation/design_selection/screens/template_gallery_screen.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/data/providers/pdf_providers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,50 +62,47 @@ class HomeTemplateSection extends ConsumerWidget {
                       },
                     ),
                   ),
-                  const SizedBox(width: AppSizes.p12),
-                  Expanded(
-                    // تم تحويل الزر إلى قائمة منبثقة تفاعلية
-                    child: PopupMenuButton<TemplateModel>(
-                      onSelected: (TemplateModel template) {
-                        // 1. تحديث الحالة أولاً
-                        ref.read(selectedTemplateProvider.notifier).state =
-                            template;
+                  if (kDebugMode) ...[
+                    const SizedBox(width: AppSizes.p12),
+                    Expanded(
+                      child: PopupMenuButton<TemplateModel>(
+                        onSelected: (TemplateModel template) {
+                          ref.read(selectedTemplateProvider.notifier).state =
+                              template;
 
-                        // 2. الانتقال إلى شاشة المعاينة بالقالب المختار حديثًا
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => PdfPreviewScreen(
-                              pdfProvider: dummyPdfBytesProvider,
-                              projectName: 'Template Preview',
-                              templateModel: template,
-                              isDummyPreview: true,
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PdfPreviewScreen(
+                                pdfProvider: dummyPdfBytesProvider,
+                                projectName: 'Template Preview',
+                                templateModel: template,
+                                isDummyPreview: true,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      itemBuilder: (BuildContext context) {
-                        // بناء عناصر القائمة من قائمة القوالب المتاحة
-                        return allTemplates.map((TemplateModel template) {
-                          return PopupMenuItem<TemplateModel>(
-                            value: template,
-                            child: Text(template.name),
                           );
-                        }).toList();
-                      },
-                      // استخدام الزر الأصلي كمظهر للقائمة
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.visibility_outlined),
-                        label: const Text('Preview'),
-                        onPressed:
-                            null, // يتم تعطيله لأن PopupMenuButton يعالج الضغط
-                        style: ElevatedButton.styleFrom(
-                          disabledBackgroundColor:
-                              theme.colorScheme.primary.withOpacity(0.9),
-                          disabledForegroundColor: theme.colorScheme.onPrimary,
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return allTemplates.map((TemplateModel template) {
+                            return PopupMenuItem<TemplateModel>(
+                              value: template,
+                              child: Text(template.name),
+                            );
+                          }).toList();
+                        },
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.visibility_outlined),
+                          label: const Text('Preview'),
+                          onPressed: null,
+                          style: ElevatedButton.styleFrom(
+                            disabledBackgroundColor:
+                                theme.colorScheme.primary.withOpacity(0.9),
+                            disabledForegroundColor:
+                                theme.colorScheme.onPrimary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ],
