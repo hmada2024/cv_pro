@@ -17,7 +17,7 @@ final allTemplatesProvider = Provider<List<TemplateModel>>((ref) {
     TemplateModel(
       id: 'template_2',
       name: 'Blue Top Header',
-      previewImagePath: '${path}2.png',
+      previewImagePath: '${path}2.jpg',
       isEnabled: true,
     ),
     TemplateModel(
