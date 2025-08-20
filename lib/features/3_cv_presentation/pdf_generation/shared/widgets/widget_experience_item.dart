@@ -1,4 +1,4 @@
-// lib/features/3_cv_presentation/pdf_generation/layout/widget_experience_item.dart
+// lib/features/3_cv_presentation/pdf_generation/shared/widgets/widget_experience_item.dart
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
 import 'package:intl/intl.dart';
@@ -32,7 +32,6 @@ class ExperienceItem extends pw.StatelessWidget {
                       const pw.IconData(0xe834),
                       font: iconFont,
                       size: 9,
-                      // AUDIT IMPROVEMENT: Tie icon color to the body text color
                       color: theme.body.color,
                     ),
                   ),

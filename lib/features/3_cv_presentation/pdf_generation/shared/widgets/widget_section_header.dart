@@ -1,4 +1,4 @@
-// lib/features/pdf_export/layout/widget_section_header.dart
+// lib/features/3_cv_presentation/pdf_generation/shared/widgets/widget_section_header.dart
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -15,7 +15,6 @@ class SectionHeader extends pw.StatelessWidget {
 
   @override
   pw.Widget build(pw.Context context) {
-    // التغيير: اختيار النمط المناسب من الثيم بناءً على isLeftColumn
     final pw.TextStyle titleStyle =
         isLeftColumn ? theme.leftColumnHeader : theme.h2;
     final double lineWidth = isLeftColumn ? 30 : 50;
