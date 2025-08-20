@@ -15,9 +15,12 @@ PdfTemplateTheme formalSingleColumnTheme() {
 
     // Main title styles
     h1: pw.TextStyle(
-        fontSize: 24, fontWeight: pw.FontWeight.bold, color: darkText),
-    h2: pw.TextStyle(
-        fontSize: 14, fontWeight: pw.FontWeight.bold, color: darkText),
+        fontSize: 26, // Increased from 24
+        fontWeight: pw.FontWeight.bold,
+        color: darkText),
+    h2: const pw.TextStyle(
+        fontSize: 15, // Increased from 14
+        color: darkText),
 
     // Body text styles
     body: const pw.TextStyle(fontSize: 10, lineSpacing: 3, color: darkText),

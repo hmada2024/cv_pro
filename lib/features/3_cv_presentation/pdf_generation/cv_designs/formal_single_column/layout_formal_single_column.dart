@@ -38,11 +38,11 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         _buildHeader(theme),
-        pw.SizedBox(height: 12),
+        pw.SizedBox(height: 15),
         _buildContactBar(theme),
-        pw.SizedBox(height: 12),
-        pw.Divider(thickness: 1.5, color: theme.primaryColor),
-        // Main content sections
+        pw.SizedBox(height: 15),
+
+        // Main content sections with adjusted spacing
         ProfileSectionPdf(personalInfo: data.personalInfo, theme: theme),
         ExperienceSectionPdf(
             experiences: data.experiences, theme: theme, iconFont: iconFont),
@@ -69,17 +69,16 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text(data.personalInfo.name.toUpperCase(), style: theme.h1),
-              pw.SizedBox(height: 6),
-              pw.Text(data.personalInfo.jobTitle,
-                  style: theme.h2.copyWith(fontWeight: pw.FontWeight.normal)),
+              pw.SizedBox(height: 8),
+              pw.Text(data.personalInfo.jobTitle, style: theme.h2),
             ],
           ),
         ),
-        pw.SizedBox(width: 20),
+        pw.SizedBox(width: 24),
         if (profileImage != null)
           pw.SizedBox(
-            width: 80, // 4 ratio
-            height: 120, // 6 ratio
+            width: 90, // Increased from 80
+            height: 135, // Increased from 120 (maintaining 4:6 ratio)
             child: pw.Image(profileImage, fit: pw.BoxFit.cover),
           ),
       ],
@@ -87,34 +86,32 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
   }
 
   pw.Widget _buildContactBar(PdfTemplateTheme theme) {
-    return pw.Wrap(
-      spacing: 15,
-      runSpacing: 5,
-      children: [
-        if (data.personalInfo.phone != null &&
-            data.personalInfo.phone!.isNotEmpty)
-          ContactInfoLine(
-            iconData: const pw.IconData(0xe0b0), // phone icon
-            text: data.personalInfo.phone!,
-            iconFont: iconFont,
-            theme: theme,
-          ),
-        if (data.personalInfo.email.isNotEmpty)
-          ContactInfoLine(
-            iconData: const pw.IconData(0xe158), // email icon
-            text: data.personalInfo.email,
-            iconFont: iconFont,
-            theme: theme,
-          ),
-        if (data.personalInfo.address != null &&
-            data.personalInfo.address!.isNotEmpty)
-          ContactInfoLine(
-            iconData: const pw.IconData(0xe55f), // location icon
-            text: data.personalInfo.address!,
-            iconFont: iconFont,
-            theme: theme,
-          ),
-      ],
-    );
+    return pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          if (data.personalInfo.phone != null &&
+              data.personalInfo.phone!.isNotEmpty)
+            ContactInfoLine(
+              iconData: const pw.IconData(0xe0b0), // phone icon
+              text: data.personalInfo.phone!,
+              iconFont: iconFont,
+              theme: theme,
+            ),
+          if (data.personalInfo.email.isNotEmpty)
+            ContactInfoLine(
+              iconData: const pw.IconData(0xe158), // email icon
+              text: data.personalInfo.email,
+              iconFont: iconFont,
+              theme: theme,
+            ),
+          if (data.personalInfo.address != null &&
+              data.personalInfo.address!.isNotEmpty)
+            ContactInfoLine(
+              iconData: const pw.IconData(0xe55f), // location icon
+              text: data.personalInfo.address!,
+              iconFont: iconFont,
+              theme: theme,
+            ),
+        ]);
   }
 }
