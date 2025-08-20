@@ -1,7 +1,6 @@
 // lib/features/cv_projects/ui/screens/cv_projects_list_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/core/widgets/empty_state_widget.dart';
-// Corrected import path for the provider
 import 'package:cv_pro/features/2_cv_editor/projects/providers/cv_projects_provider.dart';
 import 'package:cv_pro/features/2_cv_editor/projects/ui/widgets/cv_project_card.dart';
 import 'package:flutter/material.dart';
