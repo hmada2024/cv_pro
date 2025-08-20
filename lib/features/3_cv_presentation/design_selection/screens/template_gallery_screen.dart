@@ -99,11 +99,8 @@ class _TemplateGalleryScreenState extends ConsumerState<TemplateGalleryScreen> {
                                 ),
                               ),
                               clipBehavior: Clip.antiAlias,
-                              // التعديل الجوهري هنا:
-                              // 1. نضع AspectRatio داخل الكارت ليتحكم في أبعاده
                               child: AspectRatio(
                                 aspectRatio: a4AspectRatio,
-                                // 2. نجعل الصورة تملأ هذه الأبعاد الصحيحة
                                 child: Image.asset(
                                   template.previewImagePath,
                                   fit: BoxFit.contain,
