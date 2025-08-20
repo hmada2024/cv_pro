@@ -1,7 +1,7 @@
 // lib/features/3_cv_presentation/pdf_generation/main_builder/pdf_layout_builder.dart
 import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/formal_single_column/ayout_formal_single_column.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/formal_single_column/layout_formal_single_column.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/black_blue_intersection/layout_black_blue_asymmetric.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/two_vertical_columns/layout_two_vertical_columns.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/yellow_brown_intersection/layout_yellow_intersection.dart';
