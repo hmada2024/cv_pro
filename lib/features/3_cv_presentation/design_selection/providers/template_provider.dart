@@ -23,7 +23,7 @@ final allTemplatesProvider = Provider<List<TemplateModel>>((ref) {
     TemplateModel(
       id: 'template_3',
       name: 'Yellow Intersection',
-      previewImagePath: '${path}3.png',
+      previewImagePath: '${path}3.jpg',
       isEnabled: true,
     ),
     TemplateModel(
