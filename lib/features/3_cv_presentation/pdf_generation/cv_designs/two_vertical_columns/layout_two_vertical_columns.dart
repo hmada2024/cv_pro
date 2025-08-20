@@ -1,8 +1,9 @@
-// lib/features/3_cv_presentation/pdf_generation/cv_designs/classic_two_column/classic_template_layout.dart
+// lib/features/3_cv_presentation/pdf_generation/cv_designs/two_vertical_columns/layout_two_vertical_columns.dart
 import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
-import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_layout_contract.dart'; // استيراد العقد
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_layout_contract.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/contact_section_pdf.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/courses_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/details_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/education_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/experience_section_pdf.dart';
@@ -117,6 +118,7 @@ class ClassicTemplateLayout extends PdfTemplateLayout {
                     experiences: data.experiences,
                     theme: theme,
                     iconFont: iconFont),
+                CoursesSectionPdf(courses: data.courses, theme: theme),
                 ReferencesSectionPdf(
                   references: data.references,
                   theme: theme,

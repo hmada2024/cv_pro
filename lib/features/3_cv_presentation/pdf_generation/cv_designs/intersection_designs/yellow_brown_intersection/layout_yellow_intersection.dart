@@ -1,8 +1,9 @@
-// lib/features/3_cv_presentation/pdf_generation/cv_designs/yellow_design/yellow_template_layout.dart
+// lib/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/yellow_brown_intersection/layout_yellow_intersection.dart
 import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_layout_contract.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_course_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_education_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_experience_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_section_header.dart';
@@ -18,7 +19,6 @@ class YellowTemplateLayout extends PdfTemplateLayout {
   final bool showReferencesNote;
   final Uint8List? profileImageData;
 
-  // Layout constants for the Asymmetrical Full-bleed Stack design
   static const double pageMargin = 25.0;
   static const double leftColumnRatio = 0.32;
   static const double headerHeight = 130.0;
@@ -162,6 +162,12 @@ class YellowTemplateLayout extends PdfTemplateLayout {
               ...data.education
                   .map((edu) => YellowEducationItem(edu, theme: theme)),
             ],
+            if (data.courses.isNotEmpty) ...[
+              pw.SizedBox(height: 20),
+              YellowSectionHeader(title: 'COURSES', theme: theme),
+              ...data.courses
+                  .map((course) => YellowCourseItem(course, theme: theme)),
+            ]
           ],
         ),
       ),

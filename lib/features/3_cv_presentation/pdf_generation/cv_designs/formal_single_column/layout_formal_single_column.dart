@@ -5,6 +5,7 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_templa
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/formal_single_column/theme_formal_single_column.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/formal_single_column/widget_formal_section_header.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/courses_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/education_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/languages_section_pdf.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/sections/references_section_pdf.dart';
@@ -45,6 +46,7 @@ class FormalSingleColumnLayout extends PdfTemplateLayout {
         _buildExperienceSection(theme),
 
         EducationSectionPdf(educationList: data.education, theme: theme),
+        CoursesSectionPdf(courses: data.courses, theme: theme),
         SkillsSectionPdf(skills: data.skills, theme: theme),
         LanguagesSectionPdf(languages: data.languages, theme: theme),
         ReferencesSectionPdf(

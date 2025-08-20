@@ -1,6 +1,7 @@
 // lib/features/2_cv_editor/form/ui/screens/cv_form_screen.dart
 import 'package:cv_pro/core/constants/app_sizes.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/screens/pdf_preview_screen.dart';
+import 'package:cv_pro/features/2_cv_editor/form/ui/widgets/courses_section.dart';
 import 'package:cv_pro/features/2_cv_editor/form/ui/widgets/project_status_header.dart';
 import 'package:cv_pro/features/3_cv_presentation/design_selection/providers/template_provider.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/data/providers/pdf_providers.dart';
@@ -97,6 +98,8 @@ class CvFormScreen extends ConsumerWidget {
             EducationSection(),
             SizedBox(height: AppSizes.p16),
             ExperienceSection(),
+            SizedBox(height: AppSizes.p16),
+            CoursesSection(),
             SizedBox(height: AppSizes.p16),
             SkillSection(),
             SizedBox(height: AppSizes.p16),

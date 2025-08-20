@@ -1,4 +1,4 @@
-// lib/features/cv_form/data/models/cv_data.dart
+// lib/features/2_cv_editor/form/data/models/cv_data.dart
 import 'package:isar/isar.dart';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_constants.dart';
 
@@ -8,11 +8,12 @@ part 'skill.dart';
 part 'language.dart';
 part 'education.dart';
 part 'reference.dart';
+part 'course.dart';
 part 'cv_data.g.dart';
 
 @collection
 class CVData {
-  Id id = Isar.autoIncrement;
+  Id id; // تم التعديل: لم يعد افتراضيًا هنا مباشرةً
 
   @Index(unique: true, replace: false)
   late String projectName;
@@ -25,8 +26,10 @@ class CVData {
   final List<Language> languages;
   final List<Education> education;
   final List<Reference> references;
+  final List<Course> courses;
 
   CVData({
+    this.id = Isar.autoIncrement, // تم التعديل: القيمة الافتراضية هنا في المنشئ
     this.projectName = '',
     required this.personalInfo,
     required this.experiences,
@@ -34,7 +37,11 @@ class CVData {
     required this.languages,
     required this.education,
     required this.references,
-  }) : lastModified = DateTime.now();
+    required this.courses,
+  }) {
+    // يتم تعيينه هنا لضمان تحديثه مع كل نسخة جديدة
+    lastModified = DateTime.now();
+  }
 
   factory CVData.initial(String name) {
     return CVData(
@@ -45,21 +52,23 @@ class CVData {
       languages: [],
       education: [],
       references: [],
+      courses: [],
     );
   }
 
+  // تم تعديل هذه الدالة بالكامل لحل المشكلة
   CVData copyWith({
     String? projectName,
-    DateTime? lastModified,
     PersonalInfo? personalInfo,
     List<Experience>? experiences,
     List<Skill>? skills,
     List<Language>? languages,
     List<Education>? education,
     List<Reference>? references,
+    List<Course>? courses,
   }) {
-    // When copying, we want to update the lastModified timestamp.
     return CVData(
+      id: id, // <-- هذا هو السطر الأهم: الحفاظ على الـ ID الأصلي
       projectName: projectName ?? this.projectName,
       personalInfo: personalInfo ?? this.personalInfo,
       experiences: experiences ?? this.experiences,
@@ -67,6 +76,7 @@ class CVData {
       languages: languages ?? this.languages,
       education: education ?? this.education,
       references: references ?? this.references,
-    )..lastModified = lastModified ?? DateTime.now();
+      courses: courses ?? this.courses,
+    );
   }
 }

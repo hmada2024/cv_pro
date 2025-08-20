@@ -1,4 +1,4 @@
-// features/pdf_export/data/dummy_data/cv_data_dummy.dart
+// lib/features/3_cv_presentation/pdf_generation/data/dummy_data/cv_data_dummy.dart
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 
 part '_dummy_personal_info.dart';
@@ -7,10 +7,8 @@ part '_dummy_education.dart';
 part '_dummy_skills.dart';
 part '_dummy_languages.dart';
 part '_dummy_references.dart';
+part '_dummy_courses.dart';
 
-/// This is the main function that assembles the complete dummy CVData object
-/// by calling helper functions from the 'part' files.
-/// This is the only function that should be used outside this folder.
 CVData createDummyCvData() {
   return CVData(
     personalInfo: _createDummyPersonalInfo(),
@@ -19,5 +17,6 @@ CVData createDummyCvData() {
     skills: _createDummySkills(),
     languages: _createDummyLanguages(),
     references: _createDummyReferences(),
+    courses: _createDummyCourses(),
   );
 }

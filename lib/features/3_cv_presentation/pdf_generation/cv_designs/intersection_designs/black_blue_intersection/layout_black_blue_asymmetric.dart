@@ -1,9 +1,10 @@
-// lib/features/3_cv_presentation/pdf_generation/cv_designs/black_blue_asymmetric/layout_black_blue_asymmetric.dart
+// lib/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/black_blue_intersection/layout_black_blue_asymmetric.dart
 import 'dart:typed_data';
 import 'package:cv_pro/features/2_cv_editor/form/data/models/cv_data.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_layout_contract.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/core/pdf_template_theme.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/black_blue_intersection/theme_black_blue_asymmetric.dart';
+import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_course_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_education_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_experience_item.dart';
 import 'package:cv_pro/features/3_cv_presentation/pdf_generation/cv_designs/intersection_designs/shared_widgets/yellow_section_header.dart';
@@ -12,16 +13,12 @@ import 'package:cv_pro/features/3_cv_presentation/pdf_generation/shared/widgets/
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-// لاحظ أننا أعدنا استخدام نفس الويدجتس الداخلية للقالب الأصفر
-// لأنها مصممة لتأخذ الثيم كمتغير، مما يجعلها مرنة للغاية
-
 class BlackBlueAsymmetricLayout extends PdfTemplateLayout {
   final CVData data;
   final pw.Font iconFont;
   final bool showReferencesNote;
   final Uint8List? profileImageData;
 
-  // نفس الثوابت الهيكلية
   static const double pageMargin = 25.0;
   static const double leftColumnRatio = 0.32;
   static const double headerHeight = 130.0;
@@ -40,12 +37,10 @@ class BlackBlueAsymmetricLayout extends PdfTemplateLayout {
 
   @override
   pw.Widget build(pw.Context context) {
-    // التغيير الجوهري الوحيد هنا: استدعاء الثيم الجديد
     final theme = blackBlueAsymmetricTheme();
     final pageFormat = context.page.pageFormat;
     final leftColumnWidth = pageFormat.width * leftColumnRatio;
 
-    // بقية الكود مطابق تمامًا لهيكل القالب الأصفر
     return pw.Stack(
       children: [
         _buildRightContent(theme, leftColumnWidth),
@@ -63,7 +58,7 @@ class BlackBlueAsymmetricLayout extends PdfTemplateLayout {
       right: 0,
       child: pw.Container(
         height: headerHeight,
-        color: theme.accentColor, // سيستخدم اللون الأسود
+        color: theme.accentColor,
         padding: pw.EdgeInsets.only(
           left: leftColumnWidth + 45,
           right: contentPadding,
@@ -92,7 +87,7 @@ class BlackBlueAsymmetricLayout extends PdfTemplateLayout {
       bottom: 0,
       child: pw.Container(
         width: width,
-        color: theme.primaryColor, // سيستخدم اللون الأزرق
+        color: theme.primaryColor,
         padding: const pw.EdgeInsets.symmetric(horizontal: contentPadding),
         child: pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -167,6 +162,12 @@ class BlackBlueAsymmetricLayout extends PdfTemplateLayout {
               ...data.education
                   .map((edu) => YellowEducationItem(edu, theme: theme)),
             ],
+            if (data.courses.isNotEmpty) ...[
+              pw.SizedBox(height: 20),
+              YellowSectionHeader(title: 'COURSES', theme: theme),
+              ...data.courses
+                  .map((course) => YellowCourseItem(course, theme: theme)),
+            ]
           ],
         ),
       ),

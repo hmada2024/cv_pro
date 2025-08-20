@@ -1,4 +1,4 @@
-// lib/features/cv_form/data/providers/cv_form_provider.dart
+// lib/features/2_cv_editor/form/data/providers/cv_form_provider.dart
 import 'dart:async';
 import 'dart:io';
 import 'package:cv_pro/core/di/injector.dart';
@@ -48,7 +48,7 @@ class CvFormNotifier extends StateNotifier<CVData?> {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _ref.read(saveStatusProvider.notifier).state = SaveStatus.saving;
     _debounce = Timer(const Duration(milliseconds: 700), () {
-      final updatedCv = state!.copyWith(lastModified: DateTime.now());
+      final updatedCv = state!.copyWith();
       _storageService.saveCV(updatedCv).then((_) {
         if (mounted) {
           _ref.read(saveStatusProvider.notifier).state = SaveStatus.saved;
@@ -66,7 +66,7 @@ class CvFormNotifier extends StateNotifier<CVData?> {
     if (state == null) return;
     _debounce?.cancel();
     _ref.read(saveStatusProvider.notifier).state = SaveStatus.saving;
-    final updatedCv = state!.copyWith(lastModified: DateTime.now());
+    final updatedCv = state!.copyWith();
     await _storageService.saveCV(updatedCv);
     if (mounted) {
       _ref.read(saveStatusProvider.notifier).state = SaveStatus.saved;
@@ -269,6 +269,41 @@ class CvFormNotifier extends StateNotifier<CVData?> {
     final item = items.removeAt(oldIndex);
     items.insert(newIndex, item);
     state = state!.copyWith(education: items);
+    _saveStateImmediately();
+  }
+
+  // --- Courses ---
+  void addCourse(Course newCourse) {
+    if (state == null) return;
+    state = state!.copyWith(courses: [...state!.courses, newCourse]);
+    _saveStateImmediately();
+  }
+
+  void updateCourse(int index, Course updatedCourse) {
+    if (state == null) return;
+    final currentCourses = List<Course>.from(state!.courses);
+    if (index >= 0 && index < currentCourses.length) {
+      currentCourses[index] = updatedCourse;
+      state = state!.copyWith(courses: currentCourses);
+      _saveStateImmediately();
+    }
+  }
+
+  void removeCourse(int index) {
+    if (state == null) return;
+    final currentCourses = List<Course>.from(state!.courses);
+    currentCourses.removeAt(index);
+    state = state!.copyWith(courses: currentCourses);
+    _saveStateImmediately();
+  }
+
+  void reorderCourse(int oldIndex, int newIndex) {
+    if (state == null) return;
+    if (oldIndex < newIndex) newIndex -= 1;
+    final items = List<Course>.from(state!.courses);
+    final item = items.removeAt(oldIndex);
+    items.insert(newIndex, item);
+    state = state!.copyWith(courses: items);
     _saveStateImmediately();
   }
 
