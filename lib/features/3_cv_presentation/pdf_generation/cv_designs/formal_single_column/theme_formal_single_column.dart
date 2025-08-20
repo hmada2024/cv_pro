@@ -5,29 +5,24 @@ import 'package:pdf/widgets.dart' as pw;
 
 PdfTemplateTheme formalSingleColumnTheme() {
   const darkText = PdfColors.black;
-  const lightText = PdfColors.white; // Mostly for background consistency
+  const lightText = PdfColors.white;
 
   return PdfTemplateTheme(
     primaryColor: darkText,
-    accentColor: darkText, // Accent is also black for the divider lines
+    accentColor: darkText,
     lightTextColor: lightText,
     darkTextColor: darkText,
 
     // Main title styles
     h1: pw.TextStyle(
-        fontSize: 26, // Increased from 24
-        fontWeight: pw.FontWeight.bold,
-        color: darkText),
-    h2: const pw.TextStyle(
-        fontSize: 15, // Increased from 14
-        color: darkText),
+        fontSize: 28, fontWeight: pw.FontWeight.bold, color: darkText),
+    h2: const pw.TextStyle(fontSize: 16, color: darkText),
 
     // Body text styles
-    body: const pw.TextStyle(fontSize: 10, lineSpacing: 3, color: darkText),
+    body: const pw.TextStyle(fontSize: 9.5, lineSpacing: 3, color: darkText),
     subtitle: pw.TextStyle(
         fontSize: 10, fontStyle: pw.FontStyle.italic, color: darkText),
 
-    // These are not used but required by the contract
     leftColumnHeader: const pw.TextStyle(),
     leftColumnBody: const pw.TextStyle(),
     leftColumnSubtext: const pw.TextStyle(),
