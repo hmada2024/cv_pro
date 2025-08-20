@@ -29,7 +29,7 @@ final allTemplatesProvider = Provider<List<TemplateModel>>((ref) {
     TemplateModel(
       id: 'template_4',
       name: 'Asymmetric Black & Blue',
-      previewImagePath: '${path}4.png',
+      previewImagePath: '${path}4.jpg',
       isEnabled: true,
     ),
   ];
